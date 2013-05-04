@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Schedule:</b>
+  <%= @result.schedule_id %>
+</p>
+
+<p>
+  <b>Player:</b>
+  <%= @result.player_id %>
+</p>
+
+<p>
+  <b>Corp match points:</b>
+  <%= @result.corp_match_points %>
+</p>
+
+<p>
+  <b>Runner match points:</b>
+  <%= @result.runner_match_points %>
+</p>
+
+<p>
+  <b>Prestige:</b>
+  <%= @result.prestige %>
+</p>
+
+
+<%= link_to 'Edit', edit_result_path(@result) %> |
+<%= link_to 'Back', results_path %>

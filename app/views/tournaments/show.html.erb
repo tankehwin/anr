@@ -1,0 +1,120 @@
+ | <%= link_to 'Edit Tournament Details', edit_tournament_path(@tournament) %>
+
+<h1>Tournament:
+  <%= @tournament.name %>
+</h1>
+
+<p>
+  <b>Status:</b>
+  <%= @tournament.state %>
+</p>
+
+<p id="notice"><%= notice %></p>
+
+<%= link_to 'Schedule', new_round_path(:tournament => @tournament.id) if @rounds.empty? %>
+<%= link_to 'Schedule', new_round_path(:tournament => @tournament.id), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } unless @rounds.empty? %>
+
+<h2>Rounds</h2>
+
+<table>
+  <tr>
+    <th>Round</th>
+    <th>Start</th>
+    <th>End</th>
+    <th>Status</th>
+    <th>Action</th>
+  </tr>
+
+<% @rounds.sort_by(&:number).each do |round| %>
+  <tr>
+    <td><%= "Round " + round.number.to_s %></td>
+    <td><%= round.start %></td>
+    <td><%= round.end %></td>
+    <td><%= round.state %></td>
+    <td><%= link_to round.action, new_schedule_path(:round => round.id) if round.action == "Schedule" %><%= link_to round.action, edit_round_path(round, :trigger => round.action) if round.action == "Start" or round.action == "End" %></td>
+  </tr>
+<% end %>
+</table>
+
+<h2>Registered Players and Tournament Standings</h2>
+
+<table>
+  <tr>
+    <th>Place</th>
+    <th>Player</th>
+    <th>Prestiges</th>
+    <th>Match points</th>
+    <th>Matches</th>
+    <th>Omw%</th>
+    <th>Pgw%</th>
+    <th>Ogw%</th>
+    <th></th>
+  </tr>
+
+<% @participants.sort_by(&:place).each do |participant| %>
+  <tr>
+    <td><%= participant.place %></td>
+    <td><%= participant.player.name %></td>
+    <td><%= participant.prestiges %></td>
+    <td><%= participant.match_points %></td>
+    <td><%= participant.matches %></td>
+    <td><%= number_with_precision participant.omw, :precision => 2 %></td>
+    <td><%= number_with_precision participant.pgw, :precision => 2 %></td>
+    <td><%= number_with_precision participant.ogw, :precision => 2 %></td>
+    <td><%= link_to 'Remove', participant, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'Add a New Participant', new_participant_path(:tournament => @tournament.id) %>
+
+<h2>Round schedule and results</h2>
+
+<table>
+  <tr>
+    <th>Round</th>
+    <th>Table</th>
+    <th>Player 1</th>
+    <th>Prestige</th>
+    <th>Corp Match Points</th>
+    <th>Runner Match Points</th>
+    <th>Player 2</th>
+    <th>Prestige</th>
+    <th>Corp Match Points</th>
+    <th>Runner Match Points</th>
+    <th></th>
+  </tr>
+
+<% @rounds.sort_by(&:number).each do |round| %>
+  <tr>
+    <td><%= "Round " + round.number.to_s %></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <% round.schedules.each do |schedule| %>
+    <tr>
+      <td><%= round.number %></td>
+      <td><%= schedule.table %></td>
+      <% schedule.results.each do |result| %>
+        <td><b><%= result.participant.player.name %></b></td>
+        <td><%= result.prestige %></td>
+        <td><%= result.corp_match_points %></td>
+        <td><%= result.runner_match_points %></td>
+      <% end %>
+      <td><%= link_to 'Update Result', edit_schedule_path(schedule, :tournament => @tournament.id) if round.state == "In Progress" %></td>
+    </tr>
+  <% end %>
+<% end %>
+</table>
+
+<br />
