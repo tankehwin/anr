@@ -25,8 +25,7 @@ class SchedulesController < ApplicationController
   # GET /schedules/new.json
   def new
     @round = Round.find params[:round], :include => :tournament
-    @schedule = Schedule.calculate_schedule(@round)
-    @schedules = Schedule.find_all_by_round_id @round.id
+    @schedules = Schedule.calculate_schedule(@round)
 
     respond_to do |format|
       format.html { redirect_to @round.tournament }
@@ -38,6 +37,7 @@ class SchedulesController < ApplicationController
   def edit
     @schedule = Schedule.find(params[:id], :include => :results)
     @tournament = Tournament.find params[:tournament]
+    @participants = Participant.find(:all, :conditions => ["id != ?", 1])
   end
 
   # POST /schedules
@@ -59,12 +59,12 @@ class SchedulesController < ApplicationController
   # PUT /schedules/1
   # PUT /schedules/1.json
   def update
-    @schedule = Schedule.find(params[:id])
+    @schedule = Schedule.find(params[:id], :include => :results)
     @params_schedule = Schedule.calculate_prestige(params[:schedule])
 
     respond_to do |format|
       if @schedule.update_attributes(@params_schedule)
-        format.html { redirect_to @schedule.round.tournament, notice: 'Results was successfully updated.' }
+        format.html { redirect_to @schedule.round.tournament, notice: "Results was successfully updated." }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

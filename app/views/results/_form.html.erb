@@ -1,37 +1,28 @@
-<%= form_for(@result) do |f| %>
-  <% if @result.errors.any? %>
+<%= form_for(@schedule) do |f| %>
+  <% if @schedule.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@result.errors.count, "error") %> prohibited this result from being saved:</h2>
+      <h2><%= pluralize(@schedule.errors.count, "error") %> prohibited this schedule from being saved:</h2>
 
       <ul>
-      <% @result.errors.full_messages.each do |msg| %>
+      <% @schedule.errors.full_messages.each do |msg| %>
         <li><%= msg %></li>
       <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :schedule_id %><br />
-    <%= f.number_field :schedule_id %>
-  </div>
-  <div class="field">
-    <%= f.label :player_id %><br />
-    <%= f.number_field :player_id %>
-  </div>
-  <div class="field">
-    <%= f.label :corp_match_points %><br />
-    <%= f.number_field :corp_match_points %>
-  </div>
-  <div class="field">
-    <%= f.label :runner_match_points %><br />
-    <%= f.number_field :runner_match_points %>
-  </div>
-  <div class="field">
-    <%= f.label :prestige %><br />
-    <%= f.number_field :prestige %>
-  </div>
+  <%= f.fields_for :results do |r| %>
+    <b><%= r.object.participant.player.name %>:</b>
+    <div class="field">
+      <%= r.label :corp_match_points, "Match Points as Corporation" %><br />
+      <%= r.number_field :corp_match_points %>
+    </div>
+    <div class="field">
+      <%= r.label :runner_match_points, "Match Points as Runner" %><br />
+      <%= r.number_field :runner_match_points %>
+    </div>
+  <% end %>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit "Submit" %>
   </div>
 <% end %>

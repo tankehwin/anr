@@ -11,18 +11,15 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :number %><br />
-    <%= f.number_field :number %>
-  </div>
-  <div class="field">
-    <%= f.label :start %><br />
-    <%= f.datetime_select :start %>
-  </div>
-  <div class="field">
-    <%= f.label :end %><br />
-    <%= f.datetime_select :end %>
-  </div>
+  <%= f.fields_for :schedules do |s| %>
+    <%= s.fields_for :results do |r| %>
+      <b><%= r.object.participant.player.name %></b>
+      <div class="field">
+        <%= r.label :opponent_id, "vs" %><br />
+        <%= r.select(:opponent_id, @participants.collect {|p| [p.player.name, p.id]}) -%>
+      </div>
+    <% end %>
+  <% end %>
   <div class="field">
     <%= f.label :state %><br />
     <%= f.text_field :state %>

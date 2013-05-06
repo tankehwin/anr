@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   add_index "participants", ["tournament_id"], :name => "index_participants_on_tournament_id"
 
   create_table "players", :force => true do |t|
+    t.string   "username",                  :null => false
     t.string   "email"
     t.string   "name",                      :null => false
     t.integer  "points",     :default => 0, :null => false
@@ -43,6 +44,7 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
 
   add_index "players", ["matches"], :name => "index_players_on_matches"
   add_index "players", ["points"], :name => "index_players_on_points"
+  add_index "players", ["username"], :name => "index_players_on_username", :unique => true
 
   create_table "results", :force => true do |t|
     t.integer  "tournament_id",       :null => false

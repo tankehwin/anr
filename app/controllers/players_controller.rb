@@ -41,6 +41,7 @@ class PlayersController < ApplicationController
   # POST /players.json
   def create
     @player = Player.new(params[:player])
+    @player.username = "MY" + ((Player.count + 90210) * 5 / 2).to_s(16).upcase
 
     respond_to do |format|
       if @player.save

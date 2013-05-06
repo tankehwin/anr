@@ -1,18 +1,20 @@
 class Round < ActiveRecord::Base
-  attr_accessible :action, :end, :number, :start, :state, :tournament_id
+  attr_accessible :action, :end, :number, :schedules_attributes, :start, :state, :tournament_id
 
   belongs_to :tournament
   has_many :schedules, :dependent => :destroy
 
+  accepts_nested_attributes_for :schedules
+
   def self.calculate_round(tournament)
     rounds = Round.find_all_by_tournament_id tournament.id
+    rounds.each do |r|
+      r.destroy
+    end
   	participants = Participant.find_all_by_tournament_id tournament.id
     count = participants.count - 2
     round = Math.log2(count).to_i if count > 1
     round = 0 if count < 2
-    rounds.each do |r|
-      r.destroy
-    end
     Round.create :tournament_id => tournament.id, :state => "Not Scheduled", :action => "Schedule", :number => 1 unless count < 1
     number = 2
     round.times do
@@ -38,8 +40,8 @@ class Round < ActiveRecord::Base
       "Round has started."
     elsif trigger == "End"
       round.end = Time.now
-      # round.state = "Closed"
-      # round.action = "Post-Round"
+      round.state = "Closed"
+      round.action = "Post-Round"
       round.save
       round.schedules.each do |s|
         s.results.each do |r|
@@ -52,6 +54,8 @@ class Round < ActiveRecord::Base
       next_round.action = "Schedule"
       next_round.save
       "Round has ended."
+    elsif trigger == "Manual"
+    elsif trigger == "Modify"
     end
   end
 end

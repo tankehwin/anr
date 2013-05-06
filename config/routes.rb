@@ -1,5 +1,5 @@
 Anr::Application.routes.draw do
-  resources :results
+  resources :results, :only => :edit
 
 
   resources :schedules

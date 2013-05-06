@@ -37,11 +37,19 @@ class RoundsController < ApplicationController
   # GET /rounds/1/edit
   def edit
     @round = Round.find(params[:id])
-    notice = Round.trigger(@round, params[:trigger])
 
-    respond_to do |format|
-      format.html { redirect_to @round.tournament, notice: notice }
-      format.json { render json: @round }
+    if params[:trigger] == "Start"
+      notice = Round.trigger(@round, params[:trigger])
+      respond_to do |format|
+        format.html { redirect_to @round.tournament, notice: notice }
+        format.json { render json: @round }
+      end
+    elsif params[:trigger] == "Manual"
+      @schedules = Schedule.calculate_schedule(@round)
+      @round = Round.find(params[:id])
+      @participants = Participant.find(:all, :conditions => ["tournament_id = ?", @round.tournament_id], :include => :player)
+    elsif params[:trigger] == "Modify"
+      @participants = Participant.find(:all, :conditions => ["tournament_id = ?", @round.tournament_id], :include => :player)
     end
   end
 

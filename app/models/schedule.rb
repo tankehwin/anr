@@ -7,6 +7,9 @@ class Schedule < ActiveRecord::Base
   accepts_nested_attributes_for :results
 
   def self.calculate_schedule(round)
+    round.schedules.each do |r|
+      r.destroy
+    end
   	participants = Participant.find_all_by_tournament_id round.tournament_id
     pair = true
     table = 1
@@ -63,6 +66,7 @@ class Schedule < ActiveRecord::Base
   	round.state = "Ready"
   	round.action = "Start"
   	round.save
+    Schedule.find_all_by_round_id round.id
   end
 
   def self.calculate_prestige(schedule)
