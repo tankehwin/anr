@@ -1,6 +1,6 @@
-<h1>Manual Pairing</h1>
+<h1>Manual Schedule</h1>
 
 <%= render 'form' %>
 
-<%= link_to 'Show', @round %> |
-<%= link_to 'Back', rounds_path %>
+<%= link_to 'Auto Schedule', new_schedule_path(:round => @round.id, :trigger => "Schedule") %> |
+<%= link_to 'Back', @round.tournament %>

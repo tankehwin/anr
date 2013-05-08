@@ -11,17 +11,19 @@
     </div>
   <% end %>
 
-  <%= f.fields_for :schedules do |s| %>
-    <%= s.hidden_field :table, value: s.object.table %>
-    <%= s.fields_for :results do |r| %>
-      <b><%= r.object.participant.player.name %></b>
-      <div class="field">
-        <%= r.label :opponent_id, "vs" %><br />
-        <%= r.select(:opponent_id, @participants.collect {|p| [p.player.name, p.id]}) -%>
-      </div>
+  <table>
+    <%= f.fields_for :schedules do |s| %>
+      <%= s.hidden_field :table, value: s.object.table %>
+      <%= s.fields_for :results do |r| %>
+        <tr>
+          <th><%= r.object.participant.player.name %></th>
+          <td><%= r.label :opponent_id, " vs " %></td>
+          <td><%= r.select(:opponent_id, @participants.collect {|p| [p.player.name, p.id]}) -%></td>
+        </tr>
+      <% end %>
     <% end %>
-  <% end %>
+  </table>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit "Update Schedule" %>
   </div>
 <% end %>
