@@ -54,8 +54,41 @@ class Round < ActiveRecord::Base
       next_round.action = "Schedule"
       next_round.save
       "Round has ended."
-    elsif trigger == "Manual"
-    elsif trigger == "Modify"
     end
+  end
+
+  def self.update_table(round)
+    round.schedules.each do |s|
+      result = Result.find_by_opponent_id s.results.first.participant_id
+      result.schedule_id = s.results.first.schedule_id
+      result.prestige = nil
+      result.corp_match_points = nil
+      result.runner_match_points = nil
+      if result.participant_id == Participant.bye_id(round.tournament_id)
+        result.prestige = 0
+        result.corp_match_points = 0
+        result.runner_match_points = 0
+      elsif result.opponent_id == Participant.bye_id(round.tournament_id)
+        result.prestige = 6
+        result.corp_match_points = 10
+        result.runner_match_points = 10
+      end
+      result.save
+      first = s.results.first
+      first.prestige = nil
+      first.corp_match_points = nil
+      first.runner_match_points = nil
+      if first.participant_id == Participant.bye_id(round.tournament_id)
+        first.prestige = 0
+        first.corp_match_points = 0
+        first.runner_match_points = 0
+      elsif first.opponent_id == Participant.bye_id(round.tournament_id)
+        first.prestige = 6
+        first.corp_match_points = 10
+        first.runner_match_points = 10
+      end
+      first.save
+    end
+    round
   end
 end

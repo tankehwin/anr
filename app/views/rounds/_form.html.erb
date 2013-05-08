@@ -12,6 +12,7 @@
   <% end %>
 
   <%= f.fields_for :schedules do |s| %>
+    <%= s.hidden_field :table, value: s.object.table %>
     <%= s.fields_for :results do |r| %>
       <b><%= r.object.participant.player.name %></b>
       <div class="field">
@@ -20,14 +21,6 @@
       </div>
     <% end %>
   <% end %>
-  <div class="field">
-    <%= f.label :state %><br />
-    <%= f.text_field :state %>
-  </div>
-  <div class="field">
-    <%= f.label :action %><br />
-    <%= f.text_field :action %>
-  </div>
   <div class="actions">
     <%= f.submit %>
   </div>

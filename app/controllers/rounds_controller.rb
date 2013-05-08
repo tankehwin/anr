@@ -38,18 +38,19 @@ class RoundsController < ApplicationController
   def edit
     @round = Round.find(params[:id])
 
-    if params[:trigger] == "Start"
+    if params[:trigger] == "Manual"
+      @schedules = Schedule.calculate_schedule(@round)
+      @round = Round.find(params[:id])
+      @participants = Participant.find(:all, :conditions => ["tournament_id = ?", @round.tournament_id], :include => :player)
+    elsif params[:trigger] == "Modify"
+      @schedules = Schedule.find_all_by_round_id(params[:id], :include => :results)
+      @participants = Participant.find(:all, :conditions => ["tournament_id = ?", @round.tournament_id], :include => :player)
+    elsif params[:trigger] == "Start" or params[:trigger] == "End"
       notice = Round.trigger(@round, params[:trigger])
       respond_to do |format|
         format.html { redirect_to @round.tournament, notice: notice }
         format.json { render json: @round }
       end
-    elsif params[:trigger] == "Manual"
-      @schedules = Schedule.calculate_schedule(@round)
-      @round = Round.find(params[:id])
-      @participants = Participant.find(:all, :conditions => ["tournament_id = ?", @round.tournament_id], :include => :player)
-    elsif params[:trigger] == "Modify"
-      @participants = Participant.find(:all, :conditions => ["tournament_id = ?", @round.tournament_id], :include => :player)
     end
   end
 
@@ -76,7 +77,8 @@ class RoundsController < ApplicationController
 
     respond_to do |format|
       if @round.update_attributes(params[:round])
-        format.html { redirect_to @round, notice: 'Round was successfully updated.' }
+        @round = Round.update_table(@round)
+        format.html { redirect_to @round.tournament, notice: 'Schedule was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }
