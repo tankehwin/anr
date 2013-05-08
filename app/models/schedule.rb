@@ -10,41 +10,21 @@ class Schedule < ActiveRecord::Base
     round.schedules.each do |s|
       s.destroy
     end
-  	participants = Participant.find_all_by_tournament_id round.tournament_id
+  	participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", round.tournament_id, 1])
     pair = true
     table = 1
     opponent_id = 0
     result = Result.new
   	if round.number == 1
   		participants = participants.shuffle
-  		if (participants.count - 1).odd?
+  		if participants.count.odd?
   			player_with_bye = participants.last
   			participants.each do |participant|
-          unless participant.id == Participant.bye_id(round.tournament_id)
-    				if participant == player_with_bye
-    					schedule = Schedule.create :round_id => round.id, :table => table
-  	  				Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => Participant.bye_id(round.tournament_id), :corp_match_points => 10, :runner_match_points => 10, :prestige => 6
-  	  				Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => Participant.bye_id(round.tournament_id), :opponent_id => participant.id, :corp_match_points => 0, :runner_match_points => 0, :prestige => 0
-            else
-      				if pair == true
-    	  				schedule = Schedule.create :round_id => round.id, :table => table
-    	  				result = Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => 0
-                opponent_id = participant.id
-    	  				pair = false
-    	  			else
-    	  				schedule = Schedule.last
-                result.opponent_id = participant.id
-                result.save
-    	  				Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => opponent_id
-    	  				pair = true
-    	  				table = table + 1
-              end
-  	  			end
-          end
-  			end
-  		else
-  			participants.each do |participant|
-          unless participant.id == Participant.bye_id(round.tournament_id)
+  				if participant == player_with_bye
+  					schedule = Schedule.create :round_id => round.id, :table => table
+	  				Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => Participant.bye_id(round.tournament_id), :corp_match_points => 10, :runner_match_points => 10, :prestige => 6
+	  				Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => Participant.bye_id(round.tournament_id), :opponent_id => participant.id, :corp_match_points => 0, :runner_match_points => 0, :prestige => 0
+          else
     				if pair == true
   	  				schedule = Schedule.create :round_id => round.id, :table => table
   	  				result = Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => 0
@@ -57,8 +37,24 @@ class Schedule < ActiveRecord::Base
   	  				Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => opponent_id
   	  				pair = true
   	  				table = table + 1
-  	  			end
-          end
+            end
+	  			end
+  			end
+  		else
+  			participants.each do |participant|
+  				if pair == true
+	  				schedule = Schedule.create :round_id => round.id, :table => table
+	  				result = Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => 0
+            opponent_id = participant.id
+	  				pair = false
+	  			else
+	  				schedule = Schedule.last
+            result.opponent_id = participant.id
+            result.save
+	  				Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => opponent_id
+	  				pair = true
+	  				table = table + 1
+	  			end
   			end
   		end
   	else
