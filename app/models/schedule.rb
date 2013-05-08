@@ -20,13 +20,12 @@ class Schedule < ActiveRecord::Base
   		if (participants.count - 1).odd?
   			player_with_bye = participants.last
   			participants.each do |participant|
-  				if participant == player_with_bye
-  					schedule = Schedule.create :round_id => round.id, :table => table
-	  				Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => Participant.bye_id(round.tournament_id), :corp_match_points => 10, :runner_match_points => 10, :prestige => 6
-	  				Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => Participant.bye_id(round.tournament_id), :opponent_id => participant.id, :corp_match_points => 0, :runner_match_points => 0, :prestige => 0
-            table = table + 1
-          else
-            unless participant.id == Participant.bye_id(round.tournament_id)
+          unless participant.id == Participant.bye_id(round.tournament_id)
+    				if participant == player_with_bye
+    					schedule = Schedule.create :round_id => round.id, :table => table
+  	  				Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => Participant.bye_id(round.tournament_id), :corp_match_points => 10, :runner_match_points => 10, :prestige => 6
+  	  				Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => Participant.bye_id(round.tournament_id), :opponent_id => participant.id, :corp_match_points => 0, :runner_match_points => 0, :prestige => 0
+            else
       				if pair == true
     	  				schedule = Schedule.create :round_id => round.id, :table => table
     	  				result = Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => 0
@@ -40,8 +39,8 @@ class Schedule < ActiveRecord::Base
     	  				pair = true
     	  				table = table + 1
               end
-            end
-	  			end
+  	  			end
+          end
   			end
   		else
   			participants.each do |participant|
@@ -66,7 +65,6 @@ class Schedule < ActiveRecord::Base
   	end
   	round.state = "Ready"
   	round.action = "Start"
-    round.start = nil
   	round.save
     Schedule.find_all_by_round_id round.id
   end

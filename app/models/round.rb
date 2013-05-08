@@ -89,6 +89,10 @@ class Round < ActiveRecord::Base
       end
       first.save
     end
+    round.state = "Ready"
+    round.action = "Start"
+    round.start = nil
+    round.save
     round
   end
 end
