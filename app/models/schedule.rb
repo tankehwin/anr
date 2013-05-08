@@ -24,6 +24,7 @@ class Schedule < ActiveRecord::Base
   					schedule = Schedule.create :round_id => round.id, :table => table
 	  				Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => Participant.bye_id(round.tournament_id), :corp_match_points => 10, :runner_match_points => 10, :prestige => 6
 	  				Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => Participant.bye_id(round.tournament_id), :opponent_id => participant.id, :corp_match_points => 0, :runner_match_points => 0, :prestige => 0
+            table = table + 1
           else
             unless participant.id == Participant.bye_id(round.tournament_id)
       				if pair == true
@@ -65,6 +66,7 @@ class Schedule < ActiveRecord::Base
   	end
   	round.state = "Ready"
   	round.action = "Start"
+    round.start = nil
   	round.save
     Schedule.find_all_by_round_id round.id
   end
