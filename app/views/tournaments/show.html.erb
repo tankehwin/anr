@@ -1,9 +1,3 @@
-<% content_for(:nav) do %>
-  <% unless @tournament.state == "Tournament is closed." %>
-    <li><%= link_to 'Edit Tournament Details', edit_tournament_path(@tournament) %></li>
-  <% end %>
-<% end %>
-
 <div class="page-header">
   <h1>Tournament: <%= @tournament.name %></h1>
 </div>
@@ -23,7 +17,8 @@
 <div class="form-actions">
   <%= link_to 'Schedule', new_round_path(:tournament => @tournament.id), :class => 'btn' if @rounds.empty? and @tournament.state != "Tournament is closed." %>
   <%= link_to 'Schedule', new_round_path(:tournament => @tournament.id), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' }, :class => 'btn' unless @rounds.empty? or @tournament.state == "Tournament is closed." %>
-  <%= link_to 'Close', edit_tournament_path(@tournament, :trigger => "Close"), data: { confirm: 'This action would terminate all unfinished rounds and propagate tournament score table into players score table. Do you want to proceed?' }, :class => 'btn' unless @rounds.empty? or @tournament.state == "Tournament is closed." %>
+  <%= link_to 'Edit Details', edit_tournament_path(@tournament), :class => 'btn' unless @tournament.state == "Tournament is closed." %>
+  <%= link_to 'Close', edit_tournament_path(@tournament, :trigger => "Close"), data: { confirm: 'This action would terminate all unfinished rounds and propagate tournament score table into players score table. Do you want to proceed?' }, :class => 'btn btn-danger' unless @rounds.empty? or @tournament.state == "Tournament is closed." %>
 </div>
 
 <h2>Rounds</h2>
