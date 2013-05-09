@@ -14,36 +14,44 @@
 ActiveRecord::Schema.define(:version => 20130430073622) do
 
   create_table "participants", :force => true do |t|
-    t.integer  "tournament_id",                  :null => false
-    t.integer  "player_id",                      :null => false
-    t.integer  "place",         :default => 0,   :null => false
-    t.integer  "prestiges",     :default => 0,   :null => false
-    t.integer  "match_points",  :default => 0,   :null => false
-    t.integer  "matches",       :default => 0,   :null => false
-    t.float    "pmw",           :default => 0.0, :null => false
-    t.float    "omw",           :default => 0.0, :null => false
-    t.float    "pgw",           :default => 0.0, :null => false
-    t.float    "ogw",           :default => 0.0, :null => false
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.integer  "tournament_id",                    :null => false
+    t.integer  "player_id",                        :null => false
+    t.integer  "place",         :default => 0,     :null => false
+    t.integer  "prestiges",     :default => 0,     :null => false
+    t.integer  "match_points",  :default => 0,     :null => false
+    t.integer  "matches",       :default => 0,     :null => false
+    t.float    "pmw",           :default => 0.0,   :null => false
+    t.float    "omw",           :default => 0.0,   :null => false
+    t.float    "pgw",           :default => 0.0,   :null => false
+    t.float    "ogw",           :default => 0.0,   :null => false
+    t.boolean  "active",        :default => false, :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
   end
 
+  add_index "participants", ["active"], :name => "index_participants_on_active"
   add_index "participants", ["place"], :name => "index_participants_on_place"
   add_index "participants", ["tournament_id", "player_id"], :name => "index_participants_on_participant_attributes", :unique => true
   add_index "participants", ["tournament_id"], :name => "index_participants_on_tournament_id"
 
   create_table "players", :force => true do |t|
-    t.string   "username",                  :null => false
-    t.string   "email"
-    t.string   "name",                      :null => false
-    t.integer  "points",     :default => 0, :null => false
-    t.integer  "matches",    :default => 0, :null => false
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
+    t.string   "username",                       :null => false
+    t.string   "email",                          :null => false
+    t.string   "name",                           :null => false
+    t.integer  "prestiges",    :default => 0,    :null => false
+    t.integer  "match_points", :default => 0,    :null => false
+    t.integer  "matches",      :default => 0,    :null => false
+    t.integer  "tournaments",  :default => 0,    :null => false
+    t.boolean  "active",       :default => true, :null => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
   end
 
+  add_index "players", ["active"], :name => "index_players_on_active"
+  add_index "players", ["match_points"], :name => "index_players_on_match_points"
   add_index "players", ["matches"], :name => "index_players_on_matches"
-  add_index "players", ["points"], :name => "index_players_on_points"
+  add_index "players", ["prestiges"], :name => "index_players_on_prestiges"
+  add_index "players", ["tournaments"], :name => "index_players_on_tournaments"
   add_index "players", ["username"], :name => "index_players_on_username", :unique => true
 
   create_table "results", :force => true do |t|
@@ -91,8 +99,11 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   create_table "tournaments", :force => true do |t|
     t.string   "name",                                                 :null => false
     t.string   "state",      :default => "Tournament is not started.", :null => false
+    t.boolean  "active",     :default => true,                         :null => false
     t.datetime "created_at",                                           :null => false
     t.datetime "updated_at",                                           :null => false
   end
+
+  add_index "tournaments", ["active"], :name => "index_tournaments_on_active"
 
 end

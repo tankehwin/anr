@@ -1,18 +1,23 @@
+ <% unless @tournament.state == "Tournament is closed." %>
  | <%= link_to 'Edit Tournament Details', edit_tournament_path(@tournament) %>
+ <% end %>
 
 <h1>Tournament:
   <%= @tournament.name %>
 </h1>
+
+<p id="notice"><%= notice %></p>
 
 <p>
   <b>Status:</b>
   <%= @tournament.state %>
 </p>
 
-<p id="notice"><%= notice %></p>
-
-<%= link_to 'Schedule', new_round_path(:tournament => @tournament.id) if @rounds.empty? %>
-<%= link_to 'Schedule', new_round_path(:tournament => @tournament.id), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } unless @rounds.empty? %>
+<%= link_to 'Schedule', new_round_path(:tournament => @tournament.id) if @rounds.empty? and @tournament.state != "Tournament is closed." %>
+<%= link_to 'Schedule', new_round_path(:tournament => @tournament.id), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } unless @rounds.empty? or @tournament.state == "Tournament is closed." %>
+<% unless @rounds.empty? or @tournament.state == "Tournament is closed." %>
+| <%= link_to 'Close', edit_tournament_path(@tournament, :trigger => "Close"), data: { confirm: 'This action would terminate all unfinished rounds and propagate tournament score table into players score table. Do you want to proceed?' } %>
+<% end %>
 
 <h2>Rounds</h2>
 
@@ -61,14 +66,14 @@
     <td><%= number_with_precision participant.omw, :precision => 2 %></td>
     <td><%= number_with_precision participant.pgw, :precision => 2 %></td>
     <td><%= number_with_precision participant.ogw, :precision => 2 %></td>
-    <td><%= link_to 'Remove', participant, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <td><%= link_to 'Remove', participant, method: :delete, data: { confirm: 'Are you sure?' } unless @tournament.state == "Tournament is closed." %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
 
-<%= link_to 'Add a New Participant', new_participant_path(:tournament => @tournament.id) %>
+<%= link_to 'Add a New Participant', new_participant_path(:tournament => @tournament.id) unless @tournament.state == "Tournament is closed." %>
 
 <h2>Round schedule and results</h2>
 

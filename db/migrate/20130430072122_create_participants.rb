@@ -11,12 +11,14 @@ class CreateParticipants < ActiveRecord::Migration
       t.float :omw, :null => false, :default => 0
       t.float :pgw, :null => false, :default => 0
       t.float :ogw, :null => false, :default => 0
+      t.boolean :active, :null => false, :default => false
 
       t.timestamps
     end
     execute("ALTER SEQUENCE participants_id_seq RESTART 90210;")
     add_index :participants, :tournament_id
     add_index :participants, :place
+    add_index :participants, :active
     add_index :participants, [:tournament_id, :player_id], :name => "index_participants_on_participant_attributes", :unique => true
   end
 end

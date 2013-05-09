@@ -25,6 +25,7 @@ class RoundsController < ApplicationController
   # GET /rounds/new.json
   def new
     @tournament = Tournament.find params[:tournament]
+    redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
     @round = Round.calculate_round(@tournament)
     @rounds = Round.find_all_by_tournament_id @tournament.id
 
@@ -36,14 +37,12 @@ class RoundsController < ApplicationController
 
   # GET /rounds/1/edit
   def edit
-    @round = Round.find(params[:id])
+    @round = Round.find(params[:id], :include => :tournament)
+    redirect_to @round.tournament, notice: @round.tournament.state and return if @round.tournament.state == "Tournament is closed."
 
-    if params[:trigger] == "Manual"
-      @schedules = Schedule.calculate_schedule(@round)
-      @round = Round.find(params[:id])
-      @participants = Participant.find(:all, :conditions => ["tournament_id = ?", @round.tournament_id], :include => :player)
-    elsif params[:trigger] == "Modify"
-      @schedules = Schedule.find_all_by_round_id(params[:id], :include => :results)
+    if params[:trigger] == "Manual" or params[:trigger] == "Modify"
+      @schedules = Schedule.calculate_schedule(@round, params[:trigger])
+      @round = Round.find(params[:id]) if params[:trigger] == "Manual"
       @participants = Participant.find(:all, :conditions => ["tournament_id = ?", @round.tournament_id], :include => :player)
     elsif params[:trigger] == "Start" or params[:trigger] == "End"
       notice = Round.trigger(@round, params[:trigger])
@@ -73,11 +72,12 @@ class RoundsController < ApplicationController
   # PUT /rounds/1
   # PUT /rounds/1.json
   def update
-    @round = Round.find(params[:id])
+    @round = Round.find(params[:id], :include => :tournament)
+    redirect_to @round.tournament, notice: @round.tournament.state and return if @round.tournament.state == "Tournament is closed."
 
     respond_to do |format|
       if @round.update_attributes(params[:round])
-        @round = Round.update_table(@round)
+        @round.update_table
         format.html { redirect_to @round.tournament, notice: 'Schedule was successfully updated.' }
         format.json { head :no_content }
       else

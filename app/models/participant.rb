@@ -1,12 +1,12 @@
 class Participant < ActiveRecord::Base
-  attr_accessible :match_points, :matches, :ogw, :omw, :pgw, :pmw, :place, :player_id, :prestiges, :tournament_id
+  attr_accessible :active, :match_points, :matches, :ogw, :omw, :pgw, :pmw, :place, :player_id, :prestiges, :tournament_id
 
   belongs_to :player
   belongs_to :tournament
   has_many :results, :dependent => :destroy
 
   def self.bye_id(tournament_id)
-  	Participant.find_by_tournament_id_and_player_id(tournament_id, 1).id
+  	Participant.find_or_create_by_tournament_id_and_player_id(tournament_id, 1).id
   end
 
   def self.update_personal_points(result)
@@ -22,34 +22,45 @@ class Participant < ActiveRecord::Base
 
   def self.update_opponent_points(round)
   	participants = Participant.find(:all, :conditions => ["tournament_id = ? and id != ?", round.tournament_id, Participant.bye_id(round.tournament_id)])
-  	participants.each do |p|
-      opponents_result = Result.find(:all, :conditions => ["opponent_id = ? and participant_id != ?", p.id, Participant.bye_id(round.tournament_id)], :include => :participant)
+  	participants.each do |participant|
+      opponents_result = Result.find(:all, :conditions => ["opponent_id = ? and participant_id != ?", participant.id, Participant.bye_id(round.tournament_id)], :include => :participant)
       unless opponents_result.blank?
         omw = 0.0
         ogw = 0.0
-        opponents_result.each do |o|
-          omw = omw + o.participant.pmw
-          o.participant.pgw = (100.0 / 3.0) if o.participant.pgw < (100.0 / 3.0)
-          ogw = ogw + o.participant.pgw
+        opponents_result.each do |opponent|
+          omw = omw + opponent.participant.pmw
+          opponent.participant.pgw = (100.0 / 3.0) if opponent.participant.pgw < (100.0 / 3.0)
+          ogw = ogw + opponent.participant.pgw
         end
-    	  p.omw = omw / opponents_result.count.to_f
-        p.ogw = ogw / opponents_result.count.to_f
-        p.save
+    	  participant.omw = omw / opponents_result.count.to_f
+        participant.ogw = ogw / opponents_result.count.to_f
+        participant.save
       end
   	end
   end
 
   def self.reset(tournament_id)
     participants = Participant.find(:all, :conditions => ["tournament_id = ? and id != ?", tournament_id, Participant.bye_id(tournament_id)])
-    participants.each do |p|
-      p.prestiges = 0
-      p.match_points = 0
-      p.matches = 0
-      p.pmw = 0.0
-      p.omw = 0.0
-      p.pgw = 0.0
-      p.ogw = 0.0
-      p.save
+    participants.each do |participant|
+      participant.prestiges = 0
+      participant.match_points = 0
+      participant.matches = 0
+      participant.pmw = 0.0
+      participant.omw = 0.0
+      participant.pgw = 0.0
+      participant.ogw = 0.0
+      participant.save
+    end
+  end
+
+  def self.update_standings(round)
+    participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", round.tournament_id, 1])
+    participants = participants.sort_by{|participant| [participant.prestiges, participant.match_points, participant.omw, participant.pgw, participant.ogw]}.reverse
+    place = 1
+    participants.each do |participant|
+      participant.place = place
+      participant.save
+      place = place + 1
     end
   end
 end

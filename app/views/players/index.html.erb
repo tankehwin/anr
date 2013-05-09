@@ -1,12 +1,16 @@
 <h1>All Players Listings</h1>
 
+<p id="notice"><%= notice %></p>
+
 <table>
   <tr>
     <th>Hacking License</th>
     <th>Email</th>
     <th>Name</th>
-    <th>Points</th>
+    <th>Prestiges</th>
+    <th>Match Points</th>
     <th>Matches</th>
+    <th>Tournaments</th>
   </tr>
 
 <% @players.each do |player| %>
@@ -14,12 +18,15 @@
     <td><%= player.username %></td>
     <td><%= player.email %></td>
     <td><%= player.name %></td>
-    <td><%= player.points %></td>
+    <td><%= player.prestiges %></td>
+    <td><%= player.match_points %></td>
     <td><%= player.matches %></td>
+    <td><%= player.tournaments %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
 
-<%= link_to 'Add a New Player', new_player_path %>
+<%= link_to 'Add a New Player', new_player_path %> |
+<%= link_to 'Back', :back %>

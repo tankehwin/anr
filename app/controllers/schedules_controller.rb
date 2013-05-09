@@ -25,23 +25,21 @@ class SchedulesController < ApplicationController
   # GET /schedules/new.json
   def new
     @round = Round.find params[:round], :include => :tournament
-    @schedules = Schedule.calculate_schedule(@round)
+    redirect_to @round.tournament, notice: @round.tournament.state and return if @round.tournament.state == "Tournament is closed."
+    @schedules = Schedule.calculate_schedule(@round, params[:trigger])
 
     respond_to do |format|
       format.html { redirect_to @round.tournament }
-      format.json { render json: @schedules }
+      format.json { render json: [@round, @schedules] }
     end
   end
 
   # GET /schedules/1/edit
   def edit
-    @round = Round.find(params[:id])
+    @round = Round.find(params[:id], :include => :tournament)
+    redirect_to @round.tournament, notice: @round.tournament.state and return if @round.tournament.state == "Tournament is closed."
     @participants = Participant.find(:all, :conditions => ["tournament_id = ?", @round.tournament_id], :include => :player)
-    if params[:trigger] == "Manual"
-      @schedules = Schedule.calculate_schedule(@round)
-    elsif params[:trigger] == "Modify"
-      @schedules = Schedule.find_all_by_round_id(params[:id], :include => :results)
-    end
+    @schedules = Schedule.calculate_schedule(@round, params[:trigger])
   end
 
   # POST /schedules
@@ -64,6 +62,7 @@ class SchedulesController < ApplicationController
   # PUT /schedules/1.json
   def update
     @schedule = Schedule.find(params[:id], :include => :results)
+    redirect_to @schedule.round.tournament, notice: @schedule.round.tournament.state and return if @schedule.round.tournament.state == "Tournament is closed."
     params_schedule = Schedule.calculate_prestige(params[:schedule])
 
     respond_to do |format|

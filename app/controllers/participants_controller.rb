@@ -2,13 +2,14 @@ class ParticipantsController < ApplicationController
   # GET /participants/new
   # GET /participants/new.json
   def new
-    @participant = Participant.new
     @tournament = Tournament.find params[:tournament]
+    redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
+    @participant = Participant.new
     @players = Player.find(:all, :conditions => ["id != ?", 1])
 
     respond_to do |format|
       format.html # new.html.erb
-      format.json { render json: @participant }
+      format.json { render json: [@tournament, @participant, @players] }
     end
   end
 
@@ -18,6 +19,7 @@ class ParticipantsController < ApplicationController
     @current_participant = Participant.find_by_tournament_id_and_player_id(params[:participant][:tournament_id], params[:participant][:player_id])
     params[:participant][:place] = Participant.find_all_by_tournament_id(params[:participant][:tournament_id]).count unless @current_participant
     @participant = Participant.new(params[:participant])
+    redirect_to @participant.tournament, notice: @participant.tournament.state and return if @participant.tournament.state == "Tournament is closed."
 
     respond_to do |format|
       if @current_participant
@@ -38,7 +40,8 @@ class ParticipantsController < ApplicationController
   # DELETE /participants/1
   # DELETE /participants/1.json
   def destroy
-    @participant = Participant.find(params[:id])
+    @participant = Participant.find(params[:id], :include => :tournament)
+    redirect_to @participant.tournament, notice: @participant.tournament.state and return if @participant.tournament.state == "Tournament is closed."
     @participant.destroy
 
     respond_to do |format|
