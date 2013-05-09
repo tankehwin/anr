@@ -1,6 +1,7 @@
 class CreatePlayers < ActiveRecord::Migration
   def change
     create_table :players do |t|
+      t.integer :country_id, :null => false, :default => 122
       t.string :username, :null => false
       t.string :email, :null => false
       t.string :name, :null => false

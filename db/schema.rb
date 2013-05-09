@@ -13,6 +13,22 @@
 
 ActiveRecord::Schema.define(:version => 20130430073622) do
 
+  create_table "countries", :force => true do |t|
+    t.string   "iso",            :limit => 2,  :null => false
+    t.string   "printable_name", :limit => 80, :null => false
+    t.string   "name",           :limit => 80, :null => false
+    t.string   "iso3",           :limit => 3,  :null => false
+    t.integer  "numcode",                      :null => false
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
+  end
+
+  add_index "countries", ["iso"], :name => "index_countries_on_iso"
+  add_index "countries", ["iso3"], :name => "index_countries_on_iso3"
+  add_index "countries", ["name"], :name => "index_countries_on_name"
+  add_index "countries", ["numcode"], :name => "index_countries_on_numcode"
+  add_index "countries", ["printable_name"], :name => "index_countries_on_printable_name"
+
   create_table "participants", :force => true do |t|
     t.integer  "tournament_id",                    :null => false
     t.integer  "player_id",                        :null => false
@@ -35,6 +51,7 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   add_index "participants", ["tournament_id"], :name => "index_participants_on_tournament_id"
 
   create_table "players", :force => true do |t|
+    t.integer  "country_id",   :default => 122,  :null => false
     t.string   "username",                       :null => false
     t.string   "email",                          :null => false
     t.string   "name",                           :null => false
