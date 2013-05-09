@@ -2,7 +2,12 @@
   <h1>Tournament Navigator</h1>
 </div>
 
-<p id="notice"><%= notice %></p>
+<% if notice %>
+  <div class="alert alert-success">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <%= notice %>
+  </div>
+<% end %>
 
 <table class="table table-striped">
   <thead>

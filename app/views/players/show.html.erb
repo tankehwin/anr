@@ -1,7 +1,9 @@
-<div class="alert">
-  <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <%= notice %>
-</div>
+<% if notice %>
+  <div class="alert alert-success">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <%= notice %>
+  </div>
+<% end %>
 
 <p>
   <b>Name:</b>
