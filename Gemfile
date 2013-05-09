@@ -7,6 +7,8 @@ gem 'rails', '3.2.11'
 
 gem 'pg'
 gem 'heroku'
+gem 'jquery-rails'
+gem 'devise'
 
 
 # Gems used only for assets and not required
@@ -19,6 +21,10 @@ group :assets do
   # gem 'therubyracer', :platforms => :ruby
 
   gem 'uglifier', '>= 1.0.3'
+  
+  gem 'therubyracer'
+  gem 'less-rails'
+  gem 'twitter-bootstrap-rails'
 end
 
 gem 'jquery-rails'
