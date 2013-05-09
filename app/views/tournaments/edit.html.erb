@@ -1,5 +1,11 @@
-<h1>Editing Tournament Details</h1>
+<% content_for(:nav) do %>
+  <% unless @tournament.state == "Tournament is closed." %>
+    <li class="active"><%= link_to 'Edit Tournament Details', edit_tournament_path(@tournament) %></li>
+  <% end %>
+<% end %>
+
+<div class="page-header">
+  <h1>Edit Tournament Details</h1>
+</div>
 
 <%= render 'form' %>
-
-<%= link_to 'Back', :back %>

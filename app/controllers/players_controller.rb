@@ -3,6 +3,7 @@ class PlayersController < ApplicationController
   # GET /players.json
   def index
     @players = Player.find(:all, :conditions => ["id != ?", 1])
+    @title = "All Players Listings"
 
     respond_to do |format|
       format.html # index.html.erb

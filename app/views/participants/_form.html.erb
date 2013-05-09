@@ -1,6 +1,7 @@
-<%= form_for(@participant) do |f| %>
+<%= form_for @participant, :html => { :class => 'form-horizontal' } do |f| %>
   <% if @participant.errors.any? %>
-    <div id="error_explanation">
+    <div class="alert alert-block alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
       <h2><%= pluralize(@participant.errors.count, "error") %> prohibited this participant from being saved:</h2>
 
       <ul>
@@ -11,12 +12,16 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :player_id %><br />
-    <%= f.collection_select :player_id, @players, :id, :name, {}, {} %>
-    <%= f.hidden_field :tournament_id, value: params[:tournament] %>
+  <div class="control-group">
+    <%= f.label :player_id, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.collection_select :player_id, @players, :id, :name, {}, {:class => "collection_select"} %>
+      <%= f.hidden_field :tournament_id, value: params[:tournament] %>
+    </div>
   </div>
-  <div class="actions">
-    <%= f.submit "Add Participant" %>
+
+  <div class="form-actions">
+    <%= f.submit 'Add Participant', :class => 'btn btn-primary' %>
+    <%= link_to 'Cancel', @tournament, :class => 'btn' %>
   </div>
 <% end %>

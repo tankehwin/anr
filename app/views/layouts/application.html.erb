@@ -1,23 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Android:Netrunner Pairing System</title>
+  <title>Android:Netrunner Pairing App</title>
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<div class="container">
-  <div class="navbar navbar-inverse">
-    <div class="navbar-inner">
-      <ul class="nav">
-        <li><%= link_to 'Home', root_path %></li>
-        <li><%= link_to 'Players', players_path %></li>
-        <%= yield(:nav) %>
-      </ul>
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <%= link_to image_tag("logo.png", :title => "Android:Netrunner Pairing App"), root_path, :class => 'brand' %>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <% if @title == "Tournament Navigator" %>
+          <li class="active"><%= link_to 'Home', root_path %></li>
+          <% else %>
+          <li><%= link_to 'Home', root_path %></li>
+          <% end %>
+          <% if @title == "All Players Listings" %>
+          <li class="active"><%= link_to 'Players', players_path %></li>
+          <% else %>
+          <li><%= link_to 'Players', players_path %></li>
+          <% end %>
+          <%= yield(:nav) %>
+        </ul>
+      </div>
     </div>
   </div>
+</div>
+<div class="container">
   <%= yield %>
 </div>
 </body>

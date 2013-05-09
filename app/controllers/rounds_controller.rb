@@ -39,17 +39,10 @@ class RoundsController < ApplicationController
   def edit
     @round = Round.find(params[:id], :include => :tournament)
     redirect_to @round.tournament, notice: @round.tournament.state and return if @round.tournament.state == "Tournament is closed."
-
-    if params[:trigger] == "Manual" or params[:trigger] == "Modify"
-      @schedules = Schedule.calculate_schedule(@round, params[:trigger])
-      @round = Round.find(params[:id]) if params[:trigger] == "Manual"
-      @participants = Participant.find(:all, :conditions => ["tournament_id = ?", @round.tournament_id], :include => :player)
-    elsif params[:trigger] == "Start" or params[:trigger] == "End"
-      notice = Round.trigger(@round, params[:trigger])
-      respond_to do |format|
-        format.html { redirect_to @round.tournament, notice: notice }
-        format.json { render json: @round }
-      end
+    notice = Round.trigger(@round, params[:trigger])
+    respond_to do |format|
+      format.html { redirect_to @round.tournament, notice: notice }
+      format.json { render json: @round }
     end
   end
 

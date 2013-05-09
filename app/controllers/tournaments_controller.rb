@@ -3,6 +3,7 @@ class TournamentsController < ApplicationController
   # GET /tournaments.json
   def index
     @tournaments = Tournament.all
+    @title = "Tournament Navigator"
 
     respond_to do |format|
       format.html # index.html.erb

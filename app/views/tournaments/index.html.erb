@@ -14,11 +14,11 @@
     <tr>
       <th>Tournament Name</th>
       <th>Status</th>
-      <th></th>
-      <th></th>
+      <th colspan="2">Action</th>
     </tr>
   </thead>
   <tbody>
+
     <% @tournaments.each do |tournament| %>
       <tr>
         <td><%= link_to tournament.name, tournament %></td>
@@ -29,7 +29,5 @@
     <% end %>
   </tbody>
 </table>
-
-<br />
 
 <%= link_to 'Add a New Tournament', new_tournament_path, :class => 'btn btn-primary' %>

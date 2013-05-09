@@ -1,6 +1,7 @@
-<%= form_for(@schedule) do |f| %>
+<%= form_for @schedule, :html => { :class => 'form-horizontal' } do |f| %>
   <% if @schedule.errors.any? %>
-    <div id="error_explanation">
+    <div class="alert alert-block alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
       <h2><%= pluralize(@schedule.errors.count, "error") %> prohibited this schedule from being saved:</h2>
 
       <ul>
@@ -12,17 +13,22 @@
   <% end %>
 
   <%= f.fields_for :results do |r| %>
-    <b><%= r.object.participant.player.name %>:</b>
-    <div class="field">
-      <%= r.label :corp_match_points, "Match Points as Corporation" %><br />
-      <%= r.number_field :corp_match_points %>
+    <div class="control-group">
+      <%= r.label :corp_match_points, r.object.participant.player.name + "'s Match Points as Corporation", :class => 'control-label' %>
+      <div class="controls">
+        <%= r.number_field :corp_match_points, :class => 'number_field' %>
+      </div>
     </div>
-    <div class="field">
-      <%= r.label :runner_match_points, "Match Points as Runner" %><br />
-      <%= r.number_field :runner_match_points %>
+    <div class="control-group">
+      <%= r.label :runner_match_points, r.object.participant.player.name + "'s Match Points as Runner", :class => 'control-label' %>
+      <div class="controls">
+        <%= r.number_field :runner_match_points, :class => 'number_field' %>
+      </div>
     </div>
   <% end %>
-  <div class="actions">
-    <%= f.submit "Submit" %>
+
+  <div class="form-actions">
+    <%= f.submit 'Submit', :class => 'btn btn-primary' %>
+    <%= link_to 'Cancel', @tournament, :class => 'btn' %>
   </div>
 <% end %>

@@ -22,6 +22,7 @@
     </tr>
   </thead>
   <tbody>
+    
     <% @players.each do |player| %>
       <tr>
         <td><%= player.username %></td>
@@ -35,7 +36,5 @@
     <% end %>
   </tbody>
 </table>
-
-<br />
 
 <%= link_to 'Add a New Player', new_player_path, :class => 'btn btn-primary' %>
