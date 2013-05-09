@@ -1,25 +1,30 @@
-<h1>Tournament Navigator</h1>
+<div class="page-header">
+  <h1>Tournament Navigator</h1>
+</div>
 
 <p id="notice"><%= notice %></p>
 
-<table>
-  <tr>
-    <th>Tournament Name</th>
-    <th>Status</th>
-    <th></th>
-    <th></th>
-  </tr>
-
-<% @tournaments.each do |tournament| %>
-  <tr>
-    <td><%= link_to tournament.name, tournament %></td>
-    <td><%= tournament.state %></td>
-    <td><%= link_to 'Edit', edit_tournament_path(tournament) unless tournament.state == "Tournament is closed." %></td>
-    <td><%= link_to 'Delete', tournament, method: :delete, data: { confirm: 'Are you sure?' } unless tournament.state == "Tournament is closed." %></td>
-  </tr>
-<% end %>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Tournament Name</th>
+      <th>Status</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @tournaments.each do |tournament| %>
+      <tr>
+        <td><%= link_to tournament.name, tournament %></td>
+        <td><%= tournament.state %></td>
+        <td><%= link_to 'Edit', edit_tournament_path(tournament), :class => 'btn btn-mini' unless tournament.state == "Tournament is closed." %></td>
+        <td><%= link_to 'Delete', tournament, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' unless tournament.state == "Tournament is closed." %></td>
+      </tr>
+    <% end %>
+  </tbody>
 </table>
 
 <br />
 
-<%= link_to 'Add a New Tournament', new_tournament_path %>
+<%= link_to 'Add a New Tournament', new_tournament_path, :class => 'btn btn-primary' %>

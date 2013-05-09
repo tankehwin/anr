@@ -5,13 +5,20 @@
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-
-<%= link_to 'Home', root_path %> |
-<%= link_to 'Players', players_path %>
-
-<%= yield %>
-
+<div class="container">
+  <div class="navbar navbar-inverse">
+    <div class="navbar-inner">
+      <ul class="nav">
+        <li><%= link_to 'Home', root_path %></li>
+        <li><%= link_to 'Players', players_path %></li>
+        <%= yield(:nav) %>
+      </ul>
+    </div>
+  </div>
+  <%= yield %>
+</div>
 </body>
 </html>

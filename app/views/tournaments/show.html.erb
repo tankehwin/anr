@@ -1,6 +1,8 @@
- <% unless @tournament.state == "Tournament is closed." %>
- | <%= link_to 'Edit Tournament Details', edit_tournament_path(@tournament) %>
- <% end %>
+<% content_for(:nav) do %>
+  <% unless @tournament.state == "Tournament is closed." %>
+    <li><%= link_to 'Edit Tournament Details', edit_tournament_path(@tournament) %></li>
+  <% end %>
+<% end %>
 
 <h1>Tournament:
   <%= @tournament.name %>
@@ -66,7 +68,7 @@
     <td><%= number_with_precision participant.omw, :precision => 2 %></td>
     <td><%= number_with_precision participant.pgw, :precision => 2 %></td>
     <td><%= number_with_precision participant.ogw, :precision => 2 %></td>
-    <td><%= link_to 'Remove', participant, method: :delete, data: { confirm: 'Are you sure?' } unless @tournament.state == "Tournament is closed." %></td>
+    <td><%= link_to 'Remove', participant, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-danger' unless @tournament.state == "Tournament is closed." %></td>
   </tr>
 <% end %>
 </table>

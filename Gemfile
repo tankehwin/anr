@@ -6,7 +6,6 @@ gem 'rails', '3.2.11'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'pg'
-gem 'heroku'
 gem 'jquery-rails'
 gem 'devise'
 
@@ -22,9 +21,9 @@ group :assets do
 
   gem 'uglifier', '>= 1.0.3'
   
-  gem 'therubyracer'
-  gem 'less-rails'
   gem 'twitter-bootstrap-rails'
+  gem 'less-rails'
+  gem 'therubyracer'
 end
 
 gem 'jquery-rails'
