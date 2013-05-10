@@ -1,7 +1,7 @@
 class Player < ActiveRecord::Base
   include ActiveModel::Validations
-  attr_accessible :active, :country_id, :email, :match_points, :matches, :name, :prestiges, :tournaments, :username
-  attr_accessible :active, :country_id, :email, :match_points, :matches, :name, :prestiges, :tournaments, :username, :as => :seed
+  attr_accessible :active, :country_id, :email, :match_points, :matches, :name, :prestiges, :rating, :tournaments, :username
+  attr_accessible :active, :country_id, :email, :match_points, :matches, :name, :prestiges, :rating, :tournaments, :username, :as => :seed
 
   belongs_to :country
   has_many :participants
@@ -16,6 +16,7 @@ class Player < ActiveRecord::Base
   	  participant.player.match_points = participants.map(&:match_points).sum
   	  participant.player.matches = participants.map(&:matches).sum
   	  participant.player.tournaments = participants.count
+      participant.player.rating = participant.rating
   	  participant.player.save
     end
   end

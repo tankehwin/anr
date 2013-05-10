@@ -17,8 +17,8 @@ class ParticipantsController < ApplicationController
   # POST /participants.json
   def create
     @current_participant = Participant.find_by_tournament_id_and_player_id(params[:participant][:tournament_id], params[:participant][:player_id])
-    params[:participant][:place] = Participant.find_all_by_tournament_id(params[:participant][:tournament_id]).count unless @current_participant
-    @participant = Participant.new(params[:participant])
+    params_participant = Participant.initialize_rating(params[:participant]) unless @current_participant
+    @participant = Participant.new(params_participant)
     redirect_to @participant.tournament, notice: @participant.tournament.state and return if @participant.tournament.state == "Tournament is closed."
 
     respond_to do |format|

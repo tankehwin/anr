@@ -1,5 +1,5 @@
 class Participant < ActiveRecord::Base
-  attr_accessible :active, :match_points, :matches, :ogw, :omw, :pgw, :pmw, :place, :player_id, :prestiges, :tournament_id
+  attr_accessible :active, :match_points, :matches, :ogw, :omw, :pgw, :pmw, :place, :player_id, :prestiges, :rating, :rating_scores, :tournament_id
 
   belongs_to :player
   belongs_to :tournament
@@ -7,6 +7,8 @@ class Participant < ActiveRecord::Base
 
   validates :tournament_id, :presence => true, :numericality => { :only_integer => true }
   validates :player_id, :presence => true, :uniqueness => { :scope => :tournament_id, :message => "Player was already added." }, :numericality => { :only_integer => true }
+
+  after_create :update_rating_weight
 
   def self.bye_id(tournament_id)
   	Participant.find_or_create_by_tournament_id_and_player_id(tournament_id, 1).id
@@ -20,6 +22,7 @@ class Participant < ActiveRecord::Base
   	result.participant.pmw = result.participant.prestiges.to_f / result.participant.matches.to_f / 6.0 * 100.0
   	result.participant.pmw = (100.0 / 3.0) if result.participant.pmw < (100.0 / 3.0)
   	result.participant.pgw = result.participant.match_points.to_f / result.participant.matches.to_f / 20.0 * 100.0
+    result.participant.rating = result.participant.rating + (result.tournament.rating_weight * result.rating_score)
   	result.participant.save
   end
 
@@ -74,5 +77,19 @@ class Participant < ActiveRecord::Base
       flag = true if result.opponent_id == participant2.id
     end
     flag
+  end
+
+  private
+
+  def self.initialize_rating(participant)
+    participant[:place] = Participant.find_all_by_tournament_id(participant[:tournament_id]).count
+    participant[:rating] = Player.find(participant[:player_id]).rating
+    participant
+  end
+
+  def update_rating_weight
+    participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", self.tournament_id, 1])
+    self.tournament.rating_weight = Math.sqrt(participants.count)
+    self.tournament.save
   end
 end

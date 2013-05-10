@@ -8,6 +8,7 @@ class CreateResults < ActiveRecord::Migration
       t.integer :prestige
       t.integer :corp_match_points
       t.integer :runner_match_points
+      t.float   :rating_score, :null => false, :default => 0.0
 
       t.timestamps
     end

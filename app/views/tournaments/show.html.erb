@@ -64,6 +64,7 @@
       <th>OMW%</th>
       <th>PGW%</th>
       <th>OGW%</th>
+      <th>Rating</th>
       <th>Action</th>
     </tr>
   </thead>
@@ -79,6 +80,7 @@
         <td><%= number_with_precision participant.omw, :precision => 2 %></td>
         <td><%= number_with_precision participant.pgw, :precision => 2 %></td>
         <td><%= number_with_precision participant.ogw, :precision => 2 %></td>
+        <td><%= participant.rating.to_i %></td>
         <td>
           <%= link_to 'Remove', participant, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' unless @tournament.state == "Tournament is closed." %>
         </td>

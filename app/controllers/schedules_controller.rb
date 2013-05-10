@@ -24,7 +24,7 @@ class SchedulesController < ApplicationController
   def update
     @schedule = Schedule.find(params[:id], :include => :results)
     redirect_to @schedule.round.tournament, notice: @schedule.round.tournament.state and return if @schedule.round.tournament.state == "Tournament is closed."
-    params_schedule = Schedule.calculate_prestige(params[:schedule])
+    params_schedule = Schedule.calculate_prestige(params[:schedule], @schedule)
 
     respond_to do |format|
       if @schedule.update_attributes(params_schedule)

@@ -127,7 +127,7 @@ class Schedule < ActiveRecord::Base
     end
   end
 
-  def self.calculate_prestige(schedule)
+  def self.calculate_prestige(schedule, current_schedule)
     schedule[:results_attributes][:"0"][:prestige] = schedule[:results_attributes][:"1"][:prestige] = 0
 
     if schedule[:results_attributes][:"0"][:corp_match_points].to_i == 10
@@ -160,6 +160,11 @@ class Schedule < ActiveRecord::Base
       schedule[:results_attributes][:"0"][:prestige] = schedule[:results_attributes][:"0"][:prestige] + 1
       schedule[:results_attributes][:"1"][:prestige] = schedule[:results_attributes][:"1"][:prestige] + 1
     end
+
+    rating_0 = Participant.find(current_schedule.results.first.participant_id).rating
+    rating_1 = Participant.find(current_schedule.results.last.participant_id).rating
+    schedule[:results_attributes][:"0"][:rating_score] = schedule[:results_attributes][:"0"][:prestige]/6 - (1/(1 + 10**((rating_0 - rating_1)/400)))
+    schedule[:results_attributes][:"1"][:rating_score] = schedule[:results_attributes][:"1"][:prestige]/6 - (1/(1 + 10**((rating_1 - rating_0)/400)))
 
     schedule
   end
