@@ -10,7 +10,6 @@ class CreateRounds < ActiveRecord::Migration
 
       t.timestamps
     end
-    execute("ALTER SEQUENCE rounds_id_seq RESTART 90210;")
     add_index :rounds, :tournament_id
     add_index :rounds, [:tournament_id, :number], :name => "index_rounds_on_round_attributes", :unique => true
   end

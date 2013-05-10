@@ -15,7 +15,7 @@ Anr::Application.routes.draw do
   resources :tournaments
 
 
-  resources :players, :only => [:index, :new, :create]
+  resources :players
 
 
   # The priority is based upon order of creation:

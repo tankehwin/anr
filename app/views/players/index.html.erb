@@ -19,6 +19,7 @@
       <th>Match Points</th>
       <th>Matches</th>
       <th>Tournaments</th>
+      <th>Action</th>
     </tr>
   </thead>
   <tbody>
@@ -32,6 +33,10 @@
         <td><%= player.match_points %></td>
         <td><%= player.matches %></td>
         <td><%= player.tournaments %></td>
+        <td>
+          <%= link_to 'Edit', edit_player_path(player), :class => 'btn btn-mini' %>
+          <%= link_to 'Delete', player, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' %>
+        </td>
       </tr>
     <% end %>
   </tbody>

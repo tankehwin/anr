@@ -13,7 +13,6 @@ class CreatePlayers < ActiveRecord::Migration
 
       t.timestamps
     end
-    execute("ALTER SEQUENCE players_id_seq RESTART 90210;")
     add_index :players, :username, :unique => true
     add_index :players, :prestiges
     add_index :players, :match_points

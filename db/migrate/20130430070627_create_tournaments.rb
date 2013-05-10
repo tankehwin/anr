@@ -7,7 +7,6 @@ class CreateTournaments < ActiveRecord::Migration
 
       t.timestamps
     end
-    execute("ALTER SEQUENCE tournaments_id_seq RESTART 90210;")
     add_index :tournaments, :active
   end
 end

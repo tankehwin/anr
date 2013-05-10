@@ -7,7 +7,7 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 puts "Seeding.."
-Player.create({:id => 1, :username => "MY00000", :email => "admin@sentulasia.com", :name => "Bye"}, :as => :seed)
+Player.create({:username => "MY00000", :email => "admin@sentulasia.com", :name => "Bye"}, :as => :seed)
 
 Country.create({:iso => 'AF', :printable_name => 'AFGHANISTAN', :name => 'Afghanistan', :iso3 => 'AFG', :numcode => '004'}, :as => :seed)
 Country.create({:iso => 'AL', :printable_name => 'ALBANIA', :name => 'Albania', :iso3 => 'ALB', :numcode => '008'}, :as => :seed)

@@ -15,7 +15,6 @@ class CreateParticipants < ActiveRecord::Migration
 
       t.timestamps
     end
-    execute("ALTER SEQUENCE participants_id_seq RESTART 90210;")
     add_index :participants, :tournament_id
     add_index :participants, :place
     add_index :participants, :active

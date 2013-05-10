@@ -6,7 +6,6 @@ class CreateSchedules < ActiveRecord::Migration
 
       t.timestamps
     end
-    execute("ALTER SEQUENCE schedules_id_seq RESTART 90210;")
     add_index :schedules, :round_id
     add_index :schedules, [:round_id, :table], :name => "index_schedules_on_schedule_attributes", :unique => true
   end
