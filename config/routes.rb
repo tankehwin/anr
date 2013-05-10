@@ -1,5 +1,7 @@
 Anr::Application.routes.draw do
   # resources :pages, :only => :index
+
+  
   get "timer" => "pages#timer", :as => :timer
 
 
