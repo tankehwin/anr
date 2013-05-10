@@ -11,7 +11,7 @@ class Notifier < ActionMailer::Base
     @user = user
     @password_reset_url = "http://#{host}/password_resets/" + @user.perishable_token + "/edit"
     mail(:to => user.email, :subject => "[A:NR Scheduler] Password Reset Instructions") do |format|
-      format.text { render :text => "A request to reset your password has been made.\r\nIf you did not make this request, simply ignore this email.\r\nIf you did make this request just click the link below:\r\n\r\n" + @password_reset_url + "\r\n\r\nIf the above URL does not work try copying and pasting it into your browser. If you continue to have problem please feel free to contact us.\r\n\r\nLove,\r\nA:NR Scheduler Team\r\n\r\n--------------------------------------------------------------\r\n\r\nThis message was intended for " + @user.email + "\r\nIf you are not the above recipient, kindly ignore this email and please accept our apologies.\r\n\r\nTableFour.Us is all about good food and great company!" }
+      format.text { render :text => "A request to reset your password has been made.\r\nIf you did not make this request, simply ignore this email.\r\nIf you did make this request just click the link below:\r\n\r\n" + @password_reset_url + "\r\n\r\nIf the above URL does not work try copying and pasting it into your browser. If you continue to have problem please feel free to contact us.\r\n\r\nLove,\r\nA:NR Scheduler Team\r\n\r\n--------------------------------------------------------------\r\n\r\nThis message was intended for " + @user.email + "\r\nIf you are not the above recipient, kindly ignore this email and please accept our apologies." }
       format.html { render :text => "<style>a:link,a:visited{color:#931100;text-decoration:none;}a:hover,a:active{color:#931100;text-decoration:underline;}</style>
         <div style='text-align:center;background-color:#a63c2e;margin:0px;padding:0px;width:100%;'><div style='height:10px;'></div>
         
@@ -29,13 +29,11 @@ class Notifier < ActionMailer::Base
         <p style='text-align:left;font-size:12pt;color:#505050'>Till then, have a great meal!</p>
         
         <p style='text-align:left;font-size:12pt;color:#505050'>Love,<br />
-        Maitre'd, <a style='color:#505050;text-decoration:none;'>TableFour.Us</a></p></div>
+        Maitre'd, <a style='color:#505050;text-decoration:none;'>A:NR Scheduler</a></p></div>
         
         <div style='width:520px;margin-left:auto;margin-right:auto;'>
         <p style='text-align:left;color:#fff'>This message was intended for <a style='color:#fff;text-decoration:none;'>" + @user.email + "</a><br />
         If you are not the above recipient, kindly ignore this email and please accept our apologies.</p>
-        
-        <p style='text-align:left;color:#fff'><a style='color:#fff;text-decoration:none;'>TableFour.Us</a> is all about good food and great company!</p>
         <div style='height:5px;'></div></div></div>"
       }
     end
