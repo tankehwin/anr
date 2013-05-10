@@ -9,12 +9,19 @@ class Tournament < ActiveRecord::Base
 
   after_create :seed_bye
 
-  private
-
   def closed
     self.state = "Tournament is closed."
     self.save
   end
+
+  def activate_points
+    self.participants.each do |participant|
+      participant.active = true
+      participant.save
+    end
+  end
+
+  private
 
   def self.trigger(tournament, trigger)
     tournament.closed
@@ -24,13 +31,6 @@ class Tournament < ActiveRecord::Base
     tournament.activate_points
     Player.update_points(tournament)
     "Tournament has been closed."
-  end
-
-  def activate_points
-    self.participants.each do |participant|
-      participant.active = true
-      participant.save
-    end
   end
 
   def seed_bye
