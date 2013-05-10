@@ -3,9 +3,6 @@ Anr::Application.routes.draw do
   get "timer" => "pages#timer", :as => :timer
 
 
-  resources :results, :only => :edit
-
-
   resources :schedules, :only => [:new, :edit, :update]
 
 

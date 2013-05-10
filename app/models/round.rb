@@ -6,6 +6,8 @@ class Round < ActiveRecord::Base
 
   accepts_nested_attributes_for :schedules
 
+  validates_associated :schedules
+
   def ready
     self.start = nil
     self.state = "Ready"

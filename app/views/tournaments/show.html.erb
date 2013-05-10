@@ -113,8 +113,8 @@
       <tr>
         <td colspan ="10"><%= "Round " + round.number.to_s %></td>
         <td>
-          <%= link_to 'Manual Schedule', edit_schedule_path(round, :trigger => "Manual"), :class => 'btn btn-mini' if round.state == "Not Scheduled" %>
-          <%= link_to 'Modify Schedule', edit_schedule_path(round, :trigger => "Modify"), :class => 'btn btn-mini' if round.state == "Ready" or round.state == "In Progress" %>
+          <%= link_to 'Manual Schedule', edit_round_path(round, :trigger => "Manual"), :class => 'btn btn-mini' if round.state == "Not Scheduled" %>
+          <%= link_to 'Modify Schedule', edit_round_path(round, :trigger => "Modify"), :class => 'btn btn-mini' if round.state == "Ready" or round.state == "In Progress" %>
         </td>
       </tr>
       <% round.schedules.each do |schedule| %>
@@ -130,7 +130,7 @@
             <td><%= result.runner_match_points %></td>
           <% end %>
           <td>
-            <%= link_to 'Update Result', edit_result_path(schedule, :tournament => @tournament.id), :class => 'btn btn-mini' if round.state == "In Progress" %>
+            <%= link_to 'Update Result', edit_schedule_path(schedule, :tournament => @tournament.id), :class => 'btn btn-mini' if round.state == "In Progress" %>
           </td>
         </tr>
       <% end %>

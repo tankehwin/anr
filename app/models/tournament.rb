@@ -5,6 +5,8 @@ class Tournament < ActiveRecord::Base
   has_many :results
   has_many :rounds, :dependent => :destroy
 
+  validates :name, :presence => true, :length => { :in => 4..140 }
+
   after_create :seed_bye
 
   private

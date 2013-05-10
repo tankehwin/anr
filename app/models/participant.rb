@@ -5,6 +5,9 @@ class Participant < ActiveRecord::Base
   belongs_to :tournament
   has_many :results, :dependent => :destroy
 
+  validates :tournament_id, :presence => true, :numericality => { :only_integer => true }
+  validates :player_id, :presence => true, :uniqueness => { :scope => :tournament_id, :message => "Player was already added." }, :numericality => { :only_integer => true }
+
   def self.bye_id(tournament_id)
   	Participant.find_or_create_by_tournament_id_and_player_id(tournament_id, 1).id
   end

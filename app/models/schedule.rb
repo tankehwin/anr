@@ -6,6 +6,9 @@ class Schedule < ActiveRecord::Base
 
   accepts_nested_attributes_for :results
 
+  validates_associated :results
+  validates :table, :presence => true
+
   def self.calculate_schedule(round, params_trigger)
     if params_trigger == "Schedule" or params_trigger == "Manual"
       round.schedules.each do |schedule|

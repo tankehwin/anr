@@ -1,9 +1,13 @@
 class Player < ActiveRecord::Base
+  include ActiveModel::Validations
   attr_accessible :active, :country_id, :email, :match_points, :matches, :name, :prestiges, :tournaments, :username
   attr_accessible :active, :country_id, :email, :id, :match_points, :matches, :name, :prestiges, :tournaments, :username, :as => :seed
 
   belongs_to :country
   has_many :participants
+
+  validates :email, :presence => true, :uniqueness => true, :email => true
+  validates :name, :presence => true, :length => { :in => 2..140 }
 
   def self.update_points(tournament)
   	tournament.participants.each do |participant|
