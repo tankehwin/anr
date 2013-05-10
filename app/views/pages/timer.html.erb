@@ -1,0 +1,20 @@
+<% content_for(:head) do %>
+  <style type="text/css">
+    #defaultCountdown { width: 240px; height: 45px; }
+  </style>
+  <script type="text/javascript">
+    $(function () {
+      var austDay = new Date();
+      austDay = new Date(austDay.getFullYear() + 1, 1 - 1, 26);
+      $('#defaultCountdown').countdown({until: '+65m'});
+      $('#year').text(austDay.getFullYear());
+    });
+  </script>
+<% end %>
+
+<div class="page-header">
+  <h1>Timer</h1>
+</div>
+
+<div id="defaultCountdown"></div>
+<span id="year" style="color:#fff"></span>
