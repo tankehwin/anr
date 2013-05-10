@@ -2,6 +2,11 @@
 .hasCountdown {
 	border: 1px solid #ccc;
 	background-color: #eee;
+	-moz-border-radius:	   10px;
+	-webkit-border-radius: 10px;
+	-o-border-radius:      10px;
+	-khtml-border-radius:  10px;
+	border-radius:		   10px;
 }
 .countdown_rtl {
 	direction: rtl;
@@ -39,11 +44,14 @@
 .countdown_section {
 	display: block;
 	float: left;
-	font-size: 75%;
+	font-size: 15pt;
 	text-align: center;
+	font-family: "Courier New", "Lucida Console";
+	color: #444;
+	margin-top: 75px;
 }
 .countdown_amount {
-	font-size: 200%;
+	font-size: 100pt;
 }
 .countdown_descr {
 	display: block;
