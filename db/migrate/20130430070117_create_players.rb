@@ -13,7 +13,6 @@ class CreatePlayers < ActiveRecord::Migration
 
       t.timestamps
     end
-    Player.create({:id => 1, :username => "MY00000", :email => "admin@sentulasia.com", :name => "Bye"}, :as => :seed)
     execute("ALTER SEQUENCE players_id_seq RESTART 90210;")
     add_index :players, :username, :unique => true
     add_index :players, :prestiges
