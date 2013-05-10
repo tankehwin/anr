@@ -163,8 +163,14 @@ class Schedule < ActiveRecord::Base
 
     rating_0 = Participant.find(current_schedule.results.first.participant_id).rating
     rating_1 = Participant.find(current_schedule.results.last.participant_id).rating
-    schedule[:results_attributes][:"0"][:rating_score] = schedule[:results_attributes][:"0"][:prestige]/6 - (1/(1 + 10**((rating_0 - rating_1)/400)))
-    schedule[:results_attributes][:"1"][:rating_score] = schedule[:results_attributes][:"1"][:prestige]/6 - (1/(1 + 10**((rating_1 - rating_0)/400)))
+    score_0 = schedule[:results_attributes][:"0"][:prestige]/6 - (1/(1 + 10**((rating_0 - rating_1)/400)))
+    score_1 = schedule[:results_attributes][:"1"][:prestige]/6 - (1/(1 + 10**((rating_1 - rating_0)/400)))
+    score_0 = score_0 / 20 if score_0 < 0
+    score_1 = score_1 / 20 if score_1 < 0
+    score_0 = score_0 * 20 if score_0 > 0
+    score_1 = score_1 * 20 if score_1 > 0
+    schedule[:results_attributes][:"0"][:rating_score] = score_0
+    schedule[:results_attributes][:"1"][:rating_score] = score_1
 
     schedule
   end
