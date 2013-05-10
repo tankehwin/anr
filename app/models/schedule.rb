@@ -14,7 +14,7 @@ class Schedule < ActiveRecord::Base
       round.schedules.each do |schedule|
         schedule.destroy
       end
-    	participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", round.tournament_id, 1])
+    	participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", round.tournament_id, 1]).sort_by(&:place)
     	participants = Schedule.sort_pair(participants, round)
       Schedule.create_schedule(round, participants)
       round.ready
@@ -28,10 +28,74 @@ class Schedule < ActiveRecord::Base
     if round.number == 1
       participants.shuffle
     else
-      if round.number > 2
+      pair = true
+      counter = 0
+      participants.each do
+        if pair == true
+          pair = false
+          counter = counter + 1
+        elsif pair == false
+          c = counter + 1
+          while participants[counter] and Participant.check_past_encounter(participants[counter - 1], participants[counter]) do
+            p = participants[counter]
+            participants[counter] = participants[c]
+            participants[c] = p
+            c = c + 1
+          end
+          pair = true
+          counter = counter + 1
+        end
       end
-      participants
+      if participants.count.even?
+        pair = true
+        counter = -1
+        participants.reverse.each do
+          if pair == true
+            pair = false
+            counter = counter - 1
+          elsif pair == false
+            c = counter - 1
+            while participants[counter] and Participant.check_past_encounter(participants[counter + 1], participants[counter]) do
+              p = participants[counter]
+              participants[counter] = participants[c]
+              participants[c] = p
+              c = c - 1
+            end
+            pair = true
+            counter = counter - 1
+          end
+        end
+      elsif participants.count.odd?
+        pair = true
+        counter = 0
+        participants.reverse.each do
+          if pair == true
+            pair = false
+            counter = counter - 1
+          elsif pair == false
+            c = counter - 1
+            if counter == -1
+              while participants[counter] and Participant.check_past_encounter(Participant.find_by_tournament_id_and_player_id(participants[counter].tournament_id, 1), participants[counter]) do
+                p = participants[counter]
+                participants[counter] = participants[c]
+                participants[c] = p
+                c = c - 1
+              end
+            else
+              while participants[counter] and Participant.check_past_encounter(participants[counter + 1], participants[counter]) do
+                p = participants[counter]
+                participants[counter] = participants[c]
+                participants[c] = p
+                c = c - 1
+              end
+            end
+            pair = true
+            counter = counter - 1
+          end
+        end
+      end
     end
+    participants
   end
 
   def self.create_schedule(round, participants)

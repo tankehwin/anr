@@ -66,4 +66,13 @@ class Participant < ActiveRecord::Base
       place = place + 1
     end
   end
+
+  def self.check_past_encounter(participant1, participant2)
+    flag = false
+    results = Result.find_all_by_tournament_id_and_participant_id(participant1.tournament_id, participant1.id)
+    results.each do |result|
+      flag = true if result.opponent_id == participant2.id
+    end
+    flag
+  end
 end
