@@ -221,12 +221,12 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   end
 
   create_table "tournaments", :force => true do |t|
-    t.string   "name",                                                    :null => false
-    t.string   "state",         :default => "Tournament is not started.", :null => false
-    t.boolean  "active",        :default => true,                         :null => false
-    t.integer  "rating_weight", :default => 32,                           :null => false
-    t.datetime "created_at",                                              :null => false
-    t.datetime "updated_at",                                              :null => false
+    t.string   "name",                                                        :null => false
+    t.string   "state",             :default => "Tournament is not started.", :null => false
+    t.boolean  "active",            :default => true,                         :null => false
+    t.integer  "rating_multiplier", :default => 1,                            :null => false
+    t.datetime "created_at",                                                  :null => false
+    t.datetime "updated_at",                                                  :null => false
   end
 
   add_index "tournaments", ["active"], :name => "index_tournaments_on_active"

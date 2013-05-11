@@ -12,6 +12,8 @@
 <dl class="dl-horizontal">
   <dt><strong>Status:</strong></dt>
   <dd><%= @tournament.state %></dd>
+  <dt><strong>Multiplier:</strong></dt>
+  <dd><%= @tournament.rating_multiplier %></dd>
 </dl>
 
 <div class="form-actions">
@@ -80,7 +82,7 @@
         <td><%= number_with_precision participant.omw, :precision => 2 %></td>
         <td><%= number_with_precision participant.pgw, :precision => 2 %></td>
         <td><%= number_with_precision participant.ogw, :precision => 2 %></td>
-        <td><%= participant.rating.to_i %></td>
+        <td><%= (participant.rating + participant.rating_scores).to_i %></td>
         <td>
           <%= link_to 'Remove', participant, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' unless @tournament.state == "Tournament is closed." %>
         </td>

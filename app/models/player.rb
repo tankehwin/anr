@@ -16,7 +16,7 @@ class Player < ActiveRecord::Base
   	  participant.player.match_points = participants.map(&:match_points).sum
   	  participant.player.matches = participants.map(&:matches).sum
   	  participant.player.tournaments = participants.count
-      participant.player.rating = participant.rating
+      participant.player.rating = participant.player.rating + participant.rating_scores
   	  participant.player.save
     end
   end

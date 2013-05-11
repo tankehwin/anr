@@ -169,8 +169,8 @@ class Schedule < ActiveRecord::Base
     score_1 = score_1 / 20 if score_1 < 0
     score_0 = score_0 * 20 if score_0 > 0
     score_1 = score_1 * 20 if score_1 > 0
-    schedule[:results_attributes][:"0"][:rating_score] = score_0
-    schedule[:results_attributes][:"1"][:rating_score] = score_1
+    schedule[:results_attributes][:"0"][:rating_score] = score_0 * current_schedule.round.tournament.rating_multiplier
+    schedule[:results_attributes][:"1"][:rating_score] = score_1 * current_schedule.round.tournament.rating_multiplier
 
     schedule
   end

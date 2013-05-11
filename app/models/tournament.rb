@@ -1,5 +1,5 @@
 class Tournament < ActiveRecord::Base
-  attr_accessible :name, :rating_weight, :state
+  attr_accessible :name, :rating_multiplier, :state
 
   has_many :participants, :dependent => :destroy
   has_many :results

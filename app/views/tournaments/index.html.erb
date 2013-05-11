@@ -13,6 +13,7 @@
   <thead>
     <tr>
       <th>Tournament Name</th>
+      <th>Tournament Multiplier</th>
       <th>Status</th>
       <th>Action</th>
     </tr>
@@ -22,6 +23,7 @@
     <% @tournaments.each do |tournament| %>
       <tr>
         <td><%= link_to tournament.name, tournament %></td>
+        <td><%= tournament.rating_multiplier %></td>
         <td><%= tournament.state %></td>
         <td>
           <%= link_to 'Edit', edit_tournament_path(tournament), :class => 'btn btn-mini' unless tournament.state == "Tournament is closed." %>

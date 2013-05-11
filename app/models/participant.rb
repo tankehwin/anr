@@ -22,7 +22,7 @@ class Participant < ActiveRecord::Base
   	result.participant.pmw = result.participant.prestiges.to_f / result.participant.matches.to_f / 6.0 * 100.0
   	result.participant.pmw = (100.0 / 3.0) if result.participant.pmw < (100.0 / 3.0)
   	result.participant.pgw = result.participant.match_points.to_f / result.participant.matches.to_f / 20.0 * 100.0
-    result.participant.rating = result.participant.rating + (result.tournament.rating_weight * result.rating_score)
+    result.participant.rating_scores = results.map(&:rating_score).sum
   	result.participant.save
   end
 
@@ -51,6 +51,7 @@ class Participant < ActiveRecord::Base
       participant.prestiges = 0
       participant.match_points = 0
       participant.matches = 0
+      participant.rating_scores = 0.0
       participant.pmw = 0.0
       participant.omw = 0.0
       participant.pgw = 0.0
@@ -89,7 +90,7 @@ class Participant < ActiveRecord::Base
 
   def update_rating_weight
     participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", self.tournament_id, 1])
-    self.tournament.rating_weight = Math.sqrt(participants.count)
+    self.tournament.rating_multiplier = Math.sqrt(participants.count)
     self.tournament.save
   end
 end

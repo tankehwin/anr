@@ -98,6 +98,7 @@ class Round < ActiveRecord::Base
     result.prestige = nil
     result.corp_match_points = nil
     result.runner_match_points = nil
+    result.rating_score = 0.0
     if result.participant_id == Participant.bye_id(result.tournament_id)
       result.prestige = 0
       result.corp_match_points = 0
