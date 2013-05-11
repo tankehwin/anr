@@ -164,15 +164,13 @@ class Schedule < ActiveRecord::Base
     participant_0 = Participant.find(current_schedule.results.first.participant_id)
     participant_1 = Participant.find(current_schedule.results.last.participant_id)
     participant_bye = Participant.find_by_tournament_id_and_player_id(current_schedule.round.tournament_id, 1)
-    unless participant_0 == participant_bye
-      score_1 = schedule[:results_attributes][:"1"][:prestige]/6 - (1/(1 + 10**((participant_1.rating + participant_1.rating_scores - participant_0.rating - participant_0.rating_scores)/400)))
-      schedule[:results_attributes][:"1"][:rating_score] = score_1 / 20 * current_schedule.round.tournament.rating_multiplier if score_1 < 0
-      schedule[:results_attributes][:"1"][:rating_score] = score_1 * 20 * current_schedule.round.tournament.rating_multiplier if score_1 > 0
-    end
-    unless participant_1 == participant_bye
-      score_0 = schedule[:results_attributes][:"0"][:prestige]/6 - (1/(1 + 10**((participant_0.rating + participant_0.rating_scores - participant_1.rating - participant_1.rating_scores)/400)))
-      schedule[:results_attributes][:"0"][:rating_score] = score_0 / 20 * current_schedule.round.tournament.rating_multiplier if score_0 < 0
-      schedule[:results_attributes][:"0"][:rating_score] = score_0 * 20 * current_schedule.round.tournament.rating_multiplier if score_0 > 0
+    unless participant_0 == participant_bye or participant_1 == participant_bye
+      score = schedule[:results_attributes][:"0"][:prestige]/6 - (1/(1 + 10**((participant_0.rating + participant_0.rating_scores - participant_1.rating - participant_1.rating_scores)/400)))
+      schedule[:results_attributes][:"0"][:rating_score] = score / 20 * current_schedule.round.tournament.rating_multiplier if score < 0
+      schedule[:results_attributes][:"0"][:rating_score] = score * 20 * current_schedule.round.tournament.rating_multiplier if score > 0
+      score = schedule[:results_attributes][:"1"][:prestige]/6 - (1/(1 + 10**((participant_1.rating + participant_1.rating_scores - participant_0.rating - participant_0.rating_scores)/400)))
+      schedule[:results_attributes][:"1"][:rating_score] = score / 20 * current_schedule.round.tournament.rating_multiplier if score < 0
+      schedule[:results_attributes][:"1"][:rating_score] = score * 20 * current_schedule.round.tournament.rating_multiplier if score > 0
     end
 
     schedule
