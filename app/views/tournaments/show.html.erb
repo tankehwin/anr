@@ -46,7 +46,7 @@
         <td>
           <%= link_to round.action, new_schedule_path(:round => round.id, :trigger => round.action), :class => 'btn btn-mini' if round.action == "Schedule" %>
           <%= link_to round.action, edit_round_path(round, :trigger => round.action), :class => 'btn btn-mini' if round.action == "Start" or round.action == "End" %>
-          <%= link_to 'Launch Timer', timer_path, :target => '_blank', :class => 'btn btn-mini' if round.action == "End" %>
+          <%= link_to 'Launch Timer', round_path(round, :timer => "65m"), :target => '_blank', :class => 'btn btn-mini' if round.action == "End" %>
         </td>
       </tr>
     <% end %>
@@ -62,7 +62,6 @@
       <th>Player</th>
       <th>Prestiges</th>
       <th>Match points</th>
-      <th>Matches</th>
       <th>OMW%</th>
       <th>PGW%</th>
       <th>OGW%</th>
@@ -78,7 +77,6 @@
         <td><%= participant.player.name %></td>
         <td><%= participant.prestiges %></td>
         <td><%= participant.match_points %></td>
-        <td><%= participant.matches %></td>
         <td><%= number_with_precision participant.omw, :precision => 2 %></td>
         <td><%= number_with_precision participant.pgw, :precision => 2 %></td>
         <td><%= number_with_precision participant.ogw, :precision => 2 %></td>
@@ -102,12 +100,12 @@
       <th>Table</th>
       <th>Player 1</th>
       <th>Prestige</th>
-      <th>Corp Match Points</th>
-      <th>Runner Match Points</th>
+      <th>Corp Points</th>
+      <th>Runner Points</th>
       <th>Player 2</th>
       <th>Prestige</th>
-      <th>Corp Match Points</th>
-      <th>Runner Match Points</th>
+      <th>Corp Points</th>
+      <th>Runner Points</th>
       <th>Action</th>
     </tr>
   </thead>

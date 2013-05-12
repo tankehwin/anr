@@ -23,12 +23,13 @@ class SchedulesController < ApplicationController
   # PUT /schedules/1.json
   def update
     @schedule = Schedule.find(params[:id], :include => :results)
-    redirect_to @schedule.round.tournament, notice: @schedule.round.tournament.state and return if @schedule.round.tournament.state == "Tournament is closed."
+    @tournament = @schedule.round.tournament
+    redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
     params_schedule = Schedule.calculate_prestige(params[:schedule], @schedule)
 
     respond_to do |format|
       if @schedule.update_attributes(params_schedule)
-        format.html { redirect_to @schedule.round.tournament, notice: "Results was successfully updated." }
+        format.html { redirect_to @tournament, notice: "Results was successfully updated." }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

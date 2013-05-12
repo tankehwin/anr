@@ -1,9 +1,6 @@
 Anr::Application.routes.draw do
   # resources :pages, :only => :index
 
-  
-  get "timer" => "pages#timer", :as => :timer
-
 
   resources :schedules, :only => [:new, :edit, :update]
 
@@ -11,7 +8,7 @@ Anr::Application.routes.draw do
   resources :participants, :only => [:new, :create, :destroy]
 
 
-  resources :rounds, :only => [:new, :edit, :update]
+  resources :rounds, :except => [:index, :create, :destroy]
 
 
   resources :tournaments

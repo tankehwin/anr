@@ -46,12 +46,12 @@
 	float: left;
 	font-size: 15pt;
 	text-align: center;
-	font-family: "Courier New", "Lucida Console";
+	font-family: "Lucida Console", "Courier New";
 	color: #444;
-	margin-top: 75px;
+	margin-top: 130px;
 }
 .countdown_amount {
-	font-size: 100pt;
+	font-size: 150pt;
 }
 .countdown_descr {
 	display: block;

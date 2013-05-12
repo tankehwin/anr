@@ -1,0 +1,83 @@
+<% content_for(:head) do %>
+  <style type="text/css">
+    #defaultCountdown { width: 960px; height: 270px; margin: auto; }
+    #year { color: #fff; font-size: 0pt; }
+  </style>
+  <script type="text/javascript">
+    $(function () {
+      var austDay = new Date();
+      austDay = new Date(austDay.getFullYear() + 1, 1 - 1, 26);
+      $('#defaultCountdown').countdown({until: '<%= params[:timer] %>'});
+      $('#year').text(austDay.getFullYear());
+    });
+  </script>
+<% end %>
+
+<div class="page-header">
+  <h1>Round <%= @round.number %></h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt><strong>Timer:</strong></dt>
+  <dd>Refresh to reset</dd>
+</dl>
+
+<div id="defaultCountdown"></div>
+<span id="year"></span>
+
+<h2>Registered Players and Tournament Standings</h2>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Place</th>
+      <th>Player</th>
+      <th>Prestiges</th>
+      <th>Match points</th>
+      <th>OMW%</th>
+      <th>PGW%</th>
+      <th>OGW%</th>
+      <th>Rating</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <% @participants.sort_by(&:place).each do |participant| %>
+      <% unless participant == @participant_bye %>
+        <tr>
+          <td><%= participant.place %></td>
+          <td><%= participant.player.name %></td>
+          <td><%= participant.prestiges %></td>
+          <td><%= participant.match_points %></td>
+          <td><%= number_with_precision participant.omw, :precision => 2 %></td>
+          <td><%= number_with_precision participant.pgw, :precision => 2 %></td>
+          <td><%= number_with_precision participant.ogw, :precision => 2 %></td>
+          <td><%= (participant.rating + participant.rating_scores).to_i %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+
+<h2>Round Schedule</h2>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Table</th>
+      <th>Player 1</th>
+      <th>Player 2</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <% @schedules.each do |schedule| %>
+      <tr>
+        <td><%= schedule.table %></td>
+        <% schedule.results.each do |result| %>
+          <td><b><%= result.participant.player.name %></b></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

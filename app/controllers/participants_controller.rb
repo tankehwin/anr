@@ -16,15 +16,21 @@ class ParticipantsController < ApplicationController
   # POST /participants
   # POST /participants.json
   def create
-    @current_participant = Participant.find_by_tournament_id_and_player_id(params[:participant][:tournament_id], params[:participant][:player_id])
-    params_participant = Participant.initialize_rating(params[:participant]) unless @current_participant
-    @participant = Participant.new(params_participant)
-    redirect_to @participant.tournament, notice: @participant.tournament.state and return if @participant.tournament.state == "Tournament is closed."
+    @tournament = Tournament.find params[:participant][:tournament_id]
+    redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
+    if params[:participant][:player_id]
+      @participant = Participant.find_by_tournament_id_and_player_id(params[:participant][:tournament_id], params[:participant][:player_id])
+      params_participant = Participant.initialize_rating(params[:participant])
+    end
+    @participant = Participant.new(params_participant) unless @participant
 
     respond_to do |format|
-      if @current_participant
-        format.html { redirect_to @participant.tournament, notice: 'Player was already added.' }
-        format.json { render json: @current_participant, status: :unprocessable_entity, location: @current_participant }
+      if @participant.id
+        format.html { redirect_to @tournament, notice: 'Player was already added.' }
+        format.json { render json: @participant, status: :unprocessable_entity, location: @participant }
+      elsif params[:participant][:player_id].nil?
+        format.html { redirect_to players_url, notice: 'Player list is empty.' }
+        format.json { render json: @participant, status: :unprocessable_entity, location: @participant }
       else
         if @participant.save
           format.html { redirect_to @participant.tournament, notice: 'Player was successfully added.' }

@@ -10,8 +10,12 @@ class Participant < ActiveRecord::Base
 
   after_create :update_rating_weight
 
+  def self.bye(tournament_id)
+    Participant.find_by_tournament_id_and_player_id(tournament_id, 1)
+  end
+
   def self.bye_id(tournament_id)
-  	Participant.find_or_create_by_tournament_id_and_player_id(tournament_id, 1).id
+    Participant.find_or_create_by_tournament_id_and_player_id(tournament_id, 1).id
   end
 
   def self.update_personal_points(result)

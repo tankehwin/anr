@@ -1,4 +1,18 @@
 class RoundsController < ApplicationController
+  # GET /rounds/1
+  # GET /rounds/1.json
+  def show
+    @round = Round.find(params[:id], :include => :tournament)
+    @participants = @round.tournament.participants.includes(:player).all
+    @participant_bye = Participant.bye(@round.tournament_id)
+    @schedules = @round.schedules.includes(:results => {:participant => :player}).all
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json { render json: @round }
+    end
+  end
+
   # GET /rounds/new
   # GET /rounds/new.json
   def new
@@ -29,22 +43,6 @@ class RoundsController < ApplicationController
       respond_to do |format|
         format.html { redirect_to @round.tournament, notice: notice }
         format.json { render json: @round }
-      end
-    end
-  end
-
-  # POST /rounds
-  # POST /rounds.json
-  def create
-    @round = Round.new(params[:round])
-
-    respond_to do |format|
-      if @round.save
-        format.html { redirect_to @round, notice: 'Round was successfully created.' }
-        format.json { render json: @round, status: :created, location: @round }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @round.errors, status: :unprocessable_entity }
       end
     end
   end
