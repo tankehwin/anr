@@ -6,8 +6,11 @@ class PagesController < ApplicationController
   
   private
   
-  # GET /pages/timer
-  # GET /pages/timer.json
-  def timer
+  # GET /pages/about
+  def about
+  end
+
+  # GET /pages/contact
+  def contact
   end
 end

@@ -2,12 +2,15 @@ class PlayersController < ApplicationController
   # GET /players
   # GET /players.json
   def index
-    @players = Player.find(:all, :conditions => ["id != ?", 1])
-    @title = "All Players Listings"
+    @players = Player.paginate(:conditions => ["id != ?", Var.bye_id], :page => params[:page], :per_page => Var.per_page).order('rating DESC')
+    @players_json = Player.paginate(:conditions => ["id != ?", Var.bye_id], :select => 'username, name, prestiges, match_points, matches, tournaments, rating', :page => params[:page], :per_page => 100).order('rating DESC')
+    @rank_counter = (params[:page].to_i - 1) * Var.per_page if params[:page]
+    @rank_counter = 0 unless params[:page]
+    @title = "All Players Ranking"
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @players }
+      format.json { render json: @players_json }
     end
   end
 
@@ -26,6 +29,7 @@ class PlayersController < ApplicationController
   # GET /players/new.json
   def new
     @player = Player.new
+    @password = (100000000000 + rand(899999999999)).to_s(36)
 
     respond_to do |format|
       format.html # new.html.erb
@@ -43,6 +47,7 @@ class PlayersController < ApplicationController
   def create
     @player = Player.new(params[:player])
     @player.username = Country.malaysia_iso + ((Player.count + 90210) * 5 / 2).to_s(16).upcase
+    @password = params[:player][:password]
 
     respond_to do |format|
       if @player.save

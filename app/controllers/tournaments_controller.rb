@@ -2,7 +2,7 @@ class TournamentsController < ApplicationController
   # GET /tournaments
   # GET /tournaments.json
   def index
-    @tournaments = Tournament.all
+    @tournaments = Tournament.paginate(:page => params[:page], :per_page => Var.per_page).order('created_at DESC')
     @title = "Tournament Navigator"
 
     respond_to do |format|
@@ -15,7 +15,7 @@ class TournamentsController < ApplicationController
   # GET /tournaments/1.json
   def show
     @tournament = Tournament.find(params[:id])
-    @participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", @tournament.id, 1], :include => :player)
+    @participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", @tournament.id, Var.bye_id], :include => :player)
     @rounds = @tournament.rounds.includes(:schedules => {:results => {:participant => :player}}).all
 
     respond_to do |format|
@@ -57,7 +57,7 @@ class TournamentsController < ApplicationController
 
     respond_to do |format|
       if @tournament.save
-        format.html { redirect_to @tournament, notice: 'Tournament was successfully created.' }
+        format.html { redirect_to @tournament, notice: 'Tournament was successfully created. To continue, add participants for this tournament and then choose the schedule type.' }
         format.json { render json: @tournament, status: :created, location: @tournament }
       else
         format.html { render action: "new" }
@@ -74,7 +74,7 @@ class TournamentsController < ApplicationController
 
     respond_to do |format|
       if @tournament.update_attributes(params[:tournament])
-        format.html { redirect_to @tournament, notice: 'Tournament was successfully updated.' }
+        format.html { redirect_to @tournament, notice: 'Tournament details was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

@@ -5,6 +5,7 @@ class CreateRounds < ActiveRecord::Migration
       t.integer :number, :null => false
       t.datetime :start
       t.datetime :end
+      t.string :scheduling_type, :null => false, :default => "Swiss"
       t.string :state, :null => false, :default => "Not Ready"
       t.string :action, :null => false, :default => "Pre-Round"
 

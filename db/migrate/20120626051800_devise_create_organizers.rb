@@ -34,16 +34,9 @@ class DeviseCreateOrganizers < ActiveRecord::Migration
       t.string :authentication_token
 
 
+      t.string  :username
       t.string  :name,              :null => false, :default => ""
       t.string  :time_zone,         :null => false, :default => "Kuala Lumpur"
-      t.integer :country_id,        :null => false, :default => 122
-      t.string  :contact_person,    :null => false
-      t.string  :mobile_no,         :null => false, :unique => true
-      t.string  :postcode,          :null => false
-      t.string  :address1,          :null => false
-      t.string  :address2
-      t.string  :city,              :null => false
-      t.string  :state,             :null => false
       t.boolean :active,            :null => false, :default => true
 
       t.timestamps
@@ -54,5 +47,6 @@ class DeviseCreateOrganizers < ActiveRecord::Migration
     add_index :organizers, :confirmation_token,   :unique => true
     add_index :organizers, :unlock_token,         :unique => true
     add_index :organizers, :authentication_token, :unique => true
+    add_index :organizers, :username,             :unique => true
   end
 end

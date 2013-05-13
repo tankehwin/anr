@@ -83,7 +83,7 @@ class Round < ActiveRecord::Base
       round.closed
       round.schedules.each do |schedule|
         schedule.results.each do |result|
-          Participant.update_personal_points(result) unless result.participant_id == Participant.bye_id(round.tournament_id)
+          Participant.update_personal_points(result) unless result.participant_id == Participant.bye(round.tournament_id).id
         end
       end
       Participant.update_opponent_points(round)
@@ -99,11 +99,11 @@ class Round < ActiveRecord::Base
     result.corp_match_points = nil
     result.runner_match_points = nil
     result.rating_score = 0.0
-    if result.participant_id == Participant.bye_id(result.tournament_id)
+    if result.participant_id == Participant.bye(result.tournament_id).id
       result.prestige = 0
       result.corp_match_points = 0
       result.runner_match_points = 0
-    elsif result.opponent_id == Participant.bye_id(result.tournament_id)
+    elsif result.opponent_id == Participant.bye(result.tournament_id).id
       result.prestige = 6
       result.corp_match_points = 10
       result.runner_match_points = 10

@@ -1,5 +1,7 @@
 Anr::Application.routes.draw do
-  # resources :pages, :only => :index
+  resources :pages, :only => :index
+  get 'about_us' => 'pages#about', :as => :about_us
+  get 'contact' => 'pages#contact', :as => :contact
 
 
   resources :schedules, :only => [:new, :edit, :update]
@@ -14,10 +16,13 @@ Anr::Application.routes.draw do
   resources :tournaments
 
 
+  # resources :player_services
+
+
   resources :players
 
 
-  # resources :services
+  # resources :organizer_services
 
 
   # resources :organizers

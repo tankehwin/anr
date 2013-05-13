@@ -46,6 +46,7 @@ class DeviseCreatePlayers < ActiveRecord::Migration
 
       t.timestamps
     end
+    
     add_index :players, :email,                :unique => true
     add_index :players, :reset_password_token, :unique => true
     add_index :players, :confirmation_token,   :unique => true
@@ -56,6 +57,7 @@ class DeviseCreatePlayers < ActiveRecord::Migration
     add_index :players, :match_points
     add_index :players, :matches
     add_index :players, :tournaments
+    add_index :players, :rating
     add_index :players, :active
   end
 end

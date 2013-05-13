@@ -7,6 +7,8 @@ gem 'rails', '3.2.11'
 
 gem 'pg'
 gem 'devise'
+gem 'will_paginate'
+gem 'bootstrap-will_paginate'
 
 
 # Gems used only for assets and not required
@@ -20,9 +22,10 @@ group :assets do
 
   gem 'uglifier', '>= 1.0.3'
   
-  gem 'twitter-bootstrap-rails'
-  gem 'less-rails'
   gem 'therubyracer'
+  gem 'less-rails'
+  gem 'twitter-bootstrap-rails'
+  gem 'rails_bootstrap_navbar', :git => 'git://github.com/julescopeland/Rails-Bootstrap-Navbar.git'
 end
 
 gem 'jquery-rails'
@@ -39,5 +42,9 @@ gem 'jquery-rails'
 # Deploy with Capistrano
 # gem 'capistrano'
 
-# To use debugger
-gem 'debugger'
+group :development do
+  # To use debugger
+  gem 'debugger'
+
+  gem 'rails-erd'
+end

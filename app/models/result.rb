@@ -4,6 +4,7 @@ class Result < ActiveRecord::Base
   belongs_to :schedule
   belongs_to :participant
   belongs_to :tournament
+  belongs_to :opponent, class_name: "Participant"
 
   validates :opponent_id, :presence => true, :numericality => { :only_integer => true }
   validates :corp_match_points, :runner_match_points, :numericality => { :only_integer => true }, :inclusion => { :in => 0..10,

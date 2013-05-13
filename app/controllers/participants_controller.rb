@@ -5,7 +5,7 @@ class ParticipantsController < ApplicationController
     @tournament = Tournament.find params[:tournament]
     redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
     @participant = Participant.new
-    @players = Player.find(:all, :conditions => ["id != ?", 1])
+    @players = Player.find(:all, :conditions => ["id != ?", Var.bye_id])
 
     respond_to do |format|
       format.html # new.html.erb

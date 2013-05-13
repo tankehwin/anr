@@ -60,6 +60,22 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   add_index "countries", ["numcode"], :name => "index_countries_on_numcode"
   add_index "countries", ["printable_name"], :name => "index_countries_on_printable_name"
 
+  create_table "organizer_services", :force => true do |t|
+    t.integer  "organizer_id", :null => false
+    t.string   "provider",     :null => false
+    t.string   "uid",          :null => false
+    t.string   "uname",        :null => false
+    t.string   "uemail",       :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "organizer_services", ["organizer_id"], :name => "index_organizer_services_on_organizer_id"
+  add_index "organizer_services", ["provider"], :name => "index_organizer_services_on_provider"
+  add_index "organizer_services", ["uemail"], :name => "index_organizer_services_on_uemail"
+  add_index "organizer_services", ["uid"], :name => "index_organizer_services_on_uid"
+  add_index "organizer_services", ["uname"], :name => "index_organizer_services_on_uname"
+
   create_table "organizers", :force => true do |t|
     t.string   "email",                  :default => "",             :null => false
     t.string   "encrypted_password",     :default => "",             :null => false
@@ -79,16 +95,9 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
     t.string   "unlock_token"
     t.datetime "locked_at"
     t.string   "authentication_token"
+    t.string   "username"
     t.string   "name",                   :default => "",             :null => false
     t.string   "time_zone",              :default => "Kuala Lumpur", :null => false
-    t.integer  "country_id",             :default => 122,            :null => false
-    t.string   "contact_person",                                     :null => false
-    t.string   "mobile_no",                                          :null => false
-    t.string   "postcode",                                           :null => false
-    t.string   "address1",                                           :null => false
-    t.string   "address2"
-    t.string   "city",                                               :null => false
-    t.string   "state",                                              :null => false
     t.boolean  "active",                 :default => true,           :null => false
     t.datetime "created_at",                                         :null => false
     t.datetime "updated_at",                                         :null => false
@@ -99,29 +108,52 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   add_index "organizers", ["email"], :name => "index_organizers_on_email", :unique => true
   add_index "organizers", ["reset_password_token"], :name => "index_organizers_on_reset_password_token", :unique => true
   add_index "organizers", ["unlock_token"], :name => "index_organizers_on_unlock_token", :unique => true
+  add_index "organizers", ["username"], :name => "index_organizers_on_username", :unique => true
 
   create_table "participants", :force => true do |t|
-    t.integer  "tournament_id",                     :null => false
-    t.integer  "player_id",                         :null => false
-    t.integer  "place",         :default => 0,      :null => false
-    t.integer  "prestiges",     :default => 0,      :null => false
-    t.integer  "match_points",  :default => 0,      :null => false
-    t.integer  "matches",       :default => 0,      :null => false
-    t.float    "rating",        :default => 1400.0, :null => false
-    t.float    "rating_scores", :default => 0.0,    :null => false
-    t.float    "pmw",           :default => 0.0,    :null => false
-    t.float    "omw",           :default => 0.0,    :null => false
-    t.float    "pgw",           :default => 0.0,    :null => false
-    t.float    "ogw",           :default => 0.0,    :null => false
-    t.boolean  "active",        :default => false,  :null => false
-    t.datetime "created_at",                        :null => false
-    t.datetime "updated_at",                        :null => false
+    t.integer  "tournament_id",                         :null => false
+    t.integer  "player_id",                             :null => false
+    t.integer  "place",             :default => 0,      :null => false
+    t.integer  "prestiges",         :default => 0,      :null => false
+    t.integer  "match_points",      :default => 0,      :null => false
+    t.integer  "head_to_head",      :default => 0,      :null => false
+    t.integer  "schedule_strength", :default => 0,      :null => false
+    t.integer  "matches",           :default => 0,      :null => false
+    t.float    "rating",            :default => 1400.0, :null => false
+    t.float    "rating_scores",     :default => 0.0,    :null => false
+    t.float    "pmw",               :default => 0.0,    :null => false
+    t.float    "omw",               :default => 0.0,    :null => false
+    t.float    "pgw",               :default => 0.0,    :null => false
+    t.float    "ogw",               :default => 0.0,    :null => false
+    t.boolean  "drop",              :default => false,  :null => false
+    t.boolean  "active",            :default => false,  :null => false
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
   end
 
   add_index "participants", ["active"], :name => "index_participants_on_active"
+  add_index "participants", ["drop"], :name => "index_participants_on_drop"
   add_index "participants", ["place"], :name => "index_participants_on_place"
+  add_index "participants", ["player_id"], :name => "index_participants_on_player_id"
+  add_index "participants", ["rating"], :name => "index_participants_on_rating"
   add_index "participants", ["tournament_id", "player_id"], :name => "index_participants_on_participant_attributes", :unique => true
   add_index "participants", ["tournament_id"], :name => "index_participants_on_tournament_id"
+
+  create_table "player_services", :force => true do |t|
+    t.integer  "player_id",  :null => false
+    t.string   "provider",   :null => false
+    t.string   "uid",        :null => false
+    t.string   "uname",      :null => false
+    t.string   "uemail",     :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "player_services", ["player_id"], :name => "index_player_services_on_player_id"
+  add_index "player_services", ["provider"], :name => "index_player_services_on_provider"
+  add_index "player_services", ["uemail"], :name => "index_player_services_on_uemail"
+  add_index "player_services", ["uid"], :name => "index_player_services_on_uid"
+  add_index "player_services", ["uname"], :name => "index_player_services_on_uname"
 
   create_table "players", :force => true do |t|
     t.string   "email",                  :default => "",     :null => false
@@ -162,6 +194,7 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   add_index "players", ["match_points"], :name => "index_players_on_match_points"
   add_index "players", ["matches"], :name => "index_players_on_matches"
   add_index "players", ["prestiges"], :name => "index_players_on_prestiges"
+  add_index "players", ["rating"], :name => "index_players_on_rating"
   add_index "players", ["reset_password_token"], :name => "index_players_on_reset_password_token", :unique => true
   add_index "players", ["tournaments"], :name => "index_players_on_tournaments"
   add_index "players", ["unlock_token"], :name => "index_players_on_unlock_token", :unique => true
@@ -187,14 +220,15 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   add_index "results", ["tournament_id"], :name => "index_results_on_tournament_id"
 
   create_table "rounds", :force => true do |t|
-    t.integer  "tournament_id",                          :null => false
-    t.integer  "number",                                 :null => false
+    t.integer  "tournament_id",                            :null => false
+    t.integer  "number",                                   :null => false
     t.datetime "start"
     t.datetime "end"
-    t.string   "state",         :default => "Not Ready", :null => false
-    t.string   "action",        :default => "Pre-Round", :null => false
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
+    t.string   "scheduling_type", :default => "Swiss",     :null => false
+    t.string   "state",           :default => "Not Ready", :null => false
+    t.string   "action",          :default => "Pre-Round", :null => false
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
   end
 
   add_index "rounds", ["tournament_id", "number"], :name => "index_rounds_on_round_attributes", :unique => true
@@ -210,25 +244,19 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   add_index "schedules", ["round_id", "table"], :name => "index_schedules_on_schedule_attributes", :unique => true
   add_index "schedules", ["round_id"], :name => "index_schedules_on_round_id"
 
-  create_table "services", :force => true do |t|
-    t.integer  "organizer_id", :null => false
-    t.string   "provider",     :null => false
-    t.string   "uid",          :null => false
-    t.string   "uname",        :null => false
-    t.string   "uemail",       :null => false
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
-  end
-
   create_table "tournaments", :force => true do |t|
+    t.string   "organizer_id"
     t.string   "name",                                                        :null => false
+    t.text     "description"
     t.string   "state",             :default => "Tournament is not started.", :null => false
-    t.boolean  "active",            :default => true,                         :null => false
     t.integer  "rating_multiplier", :default => 1,                            :null => false
+    t.boolean  "active",            :default => true,                         :null => false
     t.datetime "created_at",                                                  :null => false
     t.datetime "updated_at",                                                  :null => false
   end
 
   add_index "tournaments", ["active"], :name => "index_tournaments_on_active"
+  add_index "tournaments", ["rating_multiplier"], :name => "index_tournaments_on_rating_multiplier"
+  add_index "tournaments", ["state"], :name => "index_tournaments_on_state"
 
 end

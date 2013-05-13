@@ -35,7 +35,7 @@ class RoundsController < ApplicationController
       @schedules = Schedule.calculate_schedule(@round, params[:trigger])
       @round = Round.find(params[:id]) if params[:trigger] == "Manual"
       @participants = Participant.find(:all, :conditions => ["tournament_id = ?", @round.tournament_id], :include => :player)
-      @participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", @round.tournament_id, 1], :include => :player) if (@participants.count - 1).even?
+      @participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", @round.tournament_id, Var.bye_id], :include => :player) if (@participants.count - 1).even?
     else
       @round = Round.find(params[:id], :include => :tournament)
       redirect_to @round.tournament, notice: @round.tournament.state and return if @round.tournament.state == "Tournament is closed."

@@ -1,6 +1,7 @@
 class Tournament < ActiveRecord::Base
-  attr_accessible :name, :rating_multiplier, :state
+  attr_accessible :description, :name, :organizer_id, :rating_multiplier, :state
 
+  belongs_to :organizer
   has_many :participants, :dependent => :destroy
   has_many :results
   has_many :rounds, :dependent => :destroy
@@ -34,6 +35,6 @@ class Tournament < ActiveRecord::Base
   end
 
   def seed_bye
-    Participant.find_or_create_by_tournament_id_and_player_id :tournament_id => self.id, :player_id => 1
+    Participant.find_or_create_by_tournament_id_and_player_id :tournament_id => self.id, :player_id => Var.bye_id
   end
 end

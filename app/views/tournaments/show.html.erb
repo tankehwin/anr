@@ -8,6 +8,12 @@
     <%= notice %>
   </div>
 <% end %>
+<% if alert %>
+  <div class="alert">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <%= alert %>
+  </div>
+<% end %>
 
 <dl class="dl-horizontal">
   <dt><strong>Status:</strong></dt>
@@ -17,15 +23,31 @@
 </dl>
 
 <div class="form-actions">
-  <%= link_to 'Schedule', new_round_path(:tournament => @tournament.id), :class => 'btn' if @rounds.empty? and @tournament.state != "Tournament is closed." %>
-  <%= link_to 'Schedule', new_round_path(:tournament => @tournament.id), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' }, :class => 'btn' unless @rounds.empty? or @tournament.state == "Tournament is closed." %>
+  <div class="btn-group">
+    <% if @rounds.empty? and @tournament.state != "Tournament is closed." and @participants.count > 1 %>
+      <%= link_to 'Schedule', '#', :"data-toggle" => 'dropdown', :class => 'btn btn-primary' %>
+      <%= link_to "<span class='caret'></span>".html_safe, '#', :"data-toggle" => 'dropdown', :class => 'btn btn-primary' %>
+      <ul class="dropdown-menu">
+        <li><%= link_to 'With Playoff', "#" %></li>
+        <li><%= link_to 'Without Playoff', new_round_path(:tournament => @tournament.id) %></li>
+      </ul>
+    <% end %>
+    <% unless @rounds.empty? or @tournament.state == "Tournament is closed." %>
+      <%= link_to 'Re-Schedule', '#', :class => 'btn' %>
+      <%= link_to "<span class='caret'></span>".html_safe, '#', :"data-toggle" => 'dropdown', :class => 'btn' %>
+      <ul class="dropdown-menu">
+        <li><%= link_to 'With Playoff', "#" %></li>
+        <li><%= link_to 'Without Playoff', new_round_path(:tournament => @tournament.id), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
+      </ul>
+    <% end %>
+  </div>
   <%= link_to 'Edit Details', edit_tournament_path(@tournament), :class => 'btn' unless @tournament.state == "Tournament is closed." %>
-  <%= link_to 'Close', edit_tournament_path(@tournament, :trigger => "Close"), data: { confirm: 'This action would terminate all unfinished rounds and propagate tournament score table into players score table. Do you want to proceed?' }, :class => 'btn btn-danger' unless @rounds.empty? or @tournament.state == "Tournament is closed." %>
+  <%= link_to 'Close', edit_tournament_path(@tournament, :trigger => "Close"), data: { confirm: 'This action would terminate all unfinished rounds and propagate tournament score table into players score table. Do you want to proceed?' }, :class => 'btn btn-danger' unless @rounds.empty? or @tournament.state == "Tournament is closed." or @participants.count < 2 %>
 </div>
 
 <h2>Rounds</h2>
 
-<table class="table table-striped">
+<table class="table table-striped table-bordered">
   <thead>
     <tr>
       <th>Round</th>
@@ -44,9 +66,9 @@
         <td><%= round.end %></td>
         <td><%= round.state %></td>
         <td>
-          <%= link_to round.action, new_schedule_path(:round => round.id, :trigger => round.action), :class => 'btn btn-mini' if round.action == "Schedule" %>
-          <%= link_to round.action, edit_round_path(round, :trigger => round.action), :class => 'btn btn-mini' if round.action == "Start" or round.action == "End" %>
-          <%= link_to 'Launch Timer', round_path(round, :timer => "65m"), :target => '_blank', :class => 'btn btn-mini' if round.action == "End" %>
+          <%= link_to round.action, new_schedule_path(:round => round.id, :trigger => round.action), :class => 'btn btn-mini' if round.action == "Schedule" and @participants.count > 1 %>
+          <%= link_to round.action, edit_round_path(round, :trigger => round.action), :class => 'btn btn-mini' if round.action == "Start" or round.action == "End" and @participants.count > 1 %>
+          <%= link_to 'Launch Timer', round_path(round, :timer => "65m"), :target => '_blank', :class => 'btn btn-mini' if round.action == "End" and @participants.count > 1 %>
         </td>
       </tr>
     <% end %>
@@ -55,16 +77,15 @@
 
 <h2>Registered Players and Tournament Standings</h2>
 
-<table class="table table-striped">
+<table class="table table-striped table-bordered">
   <thead>
     <tr>
       <th>Place</th>
       <th>Player</th>
       <th>Prestiges</th>
       <th>Match points</th>
-      <th>OMW%</th>
-      <th>PGW%</th>
-      <th>OGW%</th>
+      <th>Head to Head</th>
+      <th>Strength of Schedule</th>
       <th>Rating</th>
       <th>Action</th>
     </tr>
@@ -77,12 +98,11 @@
         <td><%= participant.player.name %></td>
         <td><%= participant.prestiges %></td>
         <td><%= participant.match_points %></td>
-        <td><%= number_with_precision participant.omw, :precision => 2 %></td>
-        <td><%= number_with_precision participant.pgw, :precision => 2 %></td>
-        <td><%= number_with_precision participant.ogw, :precision => 2 %></td>
-        <td><%= (participant.rating + participant.rating_scores).to_i %></td>
+        <td><%= participant.head_to_head %></td>
+        <td><%= participant.schedule_strength %></td>
+        <td><%= (participant.rating + participant.rating_scores).round %></td>
         <td>
-          <%= link_to 'Remove', participant, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' unless @tournament.state == "Tournament is closed." %>
+          <%= link_to 'Remove', participant, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' unless @tournament.state == "Tournament is closed." or @tournament.state == "Tournament has started." %>
         </td>
       </tr>
     <% end %>
@@ -93,7 +113,7 @@
 
 <h2>Round Schedule and Results</h2>
 
-<table class="table table-striped">
+<table class="table table-striped table-bordered">
   <thead>
     <tr>
       <th>Round</th>
@@ -115,8 +135,8 @@
       <tr>
         <td colspan ="10"><%= "Round " + round.number.to_s %></td>
         <td>
-          <%= link_to 'Manual Schedule', edit_round_path(round, :trigger => "Manual"), :class => 'btn btn-mini' if round.state == "Not Scheduled" %>
-          <%= link_to 'Modify Schedule', edit_round_path(round, :trigger => "Modify"), :class => 'btn btn-mini' if round.state == "Ready" or round.state == "In Progress" %>
+          <%= link_to 'Manual Schedule', edit_round_path(round, :trigger => "Manual"), :class => 'btn btn-mini' if round.state == "Not Scheduled" and @participants.count > 1 %>
+          <%= link_to 'Modify Schedule', edit_round_path(round, :trigger => "Modify"), :class => 'btn btn-mini' if round.state == "Ready" or round.state == "In Progress" and @participants.count > 1 %>
         </td>
       </tr>
       <% round.schedules.each do |schedule| %>
@@ -132,7 +152,7 @@
             <td><%= result.runner_match_points %></td>
           <% end %>
           <td>
-            <%= link_to 'Update Result', edit_schedule_path(schedule, :tournament => @tournament.id), :class => 'btn btn-mini' if round.state == "In Progress" %>
+            <%= link_to 'Update Result', edit_schedule_path(schedule, :tournament => @tournament.id), :class => 'btn btn-mini' if round.state == "In Progress" and @participants.count > 1 %>
           </td>
         </tr>
       <% end %>

@@ -9,6 +9,7 @@ class CreateCountries < ActiveRecord::Migration
       
       t.timestamps
     end
+    
     add_index :countries, :iso
     add_index :countries, :printable_name
     add_index :countries, :name
