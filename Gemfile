@@ -9,6 +9,7 @@ gem 'pg'
 gem 'devise'
 gem 'will_paginate'
 gem 'bootstrap-will_paginate'
+gem 'rails_bootstrap_navbar', :git => 'git://github.com/julescopeland/Rails-Bootstrap-Navbar.git'
 
 
 # Gems used only for assets and not required
@@ -25,7 +26,6 @@ group :assets do
   gem 'therubyracer'
   gem 'less-rails'
   gem 'twitter-bootstrap-rails'
-  gem 'rails_bootstrap_navbar', :git => 'git://github.com/julescopeland/Rails-Bootstrap-Navbar.git'
 end
 
 gem 'jquery-rails'
