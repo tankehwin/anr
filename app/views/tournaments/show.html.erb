@@ -181,50 +181,7 @@
   </div>
   <div class="modal-footer">
       <%= link_to 'Close', '#', :class => 'btn', :"data-dismiss" => 'modal', :"aria-hidden" => true %>
-      <%= link_to 'Register New Player', '#players_new', :class => 'btn', :"data-toggle" => 'modal' %>
-      <%= f.submit 'Add Participant', :class => 'btn btn-primary' %>
-    <% end %>
-  </div>
-</div>
-
-<div id="players_new" class="modal hide fade" tabindex="-2" role="dialog" aria-labelledby="label_players_new" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3 id="label_players_new">Add a New Player</h3>
-  </div>
-  <div class="modal-body">
-    <%= form_for @player, :html => { :class => 'form-horizontal' } do |f| %>
-      <% if @player.errors.any? %>
-        <div class="alert alert-block alert-error">
-          <button type="button" class="close" data-dismiss="alert">&times;</button>
-          <h2><%= pluralize(@player.errors.count, "error") %> prohibited this player from being saved:</h2>
-
-          <ul>
-          <% @player.errors.full_messages.each do |msg| %>
-            <li><%= msg %></li>
-          <% end %>
-          </ul>
-        </div>
-      <% end %>
-
-      <div class="control-group">
-        <%= f.label :email, :class => 'control-label' %>
-        <div class="controls">
-          <%= f.email_field :email, :autofocus => true, :class => 'email_field', :placeholder => @default_email %>
-          <%= f.hidden_field :tournament_id, value: @tournament.id %>
-        </div>
-      </div>
-      <div class="control-group">
-        <%= f.label :name, :class => 'control-label' %>
-        <div class="controls">
-          <%= f.text_field :name, :class => 'text_field' %>
-          <%= f.hidden_field :password, value: @password %>
-          <%= f.hidden_field :password_confirmation, value: @password %>
-        </div>
-      </div>
-  </div>
-  <div class="modal-footer">
-      <%= link_to 'Close', '#', :class => 'btn', :"data-dismiss" => 'modal', :"aria-hidden" => true %>
+      <%= link_to 'Register New Player', new_player_path(:tournament => @tournament, :participant => @participate), :class => 'btn' %>
       <%= f.submit 'Add Participant', :class => 'btn btn-primary' %>
     <% end %>
   </div>
