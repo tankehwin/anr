@@ -3,9 +3,9 @@ class ParticipantsController < ApplicationController
   # GET /participants/new.json
   def new
     @tournament = Tournament.find params[:tournament]
-    @participate = true
     redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
     @participant = Participant.new
+    @participate = true
     @players = Player.find(:all, :conditions => ["id != ?", Var.bye_id])
 
     respond_to do |format|

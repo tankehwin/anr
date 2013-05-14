@@ -19,8 +19,8 @@ class RoundsController < ApplicationController
   def new
     @tournament = Tournament.find params[:tournament]
     redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
-    @round = Round.calculate_round(@tournament)
     @rounds = Round.find_all_by_tournament_id @tournament.id
+    @round = Round.calculate_round(@tournament)
 
     respond_to do |format|
       format.html { redirect_to @tournament }

@@ -45,10 +45,10 @@
   <%= link_to 'Close', edit_tournament_path(@tournament, :trigger => "Close"), data: { confirm: 'This action would terminate all unfinished rounds and propagate tournament score table into players score table. Do you want to proceed?' }, :class => 'btn btn-danger' unless @rounds.empty? or @tournament.state == "Tournament is closed." or @participants.count < 2 %>
 </div>
 
-<div id="tournaments_edit_3" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="tournaments_edit_3" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="label_tournaments_edit_3" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3 id="myModalLabel">Edit Tournament Details</h3>
+    <h3 id="label_tournaments_edit_3">Edit Tournament Details</h3>
   </div>
   <div class="modal-body">
     <%= form_for @tournament, :html => { :class => 'form-horizontal' } do |f| %>
@@ -151,10 +151,10 @@
 
 <%= link_to 'Add a New Participant', '#participants_new', :class => 'btn btn-primary', :"data-toggle" => 'modal' unless @tournament.state == "Tournament is closed." %>
 
-<div id="participants_new" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="participants_new" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="label_participants_new" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3 id="myModalLabel">Add a New Participant</h3>
+    <h3 id="label_participants_new">Add a New Participant</h3>
   </div>
   <div class="modal-body">
     <%= form_for @participant, :html => { :class => 'form-horizontal' } do |f| %>
@@ -176,6 +176,50 @@
         <div class="controls">
           <%= f.collection_select :player_id, @players, :id, :name, {}, {:class => "collection_select"} %>
           <%= f.hidden_field :tournament_id, value: @tournament.id %>
+        </div>
+      </div>
+  </div>
+  <div class="modal-footer">
+      <%= link_to 'Close', '#', :class => 'btn', :"data-dismiss" => 'modal', :"aria-hidden" => true %>
+      <%= link_to 'Register New Player', '#players_new', :class => 'btn', :"data-toggle" => 'modal' %>
+      <%= f.submit 'Add Participant', :class => 'btn btn-primary' %>
+    <% end %>
+  </div>
+</div>
+
+<div id="players_new" class="modal hide fade" tabindex="-2" role="dialog" aria-labelledby="label_players_new" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3 id="label_players_new">Add a New Player</h3>
+  </div>
+  <div class="modal-body">
+    <%= form_for @player, :html => { :class => 'form-horizontal' } do |f| %>
+      <% if @player.errors.any? %>
+        <div class="alert alert-block alert-error">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <h2><%= pluralize(@player.errors.count, "error") %> prohibited this player from being saved:</h2>
+
+          <ul>
+          <% @player.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="control-group">
+        <%= f.label :email, :class => 'control-label' %>
+        <div class="controls">
+          <%= f.email_field :email, :autofocus => true, :class => 'email_field', :placeholder => @default_email %>
+          <%= f.hidden_field :tournament_id, value: @tournament.id %>
+        </div>
+      </div>
+      <div class="control-group">
+        <%= f.label :name, :class => 'control-label' %>
+        <div class="controls">
+          <%= f.text_field :name, :class => 'text_field' %>
+          <%= f.hidden_field :password, value: @password %>
+          <%= f.hidden_field :password_confirmation, value: @password %>
         </div>
       </div>
   </div>
@@ -230,10 +274,10 @@
             <%= link_to 'Update Result', '#schedules_edit_' + schedule.id.to_s, :class => 'btn btn-mini', :"data-toggle" => 'modal' if round.state == "In Progress" and @participants.count > 1 %>
           </td>
         </tr>
-        <div id="<%= 'schedules_edit_' + schedule.id.to_s %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div id="<%= 'schedules_edit_' + schedule.id.to_s %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="<%= 'label_schedules_edit_' + schedule.id.to_s %>" aria-hidden="true">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3 id="myModalLabel">Update Result</h3>
+            <h3 id="<%= 'label_schedules_edit_' + schedule.id.to_s %>">Update Result</h3>
           </div>
           <div class="modal-body">
             <%= form_for schedule, :html => { :class => 'form-horizontal' } do |f| %>
