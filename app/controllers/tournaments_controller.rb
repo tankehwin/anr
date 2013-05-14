@@ -1,8 +1,10 @@
 class TournamentsController < ApplicationController
+  # before_filter :authenticate_organizer!, :only => [:new, :edit, :create, :update, :destroy]
   # GET /tournaments
   # GET /tournaments.json
   def index
     @tournaments = Tournament.paginate(:page => params[:page], :per_page => Var.per_page).order('created_at DESC')
+    @tournament = Tournament.new
     @title = "Tournament Navigator"
 
     respond_to do |format|
@@ -16,6 +18,8 @@ class TournamentsController < ApplicationController
   def show
     @tournament = Tournament.find(params[:id])
     @participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", @tournament.id, Var.bye_id], :include => :player)
+    @participant = Participant.new
+    @players = Player.find(:all, :conditions => ["id != ?", Var.bye_id])
     @rounds = @tournament.rounds.includes(:schedules => {:results => {:participant => :player}}).all
 
     respond_to do |format|

@@ -1,5 +1,6 @@
 class Tournament < ActiveRecord::Base
-  attr_accessible :description, :name, :organizer_id, :rating_multiplier, :state
+  attr_accessible :description, :flag, :name, :organizer_id, :rating_multiplier,
+                  :state
 
   belongs_to :organizer
   has_many :participants, :dependent => :destroy
@@ -17,6 +18,9 @@ class Tournament < ActiveRecord::Base
 
   def activate_points
     self.participants.each do |participant|
+      participant.results.each do |result|
+        participant.obtained_bye = true if result.opponent_id == Participant.bye(participant.tournament_id).id
+      end
       participant.active = true
       participant.save
     end

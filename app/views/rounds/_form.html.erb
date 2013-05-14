@@ -18,14 +18,14 @@
       <div class="control-group">
         <%= r.label :opponent_id, r.object.participant.player.name + " vs", :class => 'control-label' %>
         <div class="controls">
-          <%= r.select(:opponent_id, @participants.collect {|p| [p.player.name, p.id]}, :class => "select") -%>
+          <%= r.select(:opponent_id, @participants.collect {|p| [p.player.name, p.id]}, {}, {:style => "select", :multiple => "multiple"}) -%>
         </div>
       </div>
     <% end %>
   <% end %>
 
   <div class="form-actions">
-    <%= f.submit 'Update', :class => 'btn btn-primary' %>
-    <%= link_to 'Cancel', @round.tournament, :class => 'btn' %>
+    <%= f.submit 'Update', :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>
+    <%= link_to 'Cancel', @tournament, :class => 'btn' %>
   </div>
 <% end %>

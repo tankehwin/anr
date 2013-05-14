@@ -6,6 +6,7 @@ class CreateTournaments < ActiveRecord::Migration
       t.text    :description
       t.string  :state, :null => false, :default => "Tournament is not started."
       t.integer :rating_multiplier, :null => false, :default => 1
+      t.boolean :flag, :null => false, :default => false
       t.boolean :active, :null => false, :default => true
 
       t.timestamps

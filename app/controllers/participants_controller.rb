@@ -3,6 +3,7 @@ class ParticipantsController < ApplicationController
   # GET /participants/new.json
   def new
     @tournament = Tournament.find params[:tournament]
+    @participate = true
     redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
     @participant = Participant.new
     @players = Player.find(:all, :conditions => ["id != ?", Var.bye_id])
@@ -18,11 +19,7 @@ class ParticipantsController < ApplicationController
   def create
     @tournament = Tournament.find params[:participant][:tournament_id]
     redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
-    if params[:participant][:player_id]
-      @participant = Participant.find_by_tournament_id_and_player_id(params[:participant][:tournament_id], params[:participant][:player_id])
-      params_participant = Participant.initialize_rating(params[:participant])
-    end
-    @participant = Participant.new(params_participant) unless @participant
+    @participant = Participant.find_by_player_id_or_create(params[:participant])
 
     respond_to do |format|
       if @participant.id
@@ -33,9 +30,10 @@ class ParticipantsController < ApplicationController
         format.json { render json: @participant, status: :unprocessable_entity, location: @participant }
       else
         if @participant.save
-          format.html { redirect_to @participant.tournament, notice: 'Player was successfully added.' }
+          format.html { redirect_to @tournament, notice: 'Player was successfully added.' }
           format.json { render json: @participant, status: :created, location: @participant }
         else
+          @participate = true
           format.html { render action: "new" }
           format.json { render json: @participant.errors, status: :unprocessable_entity }
         end

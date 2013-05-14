@@ -54,4 +54,7 @@
 
 <%= will_paginate @players %>
 
-<%= link_to 'Add a New Player', new_player_path, :class => 'btn btn-primary' %>
+<%= link_to 'Add a New Player', new_player_path(:tournament => @tournament, :participant => @participate), :class => 'btn btn-primary' %>
+<%= link_to 'Back to Tournament Page', @tournament, :class => 'btn' if @tournament %>
+
+<br /><br />

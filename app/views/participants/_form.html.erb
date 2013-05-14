@@ -21,7 +21,7 @@
   </div>
 
   <div class="form-actions">
-    <%= f.submit 'Add Participant', :class => 'btn btn-primary' %>
+    <%= f.submit 'Add Participant', :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>
     <%= link_to 'Cancel', @tournament, :class => 'btn' %>
   </div>
 <% end %>

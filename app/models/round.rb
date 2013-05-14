@@ -1,5 +1,6 @@
 class Round < ActiveRecord::Base
-  attr_accessible :action, :end, :number, :schedules_attributes, :start, :state, :tournament_id
+  attr_accessible :action, :end, :number, :schedules_attributes, :start, :state,
+                  :tournament_id
 
   belongs_to :tournament
   has_many :schedules, :dependent => :destroy

@@ -7,6 +7,7 @@ gem 'rails', '3.2.11'
 
 gem 'pg'
 gem 'devise'
+gem 'recaptcha', :require => 'recaptcha/rails'
 gem 'will_paginate'
 gem 'bootstrap-will_paginate'
 gem 'rails_bootstrap_navbar', :git => 'git://github.com/julescopeland/Rails-Bootstrap-Navbar.git'

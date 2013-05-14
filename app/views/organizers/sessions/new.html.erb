@@ -1,0 +1,36 @@
+<div class="page-header">
+  <h2>Sign in</h2>
+</div>
+
+<%= form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => 'form-horizontal' }) do |f| %>
+  <div class="control-group">
+    <%= f.label :email, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.email_field :email, :autofocus => true, :class => 'email_field', :placeholder => "neo@thematrix.com" %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :password, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.password_field :password, :class => 'password_field' %>
+    </div>
+  </div>
+
+  <% if devise_mapping.rememberable? -%>
+    <div class="control-group">
+  	  <div class="controls">
+        <label class="checkbox">
+          <%= f.check_box :remember_me, :class => 'check_box' %> <%= f.label :remember_me %>
+        </label>
+      </div>
+    </div>
+  <% end -%>
+
+  <div class="form-actions">
+    <%= f.submit "Sign in", :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>
+    <%= link_to 'Cancel', :back, :class => 'btn' %>
+  </div>
+<% end %>
+
+<%= render "organizers/shared/links" %>

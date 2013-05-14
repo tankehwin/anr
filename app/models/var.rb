@@ -6,4 +6,8 @@ class Var < ActiveRecord::Base
   def self.per_page
   	100
   end
+
+  def self.default_email
+  	"neo@thematrix.com"
+  end
 end

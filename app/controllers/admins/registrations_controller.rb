@@ -1,6 +1,6 @@
 class Admins::RegistrationsController < Devise::RegistrationsController
   def create
-    if params[:admin][:authorization_code] == "aimac12345"
+    if params[:admin][:authorization_code] == "4NR@sentulasia.com"
       super
     else
       build_resource

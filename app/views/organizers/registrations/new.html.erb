@@ -1,0 +1,32 @@
+<div class="page-header">
+  <h2>Sign up</h2>
+</div>
+
+<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :class => 'form-horizontal' }) do |f| %>
+  <% if resource.errors.any? %>
+    <div class="alert alert-block alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <%= devise_error_messages! %>
+    </div>
+  <% end %>
+
+  <div class="control-group">
+    <%= f.label :email, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.email_field :email, :autofocus => true, :class => 'email_field', :placeholder => "neo@thematrix.com" %>
+    </div>
+  </div>
+
+  <div><%= f.label :password %><br />
+  <%= f.password_field :password %></div>
+
+  <div><%= f.label :password_confirmation %><br />
+  <%= f.password_field :password_confirmation %></div>
+
+  <div class="form-actions">
+    <%= f.submit "Sign up", :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>
+    <%= link_to 'Cancel', :back, :class => 'btn' %>
+  </div>
+<% end %>
+
+<%= render "organizers/shared/links" %>

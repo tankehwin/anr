@@ -1,5 +1,8 @@
 class Participant < ActiveRecord::Base
-  attr_accessible :active, :drop, :head_to_head, :match_points, :matches, :ogw, :omw, :pgw, :pmw, :place, :player_id, :prestiges, :rating, :rating_scores, :schedule_strength, :tournament_id
+  attr_accessible :active, :drop, :head_to_head, :match_points, :matches,
+                  :obtained_bye, :ogw, :omw, :pgw, :pmw, :place, :player_id,
+                  :prestiges, :rating, :rating_scores, :schedule_strength,
+                  :tournament_id
 
   belongs_to :player
   belongs_to :tournament
@@ -89,6 +92,15 @@ class Participant < ActiveRecord::Base
   end
 
   private
+
+  def self.find_by_player_id_or_create(params_participant)
+    if params_participant[:player_id]
+      participant = Participant.find_by_tournament_id_and_player_id(params_participant[:tournament_id], params_participant[:player_id])
+      params_participant = Participant.initialize_rating(params_participant)
+    end
+    participant = Participant.new(params_participant) unless participant
+    participant
+  end
 
   def self.initialize_rating(participant)
     participant[:place] = Participant.find_all_by_tournament_id(participant[:tournament_id]).count

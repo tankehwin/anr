@@ -14,9 +14,9 @@
     <%= menu_divider %>
     <%= menu_item "Home", root_path %>
     <%= drop_down "Navigation" do %>
-      <%= menu_item "Players Ranking", players_path %>
+      <%= menu_item "Players Ranking", players_path(:tournament => @tournament) %>
       <%= menu_item "Tournament Navigator", tournaments_path %>
-      <%= menu_item "Register New Player", new_player_path %>
+      <%= menu_item "Register New Player", new_player_path(:tournament => @tournament, :participant => @participate) %>
       <%= drop_down_divider %>
       <%= menu_item "Add a New Tournament", new_tournament_path %>
       <%# if current_player %>
@@ -41,5 +41,6 @@
 <div class="container">
   <%= yield %>
 </div>
+<div id="modal"><!-- Place at bottom of page --></div>
 </body>
 </html>

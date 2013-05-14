@@ -3,3 +3,5 @@
 </div>
 
 <%= render 'form' %>
+
+<%= link_to 'Register New Player', new_player_path(:tournament => @tournament, :participant => @participate), :class => 'btn' %>

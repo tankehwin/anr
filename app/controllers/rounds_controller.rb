@@ -3,8 +3,9 @@ class RoundsController < ApplicationController
   # GET /rounds/1.json
   def show
     @round = Round.find(params[:id], :include => :tournament)
-    @participants = @round.tournament.participants.includes(:player).all
-    @participant_bye = Participant.bye(@round.tournament_id)
+    @tournament = @round.tournament
+    @participants = @tournament.participants.includes(:player).all
+    @participant_bye = Participant.bye(@tournament.id)
     @schedules = @round.schedules.includes(:results => {:participant => :player}).all
 
     respond_to do |format|
@@ -29,19 +30,18 @@ class RoundsController < ApplicationController
 
   # GET /rounds/1/edit
   def edit
+    @round = Round.find(params[:id], :include => :tournament)
+    @tournament = @round.tournament
+    redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
     if params[:trigger] == "Manual" or params[:trigger] == "Modify"
-      @round = Round.find(params[:id], :include => :tournament)
-      redirect_to @round.tournament, notice: @round.tournament.state and return if @round.tournament.state == "Tournament is closed."
       @schedules = Schedule.calculate_schedule(@round, params[:trigger])
       @round = Round.find(params[:id]) if params[:trigger] == "Manual"
-      @participants = Participant.find(:all, :conditions => ["tournament_id = ?", @round.tournament_id], :include => :player)
-      @participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", @round.tournament_id, Var.bye_id], :include => :player) if (@participants.count - 1).even?
+      @participants = Participant.find(:all, :conditions => ["tournament_id = ?", @tournament.id], :include => :player)
+      @participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", @tournament.id, Var.bye_id], :include => :player) if (@participants.count - 1).even?
     else
-      @round = Round.find(params[:id], :include => :tournament)
-      redirect_to @round.tournament, notice: @round.tournament.state and return if @round.tournament.state == "Tournament is closed."
       notice = Round.trigger(@round, params[:trigger])
       respond_to do |format|
-        format.html { redirect_to @round.tournament, notice: notice }
+        format.html { redirect_to @tournament, notice: notice }
         format.json { render json: @round }
       end
     end
@@ -51,29 +51,18 @@ class RoundsController < ApplicationController
   # PUT /rounds/1.json
   def update
     @round = Round.find(params[:id], :include => :tournament)
-    redirect_to @round.tournament, notice: @round.tournament.state and return if @round.tournament.state == "Tournament is closed."
+    @tournament = @round.tournament
+    redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
 
     respond_to do |format|
       if @round.update_attributes(params[:round])
         @round.update_table
-        format.html { redirect_to @round.tournament, notice: 'Schedule was successfully updated.' }
+        format.html { redirect_to @tournament, notice: 'Schedule was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }
         format.json { render json: @round.errors, status: :unprocessable_entity }
       end
-    end
-  end
-
-  # DELETE /rounds/1
-  # DELETE /rounds/1.json
-  def destroy
-    @round = Round.find(params[:id])
-    @round.destroy
-
-    respond_to do |format|
-      format.html { redirect_to @round.tournament }
-      format.json { head :no_content }
     end
   end
 end

@@ -46,4 +46,46 @@
 
 <%= will_paginate @players %>
 
-<%= link_to 'Add a New Tournament', new_tournament_path, :class => 'btn btn-primary' %>
+<%= link_to 'Add a New Tournament', '#tournaments_new', :class => 'btn btn-primary', :"data-toggle" => 'modal' %>
+
+<div id="tournaments_new" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3 id="myModalLabel">Add a New Tournament</h3>
+  </div>
+  <div class="modal-body">
+    <%= form_for @tournament, :html => { :class => 'form-horizontal' } do |f| %>
+      <% if @tournament.errors.any? %>
+        <div class="alert alert-block alert-error">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <h2><%= pluralize(@tournament.errors.count, "error") %> prohibited this tournament from being saved:</h2>
+
+          <ul>
+          <% @tournament.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="control-group">
+        <%= f.label :name, :class => 'control-label' %>
+        <div class="controls">
+          <%= f.text_field :name, :class => 'text_field' %>
+        </div>
+      </div>
+      <div class="control-group">
+        <%= f.label :description, :class => 'control-label' %>
+        <div class="controls">
+          <%= f.text_area :description, :class => 'text_area' %>
+        </div>
+      </div>
+  </div>
+  <div class="modal-footer">
+      <%= link_to 'Close', '#', :class => 'btn', :"data-dismiss" => 'modal', :"aria-hidden" => true %>
+      <%= f.submit nil, :class => 'btn btn-primary' %>
+    <% end %>
+  </div>
+</div>
+
+<br /><br />
