@@ -1,7 +1,8 @@
 class Organizers::RegistrationsController < Devise::RegistrationsController
   def create
     if verify_recaptcha(:model => resource, :timeout => 10, :message => "Are you human? The code you entered is not valid.")
-      if organizer = Organizer.find_by_email resource.email
+      organizer = Organizer.find_by_email resource.email if resource.email
+      if organizer
         organizer.active = true
         organizer.save
         sign_in resource_name, resource, :bypass => true
