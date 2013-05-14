@@ -16,10 +16,12 @@
 <% end %>
 
 <dl class="dl-horizontal">
-  <dt><strong>Status:</strong></dt>
-  <dd><%= @tournament.state %></dd>
   <dt><strong>Multiplier:</strong></dt>
   <dd><%= @tournament.rating_multiplier %></dd>
+  <dt><strong>Status:</strong></dt>
+  <dd><%= @tournament.state %></dd>
+  <dt><strong>Description:</strong></dt>
+  <dd><%= @tournament.description %></dd>
 </dl>
 
 <div class="form-actions">

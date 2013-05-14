@@ -20,9 +20,6 @@ class TournamentsController < ApplicationController
     @participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", @tournament.id, Var.bye_id], :include => :player)
     @participant = Participant.new
     @players = Player.find(:all, :conditions => ["id != ?", Var.bye_id])
-    @player = Player.new
-    @password = (10000000000000 + rand(89999999999999)).to_s(36)
-    @default_email = Var.default_email
     @rounds = @tournament.rounds.includes(:schedules => {:results => {:participant => :player}}).all
 
     respond_to do |format|
