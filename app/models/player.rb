@@ -49,7 +49,7 @@ class Player < ActiveRecord::Base
   def self.activate_or_create(params_player)
     if params_player[:email] and not params_player[:email].blank?
       player = Player.find_by_email params_player[:email]
-      player.active = true
+      player.active = true if player
     end
     unless player
       player = Player.new(params_player)
