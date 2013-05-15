@@ -12,23 +12,31 @@
     </div>
   <% end %>
 
-  <fieldset>
-    <div class="control-group">
-      <%= f.label :email, :class => 'control-label' %>
-      <div class="controls">
-        <%= f.email_field :email, :autofocus => true, :class => 'email_field', :placeholder => @default_email %>
-        <%= f.hidden_field :tournament_id, value: @tournament.id if @participate %>
+  <div class="row">
+    <fieldset>
+      <div class="span12">
+        <div class="control-group">
+          <%= f.label :email, :class => 'control-label' %>
+          <div class="controls">
+            <%= f.email_field :email, :autofocus => true, :class => 'email_field', :placeholder => @default_email %>
+            <%= f.hidden_field :tournament_id, value: @tournament.id if @participate %>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="control-group">
-      <%= f.label :name, :class => 'control-label' %>
-      <div class="controls">
-        <%= f.text_field :name, :class => 'text_field' %>
-        <%= f.hidden_field :password, value: @password %>
-        <%= f.hidden_field :password_confirmation, value: @password %>
+  </div>
+  <div class="row">
+      <div class="span12">
+        <div class="control-group">
+          <%= f.label :name, :class => 'control-label' %>
+          <div class="controls">
+            <%= f.text_field :name, :class => 'text_field' %>
+            <%= f.hidden_field :password, value: @password %>
+            <%= f.hidden_field :password_confirmation, value: @password %>
+          </div>
+        </div>
       </div>
-    </div>
-</fieldset>
+    </fieldset>
+  </div>
 
   <div class="form-actions">
     <%= f.submit nil, :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>

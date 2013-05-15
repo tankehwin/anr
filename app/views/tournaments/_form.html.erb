@@ -12,20 +12,28 @@
     </div>
   <% end %>
 
-  <fieldset>
-    <div class="control-group clearfix">
-      <%= f.label :name, :autofocus => true, :class => 'control-label' %>
-      <div class="controls">
-        <%= f.text_field :name, :class => 'text_field' %>
+  <div class="row">
+    <fieldset>
+      <div class="span12">
+        <div class="control-group clearfix">
+          <%= f.label :name, :class => 'control-label' %>
+          <div class="controls">
+            <%= f.text_field :name, :autofocus => true, :class => 'text_field' %>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="control-group clearfix">
-      <%= f.label :description, :class => 'control-label' %>
-      <div class="controls">
-        <%= f.text_area :description, :class => 'text_area' %>
+  </div>
+  <div class="row">
+      <div class="span12">
+        <div class="control-group clearfix">
+          <%= f.label :description, :class => 'control-label' %>
+          <div class="controls">
+            <%= f.text_area :description, :class => 'text_area' %>
+          </div>
+        </div>
       </div>
-    </div>
-  </fieldset>
+    </fieldset>
+  </div>
   
   <div class="form-actions">
     <%= f.submit nil, :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>
