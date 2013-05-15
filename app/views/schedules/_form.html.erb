@@ -12,20 +12,22 @@
     </div>
   <% end %>
 
-  <%= f.fields_for :results do |r| %>
-    <div class="control-group">
-      <%= r.label :corp_match_points, r.object.participant.player.name + "'s Match Points as Corporation", :class => 'control-label' %>
-      <div class="controls">
-        <%= r.number_field :corp_match_points, :class => 'number_field' %>
+  <fieldset>
+    <%= f.fields_for :results do |r| %>
+      <div class="control-group">
+        <%= r.label :corp_match_points, r.object.participant.player.name + "'s Match Points as Corporation", :class => 'control-label' %>
+        <div class="controls">
+          <%= r.number_field :corp_match_points, :class => 'number_field' %>
+        </div>
       </div>
-    </div>
-    <div class="control-group">
-      <%= r.label :runner_match_points, r.object.participant.player.name + "'s Match Points as Runner", :class => 'control-label' %>
-      <div class="controls">
-        <%= r.number_field :runner_match_points, :class => 'number_field' %>
+      <div class="control-group">
+        <%= r.label :runner_match_points, r.object.participant.player.name + "'s Match Points as Runner", :class => 'control-label' %>
+        <div class="controls">
+          <%= r.number_field :runner_match_points, :class => 'number_field' %>
+        </div>
       </div>
-    </div>
-  <% end %>
+    <% end %>
+</fieldset>
 
   <div class="form-actions">
     <%= f.submit 'Submit', :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>

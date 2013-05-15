@@ -12,13 +12,15 @@
     </div>
   <% end %>
 
-  <div class="control-group">
-    <%= f.label :player_id, :class => 'control-label' %>
-    <div class="controls">
-      <%= f.collection_select :player_id, @players, :id, :name, {}, {:class => "collection_select"} %>
-      <%= f.hidden_field :tournament_id, value: params[:tournament] %>
+  <fieldset>
+    <div class="control-group">
+      <%= f.label :player_id, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.collection_select :player_id, @players, :id, :name, {}, {:class => "collection_select"} %>
+        <%= f.hidden_field :tournament_id, value: params[:tournament] %>
+      </div>
     </div>
-  </div>
+</fieldset>
 
   <div class="form-actions">
     <%= f.submit 'Add Participant', :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>

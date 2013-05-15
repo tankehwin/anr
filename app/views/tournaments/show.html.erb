@@ -1,3 +1,15 @@
+<% content_for(:head) do %>
+  <script type="text/javascript">
+      $("#tournaments_edit_3").dialog2({
+          buttons: {
+              "Close": function() {
+                  $(this).dialog2("close");
+              } 
+          }
+      });
+  </script>
+<% end %>
+
 <div class="page-header">
   <h1>Tournament: <%= @tournament.name %></h1>
 </div>
@@ -43,14 +55,14 @@
       </ul>
     <% end %>
   </div>
-  <%= link_to 'Edit Details', '#tournaments_edit_3', :class => 'btn', :"data-toggle" => 'modal' unless @tournament.state == "Tournament is closed." %>
+  <%= link_to 'Edit Details', '#tournaments_edit_' + @tournament.id.to_s, :class => 'btn open-dialog', :"data-toggle" => 'modal' unless @tournament.state == "Tournament is closed." %>
   <%= link_to 'Close', edit_tournament_path(@tournament, :trigger => "Close"), data: { confirm: 'This action would terminate all unfinished rounds and propagate tournament score table into players score table. Do you want to proceed?' }, :class => 'btn btn-danger' unless @rounds.empty? or @tournament.state == "Tournament is closed." or @participants.count < 2 %>
 </div>
 
-<div id="tournaments_edit_3" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="label_tournaments_edit_3" aria-hidden="true">
+<div id="<%= 'tournaments_edit_' + @tournament.id.to_s %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="label_participants_new" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3 id="label_tournaments_edit_3">Edit Tournament Details</h3>
+    <h3 id="label_participants_new">Add a New Participant</h3>
   </div>
   <div class="modal-body">
     <%= form_for @tournament, :html => { :class => 'form-horizontal' } do |f| %>
@@ -67,20 +79,24 @@
         </div>
       <% end %>
 
-      <div class="control-group">
-        <%= f.label :name, :class => 'control-label' %>
-        <div class="controls">
-          <%= f.text_field :name, :class => 'text_field' %>
+      <fieldset>
+        <div class="control-group clearfix">
+          <%= f.label :name, :autofocus => true, :class => 'control-label' %>
+          <div class="controls">
+            <%= f.text_field :name, :class => 'text_field' %>
+          </div>
         </div>
-      </div>
-      <div class="control-group">
-        <%= f.label :description, :class => 'control-label' %>
-        <div class="controls">
-          <%= f.text_area :description, :class => 'text_area' %>
+        <div class="control-group clearfix">
+          <%= f.label :description, :class => 'control-label' %>
+          <div class="controls">
+            <%= f.text_area :description, :class => 'text_area' %>
+          </div>
         </div>
-      </div>
+      </fieldset>
+
   </div>
   <div class="modal-footer">
+      
       <%= link_to 'Close', '#', :class => 'btn', :"data-dismiss" => 'modal', :"aria-hidden" => true %>
       <%= f.submit nil, :class => 'btn btn-primary' %>
     <% end %>
@@ -173,13 +189,15 @@
         </div>
       <% end %>
 
-      <div class="control-group">
-        <%= f.label :player_id, :class => 'control-label' %>
-        <div class="controls">
-          <%= f.collection_select :player_id, @players, :id, :name, {}, {:class => "collection_select"} %>
-          <%= f.hidden_field :tournament_id, value: @tournament.id %>
+      <fieldset>
+        <div class="control-group">
+          <%= f.label :player_id, :class => 'control-label' %>
+          <div class="controls">
+            <%= f.collection_select :player_id, @players, :id, :name, {}, {:class => "collection_select"} %>
+            <%= f.hidden_field :tournament_id, value: @tournament.id %>
+          </div>
         </div>
-      </div>
+      </fieldset>
   </div>
   <div class="modal-footer">
       <%= link_to 'Close', '#', :class => 'btn', :"data-dismiss" => 'modal', :"aria-hidden" => true %>
@@ -253,20 +271,22 @@
                 </div>
               <% end %>
 
-              <%= f.fields_for :results do |r| %>
-                <div class="control-group">
-                  <%= r.label :corp_match_points, r.object.participant.player.name + "'s Match Points as Corporation", :class => 'control-label' %>
-                  <div class="controls">
-                    <%= r.number_field :corp_match_points, :class => 'number_field' %>
+              <fieldset>
+                <%= f.fields_for :results do |r| %>
+                  <div class="control-group">
+                    <%= r.label :corp_match_points, r.object.participant.player.name + "'s Match Points as Corporation", :class => 'control-label' %>
+                    <div class="controls">
+                      <%= r.number_field :corp_match_points, :class => 'number_field' %>
+                    </div>
                   </div>
-                </div>
-                <div class="control-group">
-                  <%= r.label :runner_match_points, r.object.participant.player.name + "'s Match Points as Runner", :class => 'control-label' %>
-                  <div class="controls">
-                    <%= r.number_field :runner_match_points, :class => 'number_field' %>
+                  <div class="control-group">
+                    <%= r.label :runner_match_points, r.object.participant.player.name + "'s Match Points as Runner", :class => 'control-label' %>
+                    <div class="controls">
+                      <%= r.number_field :runner_match_points, :class => 'number_field' %>
+                    </div>
                   </div>
-                </div>
-              <% end %>
+                <% end %>
+              </fieldset>
           </div>
           <div class="modal-footer">
               <%= link_to 'Close', '#', :class => 'btn', :"data-dismiss" => 'modal', :"aria-hidden" => true %>
