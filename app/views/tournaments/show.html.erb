@@ -98,7 +98,7 @@
   <div class="modal-footer">
       
       <%= link_to 'Close', '#', :class => 'btn', :"data-dismiss" => 'modal', :"aria-hidden" => true %>
-      <%= f.submit nil, :class => 'btn btn-primary' %>
+      <%= f.submit nil, :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>
     <% end %>
   </div>
 </div>
@@ -202,7 +202,7 @@
   <div class="modal-footer">
       <%= link_to 'Close', '#', :class => 'btn', :"data-dismiss" => 'modal', :"aria-hidden" => true %>
       <%= link_to 'Register New Player', new_player_path(:tournament => @tournament, :participant => @participate), :class => 'btn' %>
-      <%= f.submit 'Add Participant', :class => 'btn btn-primary' %>
+      <%= f.submit 'Add Participant', :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>
     <% end %>
   </div>
 </div>
@@ -290,7 +290,7 @@
           </div>
           <div class="modal-footer">
               <%= link_to 'Close', '#', :class => 'btn', :"data-dismiss" => 'modal', :"aria-hidden" => true %>
-              <%= f.submit 'Submit', :class => 'btn btn-primary' %>
+              <%= f.submit 'Submit', :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>
             <% end %>
           </div>
         </div>

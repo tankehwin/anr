@@ -28,7 +28,7 @@
   </fieldset>
   
   <div class="form-actions">
-    <%= f.submit nil, :class => 'btn btn-primary' %>
+    <%= f.submit nil, :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>
     <%= link_to 'Cancel', :back, :class => 'btn' %>
   </div>
 <% end %>
