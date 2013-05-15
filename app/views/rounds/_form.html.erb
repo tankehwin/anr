@@ -14,15 +14,19 @@
 
   <fieldset>
     <%= f.fields_for :schedules do |s| %>
+      <div class="row">
       <%= s.hidden_field :table, value: s.object.table %>
-      <%= s.fields_for :results do |r| %>
-        <div class="control-group">
-          <%= r.label :opponent_id, r.object.participant.player.name + " vs", :class => 'control-label' %>
-          <div class="controls">
-            <%= r.select(:opponent_id, @participants.collect {|p| [p.player.name, p.id]}, {}, {:style => "select", :multiple => "multiple"}) -%>
+        <%= s.fields_for :results do |r| %>
+          <div class="span4">
+            <div class="control-group">
+              <%= r.label :opponent_id, r.object.participant.player.name + " vs", :class => 'control-label' %>
+              <div class="controls">
+                <%= r.select(:opponent_id, @participants.collect {|p| [p.player.name, p.id]}, {}, {:style => "select", :multiple => "multiple"}) -%>
+              </div>
+            </div>
           </div>
-        </div>
-      <% end %>
+        <% end %>
+      </div>
     <% end %>
   </fieldset>
 
