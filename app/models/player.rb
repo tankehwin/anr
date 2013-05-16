@@ -23,7 +23,7 @@ class Player < ActiveRecord::Base
   has_many :participants
   has_many :player_services
 
-  validates :email, :email => true
+  validates :email, :email => true, :length => { :in => 6..140 }
   validates :name, :presence => true, :length => { :in => 2..140 }
 
   after_create :create_participant, :if => :has_participant?

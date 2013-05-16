@@ -8,6 +8,7 @@ class Tournament < ActiveRecord::Base
   has_many :rounds, :dependent => :destroy
 
   validates :name, :presence => true, :length => { :in => 4..140 }
+  validates :organizer_id, :presence => true, :numericality => { :only_integer => true }
 
   after_create :seed_bye
 

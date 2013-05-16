@@ -126,6 +126,8 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
     t.float    "pgw",               :default => 0.0,    :null => false
     t.float    "ogw",               :default => 0.0,    :null => false
     t.boolean  "obtained_bye",      :default => false,  :null => false
+    t.integer  "bye_prestiges"
+    t.integer  "bye_match_points"
     t.boolean  "drop",              :default => false,  :null => false
     t.boolean  "active",            :default => false,  :null => false
     t.datetime "created_at",                            :null => false
@@ -176,11 +178,14 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
     t.datetime "locked_at"
     t.string   "authentication_token"
     t.string   "username",               :default => "",     :null => false
+    t.string   "login"
     t.string   "name",                   :default => "",     :null => false
     t.integer  "prestiges",              :default => 0,      :null => false
     t.integer  "match_points",           :default => 0,      :null => false
     t.integer  "matches",                :default => 0,      :null => false
     t.integer  "matches_with_bye",       :default => 0,      :null => false
+    t.integer  "bye_prestiges",          :default => 0,      :null => false
+    t.integer  "bye_match_points",       :default => 0,      :null => false
     t.integer  "tournaments",            :default => 0,      :null => false
     t.float    "rating",                 :default => 1400.0, :null => false
     t.integer  "country_id",             :default => 122,    :null => false
@@ -193,6 +198,7 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   add_index "players", ["authentication_token"], :name => "index_players_on_authentication_token", :unique => true
   add_index "players", ["confirmation_token"], :name => "index_players_on_confirmation_token", :unique => true
   add_index "players", ["email"], :name => "index_players_on_email", :unique => true
+  add_index "players", ["login"], :name => "index_players_on_login", :unique => true
   add_index "players", ["match_points"], :name => "index_players_on_match_points"
   add_index "players", ["matches"], :name => "index_players_on_matches"
   add_index "players", ["prestiges"], :name => "index_players_on_prestiges"

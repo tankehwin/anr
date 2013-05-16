@@ -11,6 +11,7 @@ class Organizer < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :remember_me,
                   :active, :authentication_code, :name, :username, :time_zone
 
+  validates :email, :email => true, :length => { :in => 6..140 }
   validates :name, :presence => true, :length => { :in => 2..140 }
 
   has_many :organizer_services

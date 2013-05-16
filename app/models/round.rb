@@ -6,6 +6,7 @@ class Round < ActiveRecord::Base
   has_many :schedules, :dependent => :destroy
 
   accepts_nested_attributes_for :schedules
+  validates :tournament_id, :presence => true, :numericality => { :only_integer => true }
 
   validates_associated :schedules
 

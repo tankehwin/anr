@@ -12,5 +12,6 @@ class Admin < ActiveRecord::Base
   attr_accessible :name, :email, :password, :password_confirmation, :remember_me,
                   :active, :authorization_code
 
+  validates :email, :email => true, :length => { :in => 6..140 }
   validates :name, :presence => true, :length => { :in => 2..140 }
 end

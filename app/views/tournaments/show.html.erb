@@ -262,8 +262,8 @@
                         <%= r.label :corp_match_points, r.object.participant.player.name + "'s Match Points as Corporation", :class => 'control-label' if flag %>
                         <%= r.label :runner_match_points, r.object.participant.player.name + "'s Match Points as Runner", :class => 'control-label' unless flag %>
                         <div class="controls">
-                          <%= r.number_field :corp_match_points, :class => 'number_field' if flag %>
-                          <%= r.number_field :runner_match_points, :class => 'number_field' unless flag %>
+                          <%= r.select :corp_match_points, options_for_select([ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ], :selected => "0"), {}, {:class => "select"} if flag %>
+                          <%= r.select :runner_match_points, options_for_select([ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ], :selected => "0"), {}, {:class => "select"} unless flag %>
                         </div>
                       </div>
                     </div>
@@ -272,8 +272,8 @@
                         <%= r.label :runner_match_points, r.object.participant.player.name + "'s Match Points as Runner", :class => 'control-label' if flag %>
                         <%= r.label :corp_match_points, r.object.participant.player.name + "'s Match Points as Corporation", :class => 'control-label' unless flag %>
                         <div class="controls">
-                          <%= r.number_field :runner_match_points, :class => 'number_field' if flag %>
-                          <%= r.number_field :corp_match_points, :class => 'number_field' unless flag %>
+                          <%= r.select :runner_match_points, options_for_select([ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ], :selected => "0"), {}, {:class => "select"} if flag %>
+                          <%= r.select :corp_match_points, options_for_select([ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ], :selected => "0"), {}, {:class => "select"} unless flag %>
                         </div>
                       </div>
                     </div>
