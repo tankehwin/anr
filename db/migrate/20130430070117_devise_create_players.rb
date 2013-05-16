@@ -35,6 +35,7 @@ class DeviseCreatePlayers < ActiveRecord::Migration
 
 
       t.string  :username,          :null => false, :default => ""
+      t.string  :login
       t.string  :name,              :null => false, :default => ""
       t.integer :prestiges,         :null => false, :default => 0
       t.integer :match_points,      :null => false, :default => 0
@@ -50,12 +51,13 @@ class DeviseCreatePlayers < ActiveRecord::Migration
       t.timestamps
     end
     
-    add_index :players, :email,                :unique => true
-    add_index :players, :reset_password_token, :unique => true
-    add_index :players, :confirmation_token,   :unique => true
-    add_index :players, :unlock_token,         :unique => true
-    add_index :players, :authentication_token, :unique => true
-    add_index :players, :username,             :unique => true
+    add_index :players, :email,                 :unique => true
+    add_index :players, :reset_password_token,  :unique => true
+    add_index :players, :confirmation_token,    :unique => true
+    add_index :players, :unlock_token,          :unique => true
+    add_index :players, :authentication_token,  :unique => true
+    add_index :players, :username,              :unique => true
+    add_index :players, :login,                 :unique => true
     add_index :players, :prestiges
     add_index :players, :match_points
     add_index :players, :matches

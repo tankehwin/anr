@@ -11,8 +11,8 @@ class Player < ActiveRecord::Base
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me,
                   :active, :bye_match_points, :bye_prestiges, :country_id,
-                  :match_points, :matches, :matches_with_bye, :name, :prestiges,
-                  :rating, :tournament_id, :tournaments, :username
+                  :login, :match_points, :matches, :matches_with_bye, :name,
+                  :prestiges, :rating, :tournament_id, :tournaments, :username
 
   attr_accessible :email, :password, :password_confirmation, :remember_me,
                   :active, :bye_match_points, :bye_prestiges, :country_id,
