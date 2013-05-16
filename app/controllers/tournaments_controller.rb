@@ -1,11 +1,10 @@
 class TournamentsController < ApplicationController
-  # before_filter :authenticate_organizer!, :only => [:new, :edit, :create, :update, :destroy]
+  before_filter :authenticate_organizer!, :only => [:new, :edit, :create, :update, :destroy]
   # GET /tournaments
   # GET /tournaments.json
   def index
     @tournaments = Tournament.paginate(:page => params[:page], :per_page => Var.per_page).order('created_at DESC')
     @tournament = Tournament.new
-    @title = "Tournament Navigator"
 
     respond_to do |format|
       format.html # index.html.erb
@@ -19,6 +18,7 @@ class TournamentsController < ApplicationController
     @tournament = Tournament.find(params[:id])
     @participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", @tournament.id, Var.bye_id], :include => :player)
     @participant = Participant.new
+    @participate = true
     @players = Player.find(:all, :conditions => ["id != ?", Var.bye_id])
     @rounds = @tournament.rounds.includes(:schedules => {:results => {:participant => :player}}).all
 
@@ -56,8 +56,7 @@ class TournamentsController < ApplicationController
   # POST /tournaments
   # POST /tournaments.json
   def create
-    @tournament = Tournament.new(params[:tournament])
-    params[:tournament][:state] = "Tournament is not started."
+    @tournament = Tournament.create_new(params[:tournament], current_organizer.id)
 
     respond_to do |format|
       if @tournament.save
@@ -92,7 +91,8 @@ class TournamentsController < ApplicationController
   def destroy
     @tournament = Tournament.find(params[:id])
     redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
-    @tournament.destroy
+    @tournament.active = false
+    @tournament.save
 
     respond_to do |format|
       format.html { redirect_to tournaments_url }

@@ -10,12 +10,14 @@ class Player < ActiveRecord::Base
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me,
-                  :active, :country_id, :match_points, :matches, :matches_with_bye,
-                  :name, :prestiges, :rating, :tournament_id, :tournaments, :username
+                  :active, :bye_match_points, :bye_prestiges, :country_id,
+                  :match_points, :matches, :matches_with_bye, :name, :prestiges,
+                  :rating, :tournament_id, :tournaments, :username
 
   attr_accessible :email, :password, :password_confirmation, :remember_me,
-                  :active, :country_id, :match_points, :matches, :matches_with_bye,
-                  :name, :prestiges, :rating, :tournaments, :username, :as => :seed
+                  :active, :bye_match_points, :bye_prestiges, :country_id,
+                  :match_points, :matches, :matches_with_bye, :name, :prestiges,
+                  :rating, :tournaments, :username, :as => :seed
 
   belongs_to :country
   has_many :participants
@@ -37,9 +39,13 @@ class Player < ActiveRecord::Base
   	  participant.player.prestiges = participants.map(&:prestiges).sum
   	  participant.player.match_points = participants.map(&:match_points).sum
   	  participant.player.matches = participants.map(&:matches).sum
-      participant.player.matches_with_bye = participant.player.matches_with_bye + 1 if participant.obtained_bye
+      if participant.obtained_bye
+        participant.player.matches_with_bye = participant.player.matches_with_bye + 1
+        participant.player.bye_prestiges = participant.player.bye_prestiges + participant.bye_prestiges
+        participant.player.bye_match_points = participant.player.bye_match_points + participant.bye_match_points
+      end
   	  participant.player.tournaments = participants.count
-      participant.player.rating = (participant.player.rating + participant.rating + participant.rating_scores) / 2
+      participant.player.rating = participant.player.rating + participant.rating_scores
   	  participant.player.save
     end
   end

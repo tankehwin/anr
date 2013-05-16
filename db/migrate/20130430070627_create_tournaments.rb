@@ -1,7 +1,7 @@
 class CreateTournaments < ActiveRecord::Migration
   def change
     create_table :tournaments do |t|
-      t.string  :organizer_id
+      t.string  :organizer_id, :null => false
       t.string  :name, :null => false
       t.text    :description
       t.string  :state, :null => false, :default => "Tournament is not started."

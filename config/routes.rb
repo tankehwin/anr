@@ -2,15 +2,18 @@ Anr::Application.routes.draw do
   resources :pages, :only => :index
   get 'about_us' => 'pages#about', :as => :about_us
   get 'contact' => 'pages#contact', :as => :contact
+  # devise_for :players
+  devise_for :organizers, controllers: { registrations: 'organizers/registrations' }
+  devise_for :admins, controllers: { registrations: 'admins/registrations' }
 
 
   resources :schedules, :only => [:new, :edit, :update]
 
 
-  resources :participants, :only => [:new, :create, :destroy]
-
-
   resources :rounds, :except => [:index, :create, :destroy]
+
+
+  resources :participants, :only => [:new, :create, :destroy]
 
 
   resources :tournaments
@@ -25,10 +28,7 @@ Anr::Application.routes.draw do
   # resources :organizer_services
 
 
-  devise_for :organizers
-
-
-  devise_for :admins, controllers: { registrations: 'admins/registrations' }
+  resources :organizers, :only => :show
 
 
   # The priority is based upon order of creation:

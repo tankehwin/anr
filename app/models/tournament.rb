@@ -17,16 +17,29 @@ class Tournament < ActiveRecord::Base
   end
 
   def activate_points
+    participant_bye = Participant.bye(self.id)
     self.participants.each do |participant|
-      participant.results.each do |result|
-        participant.obtained_bye = true if result.opponent_id == Participant.bye(participant.tournament_id).id
+      unless participant == participant_bye
+        participant.results.each do |result|
+          if result.opponent_id == participant_bye.id
+            participant.obtained_bye = true
+            participant.bye_prestiges = result.prestige
+            participant.bye_match_points = result.corp_match_points + result.runner_match_points
+          end
+        end
+        participant.active = true
+        participant.save
       end
-      participant.active = true
-      participant.save
     end
   end
 
   private
+
+  def self.create_new(tournament, current_organizer_id)
+    tournament[:state] = "Tournament is not started."
+    tournament[:organizer_id] = current_organizer_id
+    Tournament.new(tournament)
+  end
 
   def self.trigger(tournament, trigger)
     tournament.closed

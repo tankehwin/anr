@@ -5,9 +5,11 @@ class Organizer < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable,
          :token_authenticatable
 
+  attr_accessor :authentication_code
+
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me,
-                  :active, :username, :name, :timezone
+                  :active, :authentication_code, :name, :username, :time_zone
 
   validates :name, :presence => true, :length => { :in => 2..140 }
 

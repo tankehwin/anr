@@ -125,6 +125,7 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
     t.float    "omw",               :default => 0.0,    :null => false
     t.float    "pgw",               :default => 0.0,    :null => false
     t.float    "ogw",               :default => 0.0,    :null => false
+    t.boolean  "obtained_bye",      :default => false,  :null => false
     t.boolean  "drop",              :default => false,  :null => false
     t.boolean  "active",            :default => false,  :null => false
     t.datetime "created_at",                            :null => false
@@ -179,6 +180,7 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
     t.integer  "prestiges",              :default => 0,      :null => false
     t.integer  "match_points",           :default => 0,      :null => false
     t.integer  "matches",                :default => 0,      :null => false
+    t.integer  "matches_with_bye",       :default => 0,      :null => false
     t.integer  "tournaments",            :default => 0,      :null => false
     t.float    "rating",                 :default => 1400.0, :null => false
     t.integer  "country_id",             :default => 122,    :null => false
@@ -245,11 +247,12 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   add_index "schedules", ["round_id"], :name => "index_schedules_on_round_id"
 
   create_table "tournaments", :force => true do |t|
-    t.string   "organizer_id"
+    t.string   "organizer_id",                                                :null => false
     t.string   "name",                                                        :null => false
     t.text     "description"
     t.string   "state",             :default => "Tournament is not started.", :null => false
     t.integer  "rating_multiplier", :default => 1,                            :null => false
+    t.boolean  "flag",              :default => false,                        :null => false
     t.boolean  "active",            :default => true,                         :null => false
     t.datetime "created_at",                                                  :null => false
     t.datetime "updated_at",                                                  :null => false

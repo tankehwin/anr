@@ -8,12 +8,6 @@
     <%= notice %>
   </div>
 <% end %>
-<% if alert %>
-  <div class="alert">
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-    <%= alert %>
-  </div>
-<% end %>
 
 <dl class="dl-horizontal">
   <dt><strong>Multiplier:</strong></dt>
@@ -31,7 +25,7 @@
       <%= link_to "<span class='caret'></span>".html_safe, '#', :"data-toggle" => 'dropdown', :class => 'btn btn-primary' %>
       <ul class="dropdown-menu">
         <li><%#= link_to 'With Playoff', "#" %></li>
-        <li><%= link_to 'Without Playoff', new_round_path(:tournament => @tournament.id) %></li>
+        <li><%= link_to 'Without Playoff', new_round_path(:tournament => @tournament.id), :onclick => "$(body).addClass('loading');" %></li>
       </ul>
     <% end %>
     <% unless @rounds.empty? or @tournament.state == "Tournament is closed." %>
@@ -39,7 +33,7 @@
       <%= link_to "<span class='caret'></span>".html_safe, '#', :"data-toggle" => 'dropdown', :class => 'btn' %>
       <ul class="dropdown-menu">
         <li><%#= link_to 'With Playoff', "#" %></li>
-        <li><%= link_to 'Without Playoff', new_round_path(:tournament => @tournament.id), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
+        <li><%= link_to 'Without Playoff', new_round_path(:tournament => @tournament.id), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' }, :onclick => "$(body).addClass('loading');" %></li>
       </ul>
     <% end %>
   </div>
@@ -112,8 +106,8 @@
         <td><%= round.end %></td>
         <td><%= round.state %></td>
         <td>
-          <%= link_to round.action, new_schedule_path(:round => round.id, :trigger => round.action), :class => 'btn btn-mini' if round.action == "Schedule" and @participants.count > 1 %>
-          <%= link_to round.action, edit_round_path(round, :trigger => round.action), :class => 'btn btn-mini' if round.action == "Start" or round.action == "End" and @participants.count > 1 %>
+          <%= link_to round.action, new_schedule_path(:round => round.id, :trigger => round.action), :class => 'btn btn-mini', :onclick => "$(body).addClass('loading');" if round.action == "Schedule" and @participants.count > 1 %>
+          <%= link_to round.action, edit_round_path(round, :trigger => round.action), :class => 'btn btn-mini', :onclick => "$(body).addClass('loading');" if round.action == "Start" or round.action == "End" and @participants.count > 1 %>
           <%= link_to 'Launch Timer', round_path(round, :timer => "65m"), :target => '_blank', :class => 'btn btn-mini' if round.action == "End" and @participants.count > 1 %>
         </td>
       </tr>

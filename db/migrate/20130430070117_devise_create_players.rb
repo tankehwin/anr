@@ -40,6 +40,8 @@ class DeviseCreatePlayers < ActiveRecord::Migration
       t.integer :match_points,      :null => false, :default => 0
       t.integer :matches,           :null => false, :default => 0
       t.integer :matches_with_bye,  :null => false, :default => 0
+      t.integer :bye_prestiges,     :null => false, :default => 0
+      t.integer :bye_match_points,  :null => false, :default => 0
       t.integer :tournaments,       :null => false, :default => 0
       t.float   :rating,            :null => false, :default => 1400.0
       t.integer :country_id,        :null => false, :default => 122

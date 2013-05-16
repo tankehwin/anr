@@ -81,7 +81,6 @@ class Round < ActiveRecord::Base
       round.in_progress
       "Round has started."
     elsif trigger == "End"
-      round.closed
       round.schedules.each do |schedule|
         schedule.results.each do |result|
           Participant.update_personal_points(result) unless result.participant_id == Participant.bye(round.tournament_id).id
@@ -91,6 +90,7 @@ class Round < ActiveRecord::Base
       next_round = Round.find_by_tournament_id_and_number(round.tournament_id, round.number + 1)
       next_round.not_scheduled if next_round
       Participant.update_standings(round)
+      round.closed
       "Round has ended."
     end
   end

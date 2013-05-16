@@ -8,7 +8,6 @@ class PlayersController < ApplicationController
     @participate = true if params[:participant]
     @rank_counter = (params[:page].to_i - 1) * Var.per_page if params[:page]
     @rank_counter = 0 unless params[:page]
-    @title = "All Players Ranking"
 
     respond_to do |format|
       format.html # index.html.erb
@@ -59,6 +58,7 @@ class PlayersController < ApplicationController
 
     respond_to do |format|
       if @player.save
+        Participant.register_player(@player, @tournament.id) if @tournament
         format.html { redirect_to players_url(:tournament => @tournament, :participant => @participate), notice: 'Player was successfully created.' }
         format.json { render json: @player, status: :created, location: @player }
       else

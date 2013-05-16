@@ -1,8 +1,8 @@
 class Participant < ActiveRecord::Base
-  attr_accessible :active, :drop, :head_to_head, :match_points, :matches,
-                  :obtained_bye, :ogw, :omw, :pgw, :pmw, :place, :player_id,
-                  :prestiges, :rating, :rating_scores, :schedule_strength,
-                  :tournament_id
+  attr_accessible :active, :bye_match_points, :bye_prestiges, :drop,
+                  :head_to_head, :match_points, :matches, :obtained_bye,
+                  :ogw, :omw, :pgw, :pmw, :place, :player_id, :prestiges,
+                  :rating, :rating_scores, :schedule_strength, :tournament_id
 
   belongs_to :player
   belongs_to :tournament
@@ -41,8 +41,8 @@ class Participant < ActiveRecord::Base
         omw = 0.0
         ogw = 0.0
         opponents_result.each do |opponent|
-          participant.head_to_head = participant.head_to_head + 1 if opponents_result.participant.prestiges == participant.prestiges
-          participant.schedule_strength = participant.schedule_strength + opponents_result.participant.prestiges
+          participant.head_to_head = participant.head_to_head + 1 if opponent.participant.prestiges == participant.prestiges
+          participant.schedule_strength = participant.schedule_strength + opponent.participant.prestiges
           omw = omw + opponent.participant.pmw
           opponent.participant.pgw = (100.0 / 3.0) if opponent.participant.pgw < (100.0 / 3.0)
           ogw = ogw + opponent.participant.pgw
@@ -89,6 +89,15 @@ class Participant < ActiveRecord::Base
       flag = true if result.opponent_id == participant2.id
     end
     flag
+  end
+
+  def self.register_player(player, tournament_id)
+    params_participant = Participant.new
+    params_participant[:tournament_id] = tournament_id
+    params_participant[:player_id] = player.id
+    params_participant[:rating] = player.rating
+    params_participant[:place] = Participant.find_all_by_tournament_id(tournament_id).count
+    params_participant.save
   end
 
   private

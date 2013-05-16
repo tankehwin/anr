@@ -16,6 +16,8 @@ class CreateParticipants < ActiveRecord::Migration
       t.float :pgw, :null => false, :default => 0
       t.float :ogw, :null => false, :default => 0
       t.boolean :obtained_bye, :null => false, :default => false
+      t.integer :bye_prestiges
+      t.integer :bye_match_points
       t.boolean :drop, :null => false, :default => false
       t.boolean :active, :null => false, :default => false
 
