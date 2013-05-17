@@ -1,16 +1,16 @@
 class CreateTournaments < ActiveRecord::Migration
   def change
     create_table :tournaments do |t|
-      t.string  :organizer_id, :null => false
-      t.string  :name, :null => false
-      t.text    :description
-      t.string  :state, :null => false, :default => "Tournament is not started."
-      t.integer :rating_multiplier, :null => false, :default => 1
-      t.integer :rating_boost, :null => false, :default => 1
-      t.datetime :start
-      t.datetime :end
-      t.boolean :flag, :null => false, :default => false
-      t.boolean :active, :null => false, :default => true
+      t.string    :organizer_id,      :null => false
+      t.string    :name,              :null => false
+      t.text      :description
+      t.string    :state,             :null => false, :default => "Tournament is not started."
+      t.integer   :rating_multiplier, :null => false, :default => 1
+      t.integer   :rating_boost,      :null => false, :default => 1
+      t.datetime  :start
+      t.datetime  :end
+      t.boolean   :flag,              :null => false, :default => false
+      t.boolean   :active,            :null => false, :default => true
 
       t.timestamps
     end

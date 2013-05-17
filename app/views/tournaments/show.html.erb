@@ -11,7 +11,7 @@
 
 <dl class="dl-horizontal">
   <dt><strong>Multiplier:</strong></dt>
-  <dd><%= @tournament.rating_multiplier %></dd>
+  <dd><%= @tournament.rating_multiplier * @tournament.rating_boost %></dd>
   <dt><strong>Status:</strong></dt>
   <dd><%= @tournament.state %></dd>
   <dt><strong>Description:</strong></dt>
@@ -20,7 +20,7 @@
 
 <div class="form-actions">
   <div class="btn-group">
-    <% if @rounds.empty? and @tournament.state != "Tournament is closed." and @participants.count > 1 %>
+    <% if @rounds.empty? and not @tournament.closed? and @participants.count > 1 %>
       <%= link_to 'Schedule', '#', :"data-toggle" => 'dropdown', :class => 'btn btn-primary' %>
       <%= link_to "<span class='caret'></span>".html_safe, '#', :"data-toggle" => 'dropdown', :class => 'btn btn-primary' %>
       <ul class="dropdown-menu">
@@ -28,7 +28,7 @@
         <li><%= link_to 'Without Playoff', new_round_path(:tournament => @tournament.id), :onclick => "$(body).addClass('loading');" %></li>
       </ul>
     <% end %>
-    <% unless @rounds.empty? or @tournament.state == "Tournament is closed." %>
+    <% unless @rounds.empty? or @tournament.closed? %>
       <%= link_to 'Re-Schedule', '#', :"data-toggle" => 'dropdown', :class => 'btn' %>
       <%= link_to "<span class='caret'></span>".html_safe, '#', :"data-toggle" => 'dropdown', :class => 'btn' %>
       <ul class="dropdown-menu">
@@ -37,8 +37,8 @@
       </ul>
     <% end %>
   </div>
-  <%= link_to 'Edit Details', '#tournaments_edit_' + @tournament.id.to_s, :class => 'btn open-dialog', :"data-toggle" => 'modal' unless @tournament.state == "Tournament is closed." %>
-  <%= link_to 'Close', edit_tournament_path(@tournament, :trigger => "Close"), data: { confirm: 'This action would terminate all unfinished rounds and propagate tournament score table into players score table. Do you want to proceed?' }, :class => 'btn btn-danger' unless @rounds.empty? or @tournament.state == "Tournament is closed." or @participants.count < 2 %>
+  <%= link_to 'Edit Details', '#tournaments_edit_' + @tournament.id.to_s, :class => 'btn open-dialog', :"data-toggle" => 'modal' unless @tournament.closed? %>
+  <%= link_to 'Close', edit_tournament_path(@tournament, :trigger => "Close"), data: { confirm: 'This action would terminate all unfinished rounds and propagate tournament score table into players score table. Do you want to proceed?' }, :class => 'btn btn-danger' unless @rounds.empty? or @tournament.closed? or @participants.count < 2 %>
 </div>
 
 <div id="<%= 'tournaments_edit_' + @tournament.id.to_s %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="label_participants_new" aria-hidden="true">
@@ -106,9 +106,9 @@
         <td><%= round.end %></td>
         <td><%= round.state %></td>
         <td>
-          <%= link_to round.action, new_schedule_path(:round => round.id, :trigger => round.action), :class => 'btn btn-mini', :onclick => "$(body).addClass('loading');" if round.action == "Schedule" and @participants.count > 1 %>
-          <%= link_to round.action, edit_round_path(round, :trigger => round.action), :class => 'btn btn-mini', :onclick => "$(body).addClass('loading');" if round.action == "Start" or round.action == "End" and @participants.count > 1 %>
-          <%= link_to 'Launch Timer', round_path(round, :timer => "65m"), :target => '_blank', :class => 'btn btn-mini' if round.action == "End" and @participants.count > 1 %>
+          <%= link_to round.action, new_schedule_path(:round => round.id, :trigger => round.action), :class => 'btn btn-mini', :onclick => "$(body).addClass('loading');" if round.not_scheduled? and @participants.count > 1 %>
+          <%= link_to round.action, edit_round_path(round, :trigger => round.action), :class => 'btn btn-mini', :onclick => "$(body).addClass('loading');" if round.ready? or round.in_progress? and @participants.count > 1 %>
+          <%= link_to 'Launch Timer', round_path(round, :timer => "65m"), :target => '_blank', :class => 'btn btn-mini' if round.in_progress? and @participants.count > 1 %>
         </td>
       </tr>
     <% end %>
@@ -137,19 +137,19 @@
         <td><%= participant.place %></td>
         <td><%= participant.player.name %></td>
         <td><%= participant.prestiges %></td>
-        <td><%= participant.match_points %></td>
+        <td><%= participant.game_points %></td>
         <td><%= participant.head_to_head %></td>
-        <td><%= participant.schedule_strength %></td>
+        <td><%= participant.prestige_strength %> (<%= participant.points_strength %>)</td>
         <td><%= (participant.rating + participant.rating_scores).round %></td>
         <td>
-          <%= link_to 'Remove', participant, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' unless @tournament.state == "Tournament is closed." or @tournament.state == "Tournament has started." %>
+          <%= link_to 'Remove', participant, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' unless @tournament.closed? or @tournament.started? %>
         </td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<%= link_to 'Add a New Participant', '#participants_new', :class => 'btn btn-primary', :"data-toggle" => 'modal' unless @tournament.state == "Tournament is closed." %>
+<%= link_to 'Add a New Participant', '#participants_new', :class => 'btn btn-primary', :"data-toggle" => 'modal' unless @tournament.closed? %>
 
 <div id="participants_new" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="label_participants_new" aria-hidden="true">
   <div class="modal-header">
@@ -213,8 +213,8 @@
       <tr>
         <td colspan ="10"><%= "Round " + round.number.to_s %></td>
         <td>
-          <%= link_to 'Manual Schedule', edit_round_path(round, :trigger => "Manual"), :class => 'btn btn-mini' if round.state == "Not Scheduled" and @participants.count > 1 %>
-          <%= link_to 'Modify Schedule', edit_round_path(round, :trigger => "Modify"), :class => 'btn btn-mini' if round.state == "Ready" or round.state == "In Progress" and @participants.count > 1 %>
+          <%= link_to 'Manual Schedule', edit_round_path(round, :trigger => "Manual"), :class => 'btn btn-mini' if round.not_scheduled? and @participants.count > 1 %>
+          <%= link_to 'Modify Schedule', edit_round_path(round, :trigger => "Modify"), :class => 'btn btn-mini' if round.ready? or round.in_progress? and @participants.count > 1 %>
         </td>
       </tr>
       <% round.schedules.each do |schedule| %>
@@ -226,11 +226,11 @@
             <% r = result %>
             <td><b><%= result.participant.player.name %></b></td>
             <td><%= result.prestige %></td>
-            <td><%= result.corp_match_points %></td>
-            <td><%= result.runner_match_points %></td>
+            <td><%= result.corp_game_points %></td>
+            <td><%= result.runner_game_points %></td>
           <% end %>
           <td>
-            <%= link_to 'Update Result', '#schedules_edit_' + schedule.id.to_s, :class => 'btn btn-mini', :"data-toggle" => 'modal' if round.state == "In Progress" and @participants.count > 1 %>
+            <%= link_to 'Update Result', '#schedules_edit_' + schedule.id.to_s, :class => 'btn btn-mini', :"data-toggle" => 'modal' if round.in_progress? and @participants.count > 1 %>
           </td>
         </tr>
         <div id="<%= 'schedules_edit_' + schedule.id.to_s %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="<%= 'label_schedules_edit_' + schedule.id.to_s %>" aria-hidden="true">
@@ -259,21 +259,21 @@
                   <div class="row">
                     <div class="span2">
                       <div class="control-group">
-                        <%= r.label :corp_match_points, r.object.participant.player.name + "'s Match Points as Corporation", :class => 'control-label' if flag %>
-                        <%= r.label :runner_match_points, r.object.participant.player.name + "'s Match Points as Runner", :class => 'control-label' unless flag %>
+                        <%= r.label :corp_game_points, r.object.participant.player.name + "'s Match Points as Corporation", :class => 'control-label' if flag %>
+                        <%= r.label :runner_game_points, r.object.participant.player.name + "'s Match Points as Runner", :class => 'control-label' unless flag %>
                         <div class="controls">
-                          <%= r.select :corp_match_points, options_for_select([ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ], :selected => "0"), {}, {:class => "select"} if flag %>
-                          <%= r.select :runner_match_points, options_for_select([ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ], :selected => "0"), {}, {:class => "select"} unless flag %>
+                          <%= r.select :corp_game_points, options_for_select([ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ], :selected => "0"), {}, {:class => "select"} if flag %>
+                          <%= r.select :runner_game_points, options_for_select([ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ], :selected => "0"), {}, {:class => "select"} unless flag %>
                         </div>
                       </div>
                     </div>
                     <div class="span2 offset1">
                       <div class="control-group">
-                        <%= r.label :runner_match_points, r.object.participant.player.name + "'s Match Points as Runner", :class => 'control-label' if flag %>
-                        <%= r.label :corp_match_points, r.object.participant.player.name + "'s Match Points as Corporation", :class => 'control-label' unless flag %>
+                        <%= r.label :runner_game_points, r.object.participant.player.name + "'s Match Points as Runner", :class => 'control-label' if flag %>
+                        <%= r.label :corp_game_points, r.object.participant.player.name + "'s Match Points as Corporation", :class => 'control-label' unless flag %>
                         <div class="controls">
-                          <%= r.select :runner_match_points, options_for_select([ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ], :selected => "0"), {}, {:class => "select"} if flag %>
-                          <%= r.select :corp_match_points, options_for_select([ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ], :selected => "0"), {}, {:class => "select"} unless flag %>
+                          <%= r.select :runner_game_points, options_for_select([ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ], :selected => "0"), {}, {:class => "select"} if flag %>
+                          <%= r.select :corp_game_points, options_for_select([ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ], :selected => "0"), {}, {:class => "select"} unless flag %>
                         </div>
                       </div>
                     </div>

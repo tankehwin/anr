@@ -109,8 +109,8 @@ class Schedule < ActiveRecord::Base
     participants.each do |participant|
       if participant == player_with_bye and participants.count.odd?
         schedule = Schedule.create :round_id => round.id, :table => table
-        Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => Participant.bye(round.tournament_id).id, :corp_match_points => 10, :runner_match_points => 10, :prestige => 6
-        Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => Participant.bye(round.tournament_id).id, :opponent_id => participant.id, :corp_match_points => 0, :runner_match_points => 0, :prestige => 0
+        Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => Participant.bye(round.tournament_id).id, :corp_game_points => 10, :runner_game_points => 10, :prestige => 6
+        Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => Participant.bye(round.tournament_id).id, :opponent_id => participant.id, :corp_game_points => 0, :runner_game_points => 0, :prestige => 0
       else
         if pair == true
           schedule = Schedule.create :round_id => round.id, :table => table
@@ -131,18 +131,18 @@ class Schedule < ActiveRecord::Base
   def self.calculate_prestige(schedule, current_schedule)
     schedule[:results_attributes][:"0"][:prestige] = schedule[:results_attributes][:"1"][:prestige] = 0
 
-    if schedule[:results_attributes][:"0"][:corp_match_points].to_i == 10
+    if schedule[:results_attributes][:"0"][:corp_game_points].to_i == 10
       schedule[:results_attributes][:"0"][:prestige] = schedule[:results_attributes][:"0"][:prestige] + 2
-    elsif schedule[:results_attributes][:"1"][:runner_match_points].to_i == 10
+    elsif schedule[:results_attributes][:"1"][:runner_game_points].to_i == 10
       schedule[:results_attributes][:"1"][:prestige] = schedule[:results_attributes][:"1"][:prestige] + 2
     else
       schedule[:results_attributes][:"0"][:prestige] = schedule[:results_attributes][:"0"][:prestige] + 1
       schedule[:results_attributes][:"1"][:prestige] = schedule[:results_attributes][:"1"][:prestige] + 1
     end
 
-    if schedule[:results_attributes][:"0"][:runner_match_points].to_i == 10
+    if schedule[:results_attributes][:"0"][:runner_game_points].to_i == 10
       schedule[:results_attributes][:"0"][:prestige] = schedule[:results_attributes][:"0"][:prestige] + 2
-    elsif schedule[:results_attributes][:"1"][:corp_match_points].to_i == 10
+    elsif schedule[:results_attributes][:"1"][:corp_game_points].to_i == 10
       schedule[:results_attributes][:"1"][:prestige] = schedule[:results_attributes][:"1"][:prestige] + 2
     else
       schedule[:results_attributes][:"0"][:prestige] = schedule[:results_attributes][:"0"][:prestige] + 1
@@ -153,9 +153,9 @@ class Schedule < ActiveRecord::Base
       schedule[:results_attributes][:"0"][:prestige] = schedule[:results_attributes][:"0"][:prestige] + 2
     elsif schedule[:results_attributes][:"1"][:prestige] > 2
       schedule[:results_attributes][:"1"][:prestige] = schedule[:results_attributes][:"1"][:prestige] + 2
-    elsif schedule[:results_attributes][:"0"][:prestige] == 2 and (schedule[:results_attributes][:"0"][:corp_match_points].to_i + schedule[:results_attributes][:"0"][:runner_match_points].to_i) > (schedule[:results_attributes][:"1"][:corp_match_points].to_i + schedule[:results_attributes][:"1"][:runner_match_points].to_i)
+    elsif schedule[:results_attributes][:"0"][:prestige] == 2 and (schedule[:results_attributes][:"0"][:corp_game_points].to_i + schedule[:results_attributes][:"0"][:runner_game_points].to_i) > (schedule[:results_attributes][:"1"][:corp_game_points].to_i + schedule[:results_attributes][:"1"][:runner_game_points].to_i)
       schedule[:results_attributes][:"0"][:prestige] = schedule[:results_attributes][:"0"][:prestige] + 2
-    elsif schedule[:results_attributes][:"1"][:prestige] == 2 and (schedule[:results_attributes][:"0"][:corp_match_points].to_i + schedule[:results_attributes][:"0"][:runner_match_points].to_i) < (schedule[:results_attributes][:"1"][:corp_match_points].to_i + schedule[:results_attributes][:"1"][:runner_match_points].to_i)
+    elsif schedule[:results_attributes][:"1"][:prestige] == 2 and (schedule[:results_attributes][:"0"][:corp_game_points].to_i + schedule[:results_attributes][:"0"][:runner_game_points].to_i) < (schedule[:results_attributes][:"1"][:corp_game_points].to_i + schedule[:results_attributes][:"1"][:runner_game_points].to_i)
       schedule[:results_attributes][:"1"][:prestige] = schedule[:results_attributes][:"1"][:prestige] + 2
     else
       schedule[:results_attributes][:"0"][:prestige] = schedule[:results_attributes][:"0"][:prestige] + 1
@@ -167,11 +167,11 @@ class Schedule < ActiveRecord::Base
     participant_bye = Participant.find_by_tournament_id_and_player_id(current_schedule.round.tournament_id, Var.bye_id)
     unless participant_0 == participant_bye or participant_1 == participant_bye
       score = schedule[:results_attributes][:"0"][:prestige]/6.to_f - (1/(1 + 10**((participant_0.rating + participant_0.rating_scores - participant_1.rating - participant_1.rating_scores)/400.0)))
-      schedule[:results_attributes][:"0"][:rating_score] = score / 20.0 * current_schedule.round.tournament.rating_multiplier.to_f if score < 0
-      schedule[:results_attributes][:"0"][:rating_score] = score * 20.0 * current_schedule.round.tournament.rating_multiplier.to_f if score > 0
+      schedule[:results_attributes][:"0"][:rating_score] = score / 20.0 * current_schedule.round.tournament.rating_multiplier.to_f * current_schedule.round.tournament.rating_boost.to_f if score < 0
+      schedule[:results_attributes][:"0"][:rating_score] = score * 20.0 * current_schedule.round.tournament.rating_multiplier.to_f * current_schedule.round.tournament.rating_boost.to_f if score > 0
       score = schedule[:results_attributes][:"1"][:prestige]/6.to_f - (1/(1 + 10**((participant_1.rating + participant_1.rating_scores - participant_0.rating - participant_0.rating_scores)/400.0)))
-      schedule[:results_attributes][:"1"][:rating_score] = score / 20.0 * current_schedule.round.tournament.rating_multiplier.to_f if score < 0
-      schedule[:results_attributes][:"1"][:rating_score] = score * 20.0 * current_schedule.round.tournament.rating_multiplier.to_f if score > 0
+      schedule[:results_attributes][:"1"][:rating_score] = score / 20.0 * current_schedule.round.tournament.rating_multiplier.to_f * current_schedule.round.tournament.rating_boost.to_f if score < 0
+      schedule[:results_attributes][:"1"][:rating_score] = score * 20.0 * current_schedule.round.tournament.rating_multiplier.to_f * current_schedule.round.tournament.rating_boost.to_f if score > 0
     end
 
     schedule

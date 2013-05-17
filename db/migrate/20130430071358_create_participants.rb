@@ -5,9 +5,10 @@ class CreateParticipants < ActiveRecord::Migration
       t.integer :player_id,         :null => false
       t.integer :place,             :null => false, :default => 0
       t.integer :prestiges,         :null => false, :default => 0
-      t.integer :match_points,      :null => false, :default => 0
+      t.integer :game_points,       :null => false, :default => 0
       t.integer :head_to_head,      :null => false, :default => 0
-      t.integer :schedule_strength, :null => false, :default => 0
+      t.integer :prestige_strength, :null => false, :default => 0
+      t.integer :points_strength,   :null => false, :default => 0
       t.integer :matches,           :null => false, :default => 0
       t.float :rating,              :null => false, :default => 1400.0
       t.float :rating_scores,       :null => false, :default => 0.0
@@ -15,11 +16,11 @@ class CreateParticipants < ActiveRecord::Migration
       t.float :omw, :null => false, :default => 0
       t.float :pgw, :null => false, :default => 0
       t.float :ogw, :null => false, :default => 0
-      t.boolean :obtained_bye, :null => false, :default => false
+      t.boolean :obtained_bye,      :null => false, :default => false
       t.integer :bye_prestiges
-      t.integer :bye_match_points
-      t.boolean :drop, :null => false, :default => false
-      t.boolean :active, :null => false, :default => false
+      t.integer :bye_game_points
+      t.boolean :drop,              :null => false, :default => false
+      t.boolean :active,            :null => false, :default => false
 
       t.timestamps
     end

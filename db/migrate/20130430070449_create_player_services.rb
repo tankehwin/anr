@@ -1,7 +1,7 @@
 class CreatePlayerServices < ActiveRecord::Migration
   def change
     create_table :player_services do |t|
-      t.integer :player_id,  :null => false
+      t.integer :player_id,     :null => false
       t.string :provider,       :null => false
       t.string :uid,            :null => false
       t.string :uname,          :null => false

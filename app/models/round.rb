@@ -38,6 +38,18 @@ class Round < ActiveRecord::Base
     self.save
   end
 
+  def ready?
+    @isReady ||= (self.state == "Ready")? true : false
+  end
+
+  def in_progress?
+    @isInProgress ||= (self.state == "In Progress")? true : false
+  end
+
+  def not_scheduled?
+    @isNotScheduled ||= (self.state == "Not Scheduled")? true : false
+  end
+
   def self.calculate_round(tournament)
     rounds = Round.find_all_by_tournament_id tournament.id
     rounds.each do |round|
@@ -54,11 +66,9 @@ class Round < ActiveRecord::Base
       number = number + 1
     end
     if count < 1
-      tournament.state = "Tournament is not started."
-      tournament.save
+      tournament.not_started
     else
-      tournament.state = "Tournament has started."
-      tournament.save
+      tournament.started
     end
     Participant.reset(tournament.id)
   end
@@ -98,17 +108,17 @@ class Round < ActiveRecord::Base
 
   def self.reset_score_or_bye(result)
     result.prestige = nil
-    result.corp_match_points = nil
-    result.runner_match_points = nil
+    result.corp_game_points = nil
+    result.runner_game_points = nil
     result.rating_score = 0.0
     if result.participant_id == Participant.bye(result.tournament_id).id
       result.prestige = 0
-      result.corp_match_points = 0
-      result.runner_match_points = 0
+      result.corp_game_points = 0
+      result.runner_game_points = 0
     elsif result.opponent_id == Participant.bye(result.tournament_id).id
       result.prestige = 6
-      result.corp_match_points = 10
-      result.runner_match_points = 10
+      result.corp_game_points = 10
+      result.runner_game_points = 10
     end
     result.save
   end

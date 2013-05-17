@@ -3,7 +3,7 @@ class SchedulesController < ApplicationController
   # GET /schedules/new.json
   def new
     @round = Round.find params[:round], :include => :tournament
-    redirect_to @round.tournament, notice: @round.tournament.state and return if @round.tournament.state == "Tournament is closed."
+    redirect_to @round.tournament, notice: @round.tournament.state and return if @round.tournament.closed?
     @schedules = Schedule.calculate_schedule(@round, params[:trigger])
 
     respond_to do |format|
@@ -15,7 +15,7 @@ class SchedulesController < ApplicationController
   # GET /schedules/1/edit
   def edit
     @tournament = Tournament.find params[:tournament]
-    redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
+    redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
     @schedule = Schedule.find(params[:id], :include => :results)
   end
 
@@ -24,7 +24,7 @@ class SchedulesController < ApplicationController
   def update
     @schedule = Schedule.find(params[:id], :include => :results)
     @tournament = @schedule.round.tournament
-    redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
+    redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
     params_schedule = Schedule.calculate_prestige(params[:schedule], @schedule)
 
     respond_to do |format|

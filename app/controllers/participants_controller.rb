@@ -3,7 +3,7 @@ class ParticipantsController < ApplicationController
   # GET /participants/new.json
   def new
     @tournament = Tournament.find params[:tournament]
-    redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
+    redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
     @participant = Participant.new
     @participate = true
     @players = Player.find(:all, :conditions => ["id != ?", Var.bye_id])
@@ -18,7 +18,8 @@ class ParticipantsController < ApplicationController
   # POST /participants.json
   def create
     @tournament = Tournament.find params[:participant][:tournament_id]
-    redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
+    redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
+    @participate = true
     @participant = Participant.find_by_player_id_or_create(params[:participant])
 
     respond_to do |format|
@@ -26,7 +27,7 @@ class ParticipantsController < ApplicationController
         format.html { redirect_to @tournament, notice: 'Player was already added.' }
         format.json { render json: @participant, status: :unprocessable_entity, location: @participant }
       elsif params[:participant][:player_id].nil?
-        format.html { redirect_to players_url, notice: 'Player list is empty.' }
+        format.html { redirect_to players_url(:tournament => @tournament, :participant => @participate), notice: 'Player list is empty.' }
         format.json { render json: @participant, status: :unprocessable_entity, location: @participant }
       else
         if @participant.save
@@ -45,7 +46,7 @@ class ParticipantsController < ApplicationController
   # DELETE /participants/1.json
   def destroy
     @participant = Participant.find(params[:id], :include => :tournament)
-    redirect_to @participant.tournament, notice: @participant.tournament.state and return if @participant.tournament.state == "Tournament is closed."
+    redirect_to @participant.tournament, notice: @participant.tournament.state and return if @participant.tournament.closed?
     @participant.destroy
 
     respond_to do |format|

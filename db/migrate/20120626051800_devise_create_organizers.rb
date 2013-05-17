@@ -36,7 +36,10 @@ class DeviseCreateOrganizers < ActiveRecord::Migration
 
       t.string  :username
       t.string  :name,              :null => false, :default => ""
-      t.string  :time_zone,         :null => false, :default => "Kuala Lumpur"
+      t.string  :time_zone,         :null => false
+      t.integer :boost_tank_current_amount,         :null => false, :default => 10
+      t.integer :boost_tank_full_limit,             :null => false, :default => 10
+      t.integer :boost_limit_per_tournament,        :null => false, :default => 2
       t.boolean :active,            :null => false, :default => true
 
       t.timestamps

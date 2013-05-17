@@ -12,9 +12,29 @@ class Tournament < ActiveRecord::Base
 
   after_create :seed_bye
 
+  def not_started
+    self.state = "Tournament is not started."
+    self.save
+  end
+
+  def started
+    self.start = Time.now
+    self.state = "Tournament has started."
+    self.save
+  end
+
   def closed
+    self.end = Time.now
     self.state = "Tournament is closed."
     self.save
+  end
+
+  def closed?
+    @isClosed ||= (self.state == "Tournament is closed.")? true : false
+  end
+
+  def started?
+    @isStarted ||= (self.state == "Tournament has started.")? true : false
   end
 
   def activate_points
@@ -25,7 +45,7 @@ class Tournament < ActiveRecord::Base
           if result.opponent_id == participant_bye.id
             participant.obtained_bye = true
             participant.bye_prestiges = result.prestige
-            participant.bye_match_points = result.corp_match_points + result.runner_match_points
+            participant.bye_game_points = result.corp_game_points + result.runner_game_points
           end
         end
         participant.active = true

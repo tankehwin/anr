@@ -32,10 +32,10 @@
           <td><%= link_to tournament.name, tournament %></td>
           <td><%= tournament.description %></td>
           <td><%= tournament.state %></td>
-          <td><%= tournament.rating_multiplier %></td>
+          <td><%= tournament.rating_multiplier * tournament.rating_boost %></td>
           <td>
-            <%= link_to 'Edit', edit_tournament_path(tournament), :class => 'btn btn-mini' unless tournament.state == "Tournament is closed." %>
-            <%= link_to 'Delete', tournament, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' unless tournament.state == "Tournament is closed." %>
+            <%= link_to 'Edit', edit_tournament_path(tournament), :class => 'btn btn-mini' unless tournament.closed? %>
+            <%= link_to 'Delete', tournament, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' unless tournament.closed? %>
           </td>
         </tr>
       <% end %>
@@ -69,10 +69,10 @@
           <td><%= link_to tournament.name, tournament %></td>
           <td><%= tournament.description %></td>
           <td><%= tournament.state %></td>
-          <td><%= tournament.rating_multiplier %></td>
+          <td><%= tournament.rating_multiplier * tournament.rating_boost %></td>
           <td>
-            <%= link_to 'Edit', edit_tournament_path(tournament), :class => 'btn btn-mini' unless tournament.state == "Tournament is closed." %>
-            <%= link_to 'Delete', tournament, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' unless tournament.state == "Tournament is closed." %>
+            <%= link_to 'Edit', edit_tournament_path(tournament), :class => 'btn btn-mini' unless tournament.closed? %>
+            <%= link_to 'Delete', tournament, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' unless tournament.closed? %>
           </td>
         </tr>
       <% end %>
@@ -106,10 +106,10 @@
           <td><%= link_to tournament.name, tournament %></td>
           <td><%= tournament.description %></td>
           <td><%= tournament.state %></td>
-          <td><%= tournament.rating_multiplier %></td>
+          <td><%= tournament.rating_multiplier * tournament.rating_boost %></td>
           <td>
-            <%= link_to 'Edit', edit_tournament_path(tournament), :class => 'btn btn-mini' unless tournament.state == "Tournament is closed." %>
-            <%= link_to 'Delete', tournament, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' unless tournament.state == "Tournament is closed." %>
+            <%= link_to 'Edit', edit_tournament_path(tournament), :class => 'btn btn-mini' unless tournament.closed? %>
+            <%= link_to 'Delete', tournament, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' unless tournament.closed? %>
           </td>
         </tr>
       <% end %>

@@ -1,8 +1,9 @@
 class Participant < ActiveRecord::Base
-  attr_accessible :active, :bye_match_points, :bye_prestiges, :drop,
-                  :head_to_head, :match_points, :matches, :obtained_bye,
-                  :ogw, :omw, :pgw, :pmw, :place, :player_id, :prestiges,
-                  :rating, :rating_scores, :schedule_strength, :tournament_id
+  attr_accessible :active, :bye_game_points, :bye_prestiges, :drop,
+                  :head_to_head, :game_points, :matches, :obtained_bye,
+                  :ogw, :omw, :pgw, :pmw, :place, :player_id, :points_strength,
+                  :prestiges, :prestige_strength, :rating, :rating_scores,
+                  :tournament_id
 
   belongs_to :player
   belongs_to :tournament
@@ -22,11 +23,11 @@ class Participant < ActiveRecord::Base
   def self.update_personal_points(result)
   	results = Result.find_all_by_tournament_id_and_participant_id(result.tournament_id, result.participant_id, :include => :participant)
   	result.participant.prestiges = results.map(&:prestige).sum
-  	result.participant.match_points = results.map(&:corp_match_points).sum + results.map(&:runner_match_points).sum
+  	result.participant.game_points = results.map(&:corp_game_points).sum + results.map(&:runner_game_points).sum
   	result.participant.matches = results.count
   	result.participant.pmw = result.participant.prestiges.to_f / result.participant.matches.to_f / 6.0 * 100.0
   	result.participant.pmw = (100.0 / 3.0) if result.participant.pmw < (100.0 / 3.0)
-  	result.participant.pgw = result.participant.match_points.to_f / result.participant.matches.to_f / 20.0 * 100.0
+  	result.participant.pgw = result.participant.game_points.to_f / result.participant.matches.to_f / 20.0 * 100.0
     result.participant.rating_scores = results.map(&:rating_score).sum
   	result.participant.save
   end
@@ -37,12 +38,14 @@ class Participant < ActiveRecord::Base
       opponents_result = Result.find(:all, :conditions => ["opponent_id = ? and participant_id != ?", participant.id, Participant.bye(round.tournament_id).id], :include => :participant)
       unless opponents_result.blank?
         participant.head_to_head = 0
-        participant.schedule_strength = 0
+        participant.prestige_strength = 0
+        participant.points_strength = 0
         omw = 0.0
         ogw = 0.0
         opponents_result.each do |opponent|
           participant.head_to_head = participant.head_to_head + 1 if opponent.participant.prestiges == participant.prestiges
-          participant.schedule_strength = participant.schedule_strength + opponent.participant.prestiges
+          participant.prestige_strength = participant.prestige_strength + opponent.participant.prestiges
+          participant.points_strength = participant.points_strength + opponent.participant.game_points
           omw = omw + opponent.participant.pmw
           opponent.participant.pgw = (100.0 / 3.0) if opponent.participant.pgw < (100.0 / 3.0)
           ogw = ogw + opponent.participant.pgw
@@ -58,9 +61,10 @@ class Participant < ActiveRecord::Base
     participants = Participant.find(:all, :conditions => ["tournament_id = ? and id != ?", tournament_id, Participant.bye(tournament_id).id])
     participants.each do |participant|
       participant.prestiges = 0
-      participant.match_points = 0
+      participant.game_points = 0
       participant.head_to_head = 0
-      participant.schedule_strength = 0
+      participant.prestige_strength = 0
+      participant.points_strength = 0
       participant.matches = 0
       participant.rating_scores = 0.0
       participant.pmw = 0.0
@@ -73,7 +77,7 @@ class Participant < ActiveRecord::Base
 
   def self.update_standings(round)
     participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", round.tournament_id, Var.bye_id])
-    participants = participants.sort_by{|participant| [participant.prestiges, participant.match_points, participant.head_to_head, participant.schedule_strength, participant.omw, participant.pgw, participant.ogw]}.reverse
+    participants = participants.sort_by{|participant| [participant.prestiges, participant.game_points, participant.head_to_head, participant.prestige_strength, participant.points_strength, participant.omw, participant.pgw, participant.ogw]}.reverse
     place = 1
     participants.each do |participant|
       participant.place = place
@@ -92,11 +96,7 @@ class Participant < ActiveRecord::Base
   end
 
   def self.register_player(player, tournament_id)
-    params_participant = Participant.new
-    params_participant[:tournament_id] = tournament_id
-    params_participant[:player_id] = player.id
-    params_participant[:rating] = player.rating
-    params_participant[:place] = Participant.find_all_by_tournament_id(tournament_id).count
+    params_participant = Participant.new(:tournament_id => tournament_id, :player_id => player.id, :rating => player.rating, :place => Participant.find_all_by_tournament_id(tournament_id).count)
     params_participant.save
   end
 

@@ -18,7 +18,7 @@ class RoundsController < ApplicationController
   # GET /rounds/new.json
   def new
     @tournament = Tournament.find params[:tournament]
-    redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
+    redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
     @rounds = Round.find_all_by_tournament_id @tournament.id
     @round = Round.calculate_round(@tournament)
 
@@ -32,7 +32,7 @@ class RoundsController < ApplicationController
   def edit
     @round = Round.find(params[:id], :include => :tournament)
     @tournament = @round.tournament
-    redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
+    redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
     if params[:trigger] == "Manual" or params[:trigger] == "Modify"
       @schedules = Schedule.calculate_schedule(@round, params[:trigger])
       @round = Round.find(params[:id]) if params[:trigger] == "Manual"
@@ -52,7 +52,7 @@ class RoundsController < ApplicationController
   def update
     @round = Round.find(params[:id], :include => :tournament)
     @tournament = @round.tournament
-    redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
+    redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
 
     respond_to do |format|
       if @round.update_attributes(params[:round])

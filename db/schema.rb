@@ -77,12 +77,12 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   add_index "organizer_services", ["uname"], :name => "index_organizer_services_on_uname"
 
   create_table "organizers", :force => true do |t|
-    t.string   "email",                  :default => "",             :null => false
-    t.string   "encrypted_password",     :default => "",             :null => false
+    t.string   "email",                      :default => "",   :null => false
+    t.string   "encrypted_password",         :default => "",   :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          :default => 0
+    t.integer  "sign_in_count",              :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
@@ -91,16 +91,19 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string   "unconfirmed_email"
-    t.integer  "failed_attempts",        :default => 0
+    t.integer  "failed_attempts",            :default => 0
     t.string   "unlock_token"
     t.datetime "locked_at"
     t.string   "authentication_token"
     t.string   "username"
-    t.string   "name",                   :default => "",             :null => false
-    t.string   "time_zone",              :default => "Kuala Lumpur", :null => false
-    t.boolean  "active",                 :default => true,           :null => false
-    t.datetime "created_at",                                         :null => false
-    t.datetime "updated_at",                                         :null => false
+    t.string   "name",                       :default => "",   :null => false
+    t.string   "time_zone",                                    :null => false
+    t.integer  "boost_tank_current_amount",  :default => 10,   :null => false
+    t.integer  "boost_tank_full_limit",      :default => 10,   :null => false
+    t.integer  "boost_limit_per_tournament", :default => 2,    :null => false
+    t.boolean  "active",                     :default => true, :null => false
+    t.datetime "created_at",                                   :null => false
+    t.datetime "updated_at",                                   :null => false
   end
 
   add_index "organizers", ["authentication_token"], :name => "index_organizers_on_authentication_token", :unique => true
@@ -115,9 +118,10 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
     t.integer  "player_id",                             :null => false
     t.integer  "place",             :default => 0,      :null => false
     t.integer  "prestiges",         :default => 0,      :null => false
-    t.integer  "match_points",      :default => 0,      :null => false
+    t.integer  "game_points",       :default => 0,      :null => false
     t.integer  "head_to_head",      :default => 0,      :null => false
-    t.integer  "schedule_strength", :default => 0,      :null => false
+    t.integer  "prestige_strength", :default => 0,      :null => false
+    t.integer  "points_strength",   :default => 0,      :null => false
     t.integer  "matches",           :default => 0,      :null => false
     t.float    "rating",            :default => 1400.0, :null => false
     t.float    "rating_scores",     :default => 0.0,    :null => false
@@ -127,7 +131,7 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
     t.float    "ogw",               :default => 0.0,    :null => false
     t.boolean  "obtained_bye",      :default => false,  :null => false
     t.integer  "bye_prestiges"
-    t.integer  "bye_match_points"
+    t.integer  "bye_game_points"
     t.boolean  "drop",              :default => false,  :null => false
     t.boolean  "active",            :default => false,  :null => false
     t.datetime "created_at",                            :null => false
@@ -181,11 +185,11 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
     t.string   "login"
     t.string   "name",                   :default => "",     :null => false
     t.integer  "prestiges",              :default => 0,      :null => false
-    t.integer  "match_points",           :default => 0,      :null => false
+    t.integer  "game_points",            :default => 0,      :null => false
     t.integer  "matches",                :default => 0,      :null => false
     t.integer  "matches_with_bye",       :default => 0,      :null => false
     t.integer  "bye_prestiges",          :default => 0,      :null => false
-    t.integer  "bye_match_points",       :default => 0,      :null => false
+    t.integer  "bye_game_points",        :default => 0,      :null => false
     t.integer  "tournaments",            :default => 0,      :null => false
     t.float    "rating",                 :default => 1400.0, :null => false
     t.integer  "country_id",             :default => 122,    :null => false
@@ -198,8 +202,8 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   add_index "players", ["authentication_token"], :name => "index_players_on_authentication_token", :unique => true
   add_index "players", ["confirmation_token"], :name => "index_players_on_confirmation_token", :unique => true
   add_index "players", ["email"], :name => "index_players_on_email", :unique => true
+  add_index "players", ["game_points"], :name => "index_players_on_game_points"
   add_index "players", ["login"], :name => "index_players_on_login", :unique => true
-  add_index "players", ["match_points"], :name => "index_players_on_match_points"
   add_index "players", ["matches"], :name => "index_players_on_matches"
   add_index "players", ["prestiges"], :name => "index_players_on_prestiges"
   add_index "players", ["rating"], :name => "index_players_on_rating"
@@ -209,16 +213,16 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   add_index "players", ["username"], :name => "index_players_on_username", :unique => true
 
   create_table "results", :force => true do |t|
-    t.integer  "tournament_id",                        :null => false
-    t.integer  "schedule_id",                          :null => false
-    t.integer  "participant_id",                       :null => false
-    t.integer  "opponent_id",                          :null => false
+    t.integer  "tournament_id",                       :null => false
+    t.integer  "schedule_id",                         :null => false
+    t.integer  "participant_id",                      :null => false
+    t.integer  "opponent_id",                         :null => false
     t.integer  "prestige"
-    t.integer  "corp_match_points"
-    t.integer  "runner_match_points"
-    t.float    "rating_score",        :default => 0.0, :null => false
-    t.datetime "created_at",                           :null => false
-    t.datetime "updated_at",                           :null => false
+    t.integer  "corp_game_points"
+    t.integer  "runner_game_points"
+    t.float    "rating_score",       :default => 0.0, :null => false
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
   end
 
   add_index "results", ["opponent_id"], :name => "index_results_on_opponent_id"
@@ -258,6 +262,9 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
     t.text     "description"
     t.string   "state",             :default => "Tournament is not started.", :null => false
     t.integer  "rating_multiplier", :default => 1,                            :null => false
+    t.integer  "rating_boost",      :default => 1,                            :null => false
+    t.datetime "start"
+    t.datetime "end"
     t.boolean  "flag",              :default => false,                        :null => false
     t.boolean  "active",            :default => true,                         :null => false
     t.datetime "created_at",                                                  :null => false

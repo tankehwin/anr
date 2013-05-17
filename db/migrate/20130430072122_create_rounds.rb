@@ -1,13 +1,13 @@
 class CreateRounds < ActiveRecord::Migration
   def change
     create_table :rounds do |t|
-      t.integer :tournament_id, :null => false
-      t.integer :number, :null => false
-      t.datetime :start
-      t.datetime :end
-      t.string :scheduling_type, :null => false, :default => "Swiss"
-      t.string :state, :null => false, :default => "Not Ready"
-      t.string :action, :null => false, :default => "Pre-Round"
+      t.integer   :tournament_id,   :null => false
+      t.integer   :number,          :null => false
+      t.datetime  :start
+      t.datetime  :end
+      t.string    :scheduling_type, :null => false, :default => "Swiss"
+      t.string    :state,           :null => false, :default => "Not Ready"
+      t.string    :action,          :null => false, :default => "Pre-Round"
 
       t.timestamps
     end

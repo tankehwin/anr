@@ -3,7 +3,7 @@ class PlayersController < ApplicationController
   # GET /players.json
   def index
     @players = Player.paginate(:conditions => ["id != ? and active != ?", Var.bye_id, false], :page => params[:page], :per_page => Var.per_page).order('rating DESC')
-    @players_json = Player.paginate(:conditions => ["id != ? and active != ?", Var.bye_id, false], :select => 'username, name, prestiges, match_points, matches, tournaments, rating', :page => params[:page], :per_page => 100).order('rating DESC')
+    @players_json = Player.paginate(:conditions => ["id != ? and active != ?", Var.bye_id, false], :select => 'username, name, prestiges, game_points, matches, tournaments, rating', :page => params[:page], :per_page => 100).order('rating DESC')
     @tournament = Tournament.find params[:tournament] if params[:tournament]
     @participate = true if params[:participant]
     @rank_counter = (params[:page].to_i - 1) * Var.per_page if params[:page]

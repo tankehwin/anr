@@ -34,9 +34,8 @@
       <th>Player</th>
       <th>Prestiges</th>
       <th>Match points</th>
-      <th>OMW%</th>
-      <th>PGW%</th>
-      <th>OGW%</th>
+      <th>Head to Head</th>
+      <th>Strength of Schedule</th>
       <th>Rating</th>
     </tr>
   </thead>
@@ -48,10 +47,9 @@
           <td><%= participant.place %></td>
           <td><%= participant.player.name %></td>
           <td><%= participant.prestiges %></td>
-          <td><%= participant.match_points %></td>
-          <td><%= number_with_precision participant.omw, :precision => 2 %></td>
-          <td><%= number_with_precision participant.pgw, :precision => 2 %></td>
-          <td><%= number_with_precision participant.ogw, :precision => 2 %></td>
+          <td><%= participant.game_points %></td>
+          <td><%= participant.head_to_head %></td>
+          <td><%= participant.prestige_strength %> (<%= participant.points_strength %>)</td>
           <td><%= (participant.rating + participant.rating_scores).to_i %></td>
         </tr>
       <% end %>

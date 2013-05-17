@@ -42,7 +42,7 @@ class TournamentsController < ApplicationController
   # GET /tournaments/1/edit
   def edit
     @tournament = Tournament.find(params[:id], :include => :participants)
-    redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
+    redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
 
     if params[:trigger] == "Close"
       notice = Tournament.trigger(@tournament, params[:trigger])
@@ -73,7 +73,7 @@ class TournamentsController < ApplicationController
   # PUT /tournaments/1.json
   def update
     @tournament = Tournament.find(params[:id])
-    redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
+    redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
 
     respond_to do |format|
       if @tournament.update_attributes(params[:tournament])
@@ -90,7 +90,7 @@ class TournamentsController < ApplicationController
   # DELETE /tournaments/1.json
   def destroy
     @tournament = Tournament.find(params[:id])
-    redirect_to @tournament, notice: @tournament.state and return if @tournament.state == "Tournament is closed."
+    redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
     @tournament.active = false
     @tournament.save
 

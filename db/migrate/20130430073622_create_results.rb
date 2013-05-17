@@ -1,14 +1,14 @@
 class CreateResults < ActiveRecord::Migration
   def change
     create_table :results do |t|
-      t.integer :tournament_id, :null => false
-      t.integer :schedule_id, :null => false
-      t.integer :participant_id, :null => false
-      t.integer :opponent_id, :null => false
+      t.integer :tournament_id,   :null => false
+      t.integer :schedule_id,     :null => false
+      t.integer :participant_id,  :null => false
+      t.integer :opponent_id,     :null => false
       t.integer :prestige
-      t.integer :corp_match_points
-      t.integer :runner_match_points
-      t.float   :rating_score, :null => false, :default => 0.0
+      t.integer :corp_game_points
+      t.integer :runner_game_points
+      t.float   :rating_score,    :null => false, :default => 0.0
 
       t.timestamps
     end

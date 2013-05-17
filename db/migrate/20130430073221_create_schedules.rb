@@ -1,8 +1,8 @@
 class CreateSchedules < ActiveRecord::Migration
   def change
     create_table :schedules do |t|
-      t.integer :round_id, :null => false
-      t.integer :table, :null => false
+      t.integer :round_id,	:null => false
+      t.integer :table,		:null => false
 
       t.timestamps
     end

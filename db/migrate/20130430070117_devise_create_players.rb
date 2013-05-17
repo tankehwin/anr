@@ -38,11 +38,11 @@ class DeviseCreatePlayers < ActiveRecord::Migration
       t.string  :login
       t.string  :name,              :null => false, :default => ""
       t.integer :prestiges,         :null => false, :default => 0
-      t.integer :match_points,      :null => false, :default => 0
+      t.integer :game_points,       :null => false, :default => 0
       t.integer :matches,           :null => false, :default => 0
       t.integer :matches_with_bye,  :null => false, :default => 0
       t.integer :bye_prestiges,     :null => false, :default => 0
-      t.integer :bye_match_points,  :null => false, :default => 0
+      t.integer :bye_game_points,   :null => false, :default => 0
       t.integer :tournaments,       :null => false, :default => 0
       t.float   :rating,            :null => false, :default => 1400.0
       t.integer :country_id,        :null => false, :default => 122
@@ -59,7 +59,7 @@ class DeviseCreatePlayers < ActiveRecord::Migration
     add_index :players, :username,              :unique => true
     add_index :players, :login,                 :unique => true
     add_index :players, :prestiges
-    add_index :players, :match_points
+    add_index :players, :game_points
     add_index :players, :matches
     add_index :players, :tournaments
     add_index :players, :rating
