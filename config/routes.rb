@@ -2,6 +2,8 @@ Anr::Application.routes.draw do
   resources :pages, :only => :index
   get 'about_us' => 'pages#about', :as => :about_us
   get 'contact' => 'pages#contact', :as => :contact
+  get 'console' => 'tournaments#index', :as => :console
+  get 'dashboard' => 'organizers#index', :as => :dashboard
   # devise_for :players
   devise_for :organizers, controllers: { registrations: 'organizers/registrations' }
   devise_for :admins, controllers: { registrations: 'admins/registrations' }
@@ -28,7 +30,7 @@ Anr::Application.routes.draw do
   # resources :organizer_services
 
 
-  resources :organizers, :only => :show
+  resources :organizers, :only => [:index, :show]
 
 
   # The priority is based upon order of creation:

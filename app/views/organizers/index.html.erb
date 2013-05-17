@@ -1,0 +1,45 @@
+<div class="page-header">
+  <h1>Organizers Dashboard</h1>
+</div>
+
+<% if notice %>
+  <div class="alert alert-success">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <%= notice %>
+  </div>
+<% end %>
+
+<%= will_paginate @organizers %>
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>Name</th>
+      <th>Time Zone</th>
+      <th>Tank Amount</th>
+      <th>Tank Limit</th>
+      <th>Boost Limit</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    
+    <% @organizers.each do |organizer| %>
+      <tr>
+        <td><%= organizer.email %></td>
+        <td><%= organizer.name %></td>
+        <td><%= organizer.time_zone %></td>
+        <td><%= organizer.boost_tank_current_amount %></td>
+        <td><%= organizer.boost_tank_full_limit %></td>
+        <td><%= organizer.boost_limit_per_tournament %></td>
+        <td>
+          <%#= link_to 'Edit', edit_organizer_path(organizer), :class => 'btn btn-mini' %>
+          <%= link_to 'Delete', organizer, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= will_paginate @organizers %>

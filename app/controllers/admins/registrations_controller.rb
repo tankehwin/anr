@@ -2,21 +2,20 @@ class Admins::RegistrationsController < Devise::RegistrationsController
   # POST /resource
   def create
     if params[:admin][:authorization_code] == "4NR@sentulasia.com"
-      admin = Admin.find_by_email resource.email if resource.email
+      admin = Admin.find_by_email params[:admin][:email] if params[:admin][:email] and not params[:admin][:email].blank?
       if admin
         admin.active = true
         admin.save
-        sign_in resource_name, resource, :bypass => true
-        respond_with resource, :location => after_update_path_for(resource)
+        sign_in :admin, admin, :bypass => true
+        respond_with admin, :location => after_update_path_for(admin)
       else
         super
       end
     else
-      build_resource
+      build_resource(params[:admin])
       clean_up_passwords(resource)
-      # resource.errors.add(authorization_code, 'There was an error with the authorization code below. Please re-enter the authorization code.')
-      flash.now[:alert] = "There was an error with the authorization code below. Please re-enter the authorization code."
-      render :new
+      resource.errors.add :authorization_code, "incorrect. Please re-enter the authorization code."
+      respond_with resource
     end
   end
 

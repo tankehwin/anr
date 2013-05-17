@@ -1,45 +1,29 @@
-<div class="container round">
-
-<h2>Edit <%= resource_name.to_s.humanize %> Account</h2>
-
-<% flash.each do |name, msg| %>
-  <% if msg.class == Array %>
-    <% msg.each do |message| %>
-      <%= content_tag :p, message, :id => "notice" %>
-    <% end %>
-  <% else %>
-    <%= content_tag :p, msg, :id => "notice" %>
-  <% end %>
-<% end %>
+<h2>Edit <%= resource_name.to_s.humanize %></h2>
 
 <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f| %>
   <%= devise_error_messages! %>
 
-  <div><%= f.label :name %><br />
-  <%= f.text_field :name, :class => "round quarter3rd", :onfocus => 'this.style.color="#666"' %></div>
-
   <div><%= f.label :email %><br />
-  <%= f.email_field :email, :class => "round quarter3rd", :onfocus => 'this.style.color="#666"' %></div>
+  <%= f.email_field :email, :autofocus => true, :class => 'email_field', :placeholder => "neo@thematrix.com" %></div>
+
+  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+    <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+  <% end %>
 
   <div><%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
-  <%= f.password_field :password, :autocomplete => "off", :class => "round quarter3rd", :onfocus => 'this.style.color="#666"' %></div>
+  <%= f.password_field :password, :autocomplete => "off" %></div>
 
   <div><%= f.label :password_confirmation %><br />
-  <%= f.password_field :password_confirmation, :class => "round quarter3rd", :onfocus => 'this.style.color="#666"' %></div>
+  <%= f.password_field :password_confirmation %></div>
 
   <div><%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
-  <%= f.password_field :current_password, :class => "round quarter3rd", :onfocus => 'this.style.color="#666"' %></div>
+  <%= f.password_field :current_password %></div>
 
-  <div><%= f.submit "Update", :class => "round devise" %></div>
+  <div><%= f.submit "Update" %></div>
 <% end %>
 
 <h3>Cancel my account</h3>
 
-<p>Unhappy? <%= link_to "Cancel my account", registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete %>.</p>
+<p>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete %>.</p>
 
-</div>
-
-<p>
-<%= link_to 'Course List', courses_path %><br />
-<%= link_to 'Dashboard', dashboard_url %> &raquo; <%= link_to "iPay88 Log", ipay88_responses_url %> &raquo; Edit <%= resource_name.to_s.humanize %> Account
-</p>
+<%= link_to "Back", :back %>

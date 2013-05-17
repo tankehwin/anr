@@ -1,4 +1,5 @@
 class ParticipantsController < ApplicationController
+  before_filter :authenticate_admin_or_organizer!, :only => [:new, :create, :destroy]
   # GET /participants/new
   # GET /participants/new.json
   def new

@@ -65,13 +65,13 @@ Anr::Application.configure do
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
-  config.action_mailer.default_url_options = { :host => 'anr.sentulasia.com' }
+  config.action_mailer.default_url_options = { :host => 'staging.sentulasia.com' }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
   :address              => "smtp.gmail.com",
   :port                 => 587,
-  :domain               => 'sentulasia.com',
-  :user_name            => 'anr@sentulasia.com',
+  :domain               => 'gmail.com',
+  :user_name            => 'anr.beta@gmail.com',
   :password             => '4NR@sentulasia.com',
   :authentication       => 'plain',
   :enable_starttls_auto => true  }

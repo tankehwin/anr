@@ -41,8 +41,8 @@ Anr::Application.configure do
   config.action_mailer.smtp_settings = {
   :address              => "smtp.gmail.com",
   :port                 => 587,
-  :domain               => 'sentulasia.com',
-  :user_name            => 'anr@sentulasia.com',
+  :domain               => 'gmail.com',
+  :user_name            => 'anr.beta@gmail.com',
   :password             => '4NR@sentulasia.com',
   :authentication       => 'plain',
   :enable_starttls_auto => true  }

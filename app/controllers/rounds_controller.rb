@@ -1,4 +1,5 @@
 class RoundsController < ApplicationController
+  before_filter :authenticate_admin_or_organizer!, :only => [:show, :new, :edit, :update]
   # GET /rounds/1
   # GET /rounds/1.json
   def show

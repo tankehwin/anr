@@ -1,4 +1,5 @@
 class SchedulesController < ApplicationController
+  before_filter :authenticate_admin_or_organizer!, :only => [:new, :edit, :update]
   # GET /schedules/new
   # GET /schedules/new.json
   def new

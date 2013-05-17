@@ -1,5 +1,6 @@
 class OrganizersController < ApplicationController
   before_filter :authenticate_organizer!, :only => :show
+  before_filter :authenticate_admin!, :only => :index
   # GET /organizers
   # GET /organizers.json
   def index

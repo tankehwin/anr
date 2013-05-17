@@ -1,5 +1,7 @@
 class TournamentsController < ApplicationController
-  before_filter :authenticate_organizer!, :only => [:new, :edit, :create, :update, :destroy]
+  before_filter :authenticate_admin_or_organizer!, :only => [:edit, :update, :destroy]
+  before_filter :authenticate_organizer!, :only => [:new, :create]
+  before_filter :authenticate_admin!, :only => :index
   # GET /tournaments
   # GET /tournaments.json
   def index
