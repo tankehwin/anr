@@ -12,8 +12,8 @@
     </div>
   <% end %>
 
-  <div class="row">
-    <fieldset>
+  <fieldset>
+    <div class="row">
       <div class="span12">
         <div class="control-group">
           <%= f.label :email, :class => 'control-label' %>
@@ -23,8 +23,8 @@
           </div>
         </div>
       </div>
-  </div>
-  <div class="row">
+    </div>
+    <div class="row">
       <div class="span12">
         <div class="control-group">
           <%= f.label :name, :class => 'control-label' %>
@@ -35,8 +35,27 @@
           </div>
         </div>
       </div>
-    </fieldset>
-  </div>
+    </div>
+    <div class="row">
+      <div class="span12">
+        <div class="control-group">
+          <%= f.label :country_id, :class => 'control-label' %>
+          <div class="controls">
+            <%= f.collection_select :country_id, @countries, :id, :name, {:selected => @country_id}, {:class => "collection_select"} %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span12">
+        <div class="control-group">
+          <div class="controls">
+            <%= recaptcha_tags :noscript => true unless organizer_signed_in? or admin_signed_in? %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </fieldset>
 
   <div class="form-actions">
     <%= f.submit nil, :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>

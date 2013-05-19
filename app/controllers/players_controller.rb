@@ -1,4 +1,5 @@
 class PlayersController < ApplicationController
+  before_filter :authenticate_admin!, :only => [:show, :edit, :update, :destroy]
   # GET /players
   # GET /players.json
   def index
@@ -34,6 +35,8 @@ class PlayersController < ApplicationController
     @player = Player.new
     @password = (10000000000000 + rand(89999999999999)).to_s(36)
     @default_email = Var.default_email
+    @countries = Country.all
+    @country_id = Country.malaysia_id
 
     respond_to do |format|
       format.html # new.html.erb
@@ -45,6 +48,8 @@ class PlayersController < ApplicationController
   def edit
     @player = Player.find(params[:id])
     @default_email = Var.default_email
+    @countries = Country.all
+    @country_id = @player.country_id
   end
 
   # POST /players
@@ -55,6 +60,8 @@ class PlayersController < ApplicationController
     @password = params[:player][:password]
     @player = Player.activate_or_create(params[:player])
     @default_email = Var.default_email
+    @countries = Country.all
+    @country_id = params[:player][:country_id]
 
     respond_to do |format|
       if @player.save
@@ -73,6 +80,8 @@ class PlayersController < ApplicationController
   def update
     @player = Player.find(params[:id])
     @default_email = Var.default_email
+    @countries = Country.all
+    @country_id = params[:player][:country_id]
 
     respond_to do |format|
       if @player.update_attributes(params[:player])
