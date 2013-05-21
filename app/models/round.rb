@@ -50,13 +50,24 @@ class Round < ActiveRecord::Base
     @isNotScheduled ||= (self.state == "Not Scheduled")? true : false
   end
 
+  def update_table
+    self.schedules.each do |schedule|
+      schedule.results.first.opponent.results.first.schedule_id = schedule.results.first.schedule_id
+      schedule.results.first.opponent.results.first.save
+      Round.reset_score_or_bye(schedule.results.first.opponent.results.first)
+      Round.reset_score_or_bye(schedule.results.first)
+    end
+    self.ready
+    self
+  end
+
+  private
+
   def self.calculate_round(tournament)
-    rounds = Round.find_all_by_tournament_id tournament.id
-    rounds.each do |round|
+    tournament.rounds.each do |round|
       round.destroy
     end
-  	participants = Participant.find_all_by_tournament_id tournament.id
-    count = participants.count - 2
+    count = tournament.participants.count - 2
     round = Math.log2(count).to_i if count > 1
     round = 0 if count < 2
     Round.create :tournament_id => tournament.id, :state => "Not Scheduled", :action => "Schedule", :number => 1 unless count < 1
@@ -72,20 +83,6 @@ class Round < ActiveRecord::Base
     end
     Participant.reset(tournament.id)
   end
-
-  def update_table
-    self.schedules.each do |schedule|
-      result = Result.find_by_opponent_id schedule.results.first.participant_id
-      result.schedule_id = schedule.results.first.schedule_id
-      Round.reset_score_or_bye(result)
-      first = schedule.results.first
-      Round.reset_score_or_bye(first)
-    end
-    self.ready
-    self
-  end
-
-  private
 
   def self.trigger(round, trigger)
     if trigger == "Start"

@@ -54,12 +54,12 @@ class Player < ActiveRecord::Base
 
   def self.activate_or_create(params_player)
     if params_player[:email] and not params_player[:email].blank?
-      player = Player.find_by_email params_player[:email]
+      player = Player.find_by_email params_player[:email], :include => :country
       player.active = true if player
     end
     unless player
-      player = Player.new(params_player)
-      player.username = Country.malaysia_iso + ((Player.count + 90210) * 5 / 2).to_s(16).upcase
+      player = Player.new(params_player, :include => :country)
+      player.username = player.country.iso + ((Player.count + 90210) * 5 / 2).to_s(16).upcase
     end
     player
   end

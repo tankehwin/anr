@@ -1,7 +1,7 @@
 class Organizers::RegistrationsController < Devise::RegistrationsController
   # POST /resource
   def create
-    if verify_recaptcha(:model => Organizer.new(params[:organizer]), :timeout => 3) or Rails.env.development?
+    if Rails.env.development? or verify_recaptcha(:model => Organizer.new(params[:organizer]), :timeout => 3)
       organizer = Organizer.find_by_email params[:organizer][:email] if params[:organizer][:email] and not params[:organizer][:email].blank?
       if organizer
         organizer.active = true

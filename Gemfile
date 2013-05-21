@@ -7,6 +7,7 @@ gem 'rails', '3.2.11'
 
 gem 'pg'
 gem 'devise'
+gem 'delayed_job_active_record'
 gem 'recaptcha', :require => 'recaptcha/rails'
 gem 'will_paginate'
 gem 'bootstrap-will_paginate'
@@ -47,5 +48,6 @@ group :development do
   # To use debugger
   gem 'debugger'
 
+  gem 'foreman'
   gem 'rails-erd'
 end

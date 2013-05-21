@@ -15,7 +15,6 @@ class OrganizersController < ApplicationController
   # GET /organizers/1
   # GET /organizers/1.json
   def show
-    @organizer = current_organizer
     @pre_tournaments = Tournament.paginate(:conditions => ["organizer_id = ? and state = ?", current_organizer.id.to_s, "Tournament is not started."], :page => params[:pre_page], :per_page => Var.per_page).order('created_at DESC')
     @post_tournaments = Tournament.paginate(:conditions => ["organizer_id = ? and state = ?", current_organizer.id.to_s, "Tournament has started."], :page => params[:post_page], :per_page => Var.per_page).order('created_at DESC')
     @closed_tournaments = Tournament.paginate(:conditions => ["organizer_id = ? and state = ?", current_organizer.id.to_s, "Tournament is closed."], :page => params[:page], :per_page => Var.per_page).order('created_at DESC')

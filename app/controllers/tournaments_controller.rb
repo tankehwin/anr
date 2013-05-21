@@ -43,7 +43,7 @@ class TournamentsController < ApplicationController
 
   # GET /tournaments/1/edit
   def edit
-    @tournament = Tournament.find(params[:id], :include => :participants)
+    @tournament = Tournament.find(params[:id], :include => {:participants => :player})
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
 
     if params[:trigger] == "Close"

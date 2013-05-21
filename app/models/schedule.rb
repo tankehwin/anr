@@ -15,7 +15,7 @@ class Schedule < ActiveRecord::Base
       round.schedules.each do |schedule|
         schedule.destroy
       end
-    	participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", round.tournament_id, Var.bye_id]).sort_by(&:place)
+    	participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", round.tournament_id, Var.bye_id], :include => :results).sort_by(&:place)
     	participants = Schedule.sort_pair(participants, round)
       Schedule.create_schedule(round, participants)
       round.ready

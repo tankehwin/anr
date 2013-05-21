@@ -33,8 +33,8 @@
     <% end %>
     <% if admin_signed_in? -%>
       <%= drop_down "Admin" do %>
-        <%= menu_item "Console", console_path %>
         <%= menu_item "Dashboard", dashboard_path %>
+        <%= menu_item "Console", console_path %>
         <%= drop_down_divider %>
         <%= menu_item "Edit Profile", edit_admin_registration_path %>
         <%= menu_item "Logout", destroy_admin_session_path, :method => :delete %>

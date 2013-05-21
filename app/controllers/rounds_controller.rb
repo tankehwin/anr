@@ -18,7 +18,7 @@ class RoundsController < ApplicationController
   # GET /rounds/new
   # GET /rounds/new.json
   def new
-    @tournament = Tournament.find params[:tournament]
+    @tournament = Tournament.find params[:tournament], :include => [:rounds, :participants]
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
     @rounds = Round.find_all_by_tournament_id @tournament.id
     @round = Round.calculate_round(@tournament)
@@ -31,7 +31,7 @@ class RoundsController < ApplicationController
 
   # GET /rounds/1/edit
   def edit
-    @round = Round.find(params[:id], :include => :tournament)
+    @round = Round.find(params[:id], :include => [:tournament, :schedules => {:results => :participant}])
     @tournament = @round.tournament
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
     if params[:trigger] == "Manual" or params[:trigger] == "Modify"
@@ -51,7 +51,7 @@ class RoundsController < ApplicationController
   # PUT /rounds/1
   # PUT /rounds/1.json
   def update
-    @round = Round.find(params[:id], :include => :tournament)
+    @round = Round.find(params[:id], :include => [:tournament, :schedules => {:results => [{:participant => :results}, {:opponent => :results}]}])
     @tournament = @round.tournament
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
 

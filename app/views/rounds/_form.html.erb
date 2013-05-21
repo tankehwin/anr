@@ -21,7 +21,7 @@
             <div class="control-group">
               <%= r.label :opponent_id, r.object.participant.player.name + " vs", :class => 'control-label' %>
               <div class="controls">
-                <%= r.select(:opponent_id, @participants.collect {|p| [p.player.name, p.id]}, {}, {:style => "select", :multiple => "multiple"}) -%>
+                <%= r.select(:opponent_id, @participants.collect {|p| [p.player.name, p.id]}, {}, {:style => "select"}) -%>
               </div>
             </div>
           </div>

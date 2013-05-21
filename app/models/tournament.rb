@@ -56,12 +56,6 @@ class Tournament < ActiveRecord::Base
 
   private
 
-  def self.create_new(tournament, current_organizer_id)
-    tournament[:state] = "Tournament is not started."
-    tournament[:organizer_id] = current_organizer_id
-    Tournament.new(tournament)
-  end
-
   def self.trigger(tournament, trigger)
     tournament.closed
     tournament.rounds.each do |round|
@@ -70,6 +64,12 @@ class Tournament < ActiveRecord::Base
     tournament.activate_points
     Player.update_points(tournament)
     "Tournament has been closed."
+  end
+
+  def self.create_new(tournament, current_organizer_id)
+    tournament[:state] = "Tournament is not started."
+    tournament[:organizer_id] = current_organizer_id
+    Tournament.new(tournament)
   end
 
   def seed_bye

@@ -71,7 +71,7 @@
         <div class="control-group clearfix">
           <%= f.label :description, :class => 'control-label' %>
           <div class="controls">
-            <%= f.text_area :description, :class => 'text_area' %>
+            <%= f.text_area :description, :class => 'textarea' %>
           </div>
         </div>
       </fieldset>
@@ -175,7 +175,7 @@
         <div class="control-group">
           <%= f.label :player_id, :class => 'control-label' %>
           <div class="controls">
-            <%= f.collection_select :player_id, @players, :id, :name, {}, {:class => "collection_select"} %>
+            <%= f.collection_select :player_id, @players, :id, :name, {}, {:class => "select"} %>
             <%= f.hidden_field :tournament_id, value: @tournament.id %>
           </div>
         </div>

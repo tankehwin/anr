@@ -58,10 +58,10 @@ class PlayersController < ApplicationController
     @tournament = Tournament.find params[:player][:tournament_id] if params[:player][:tournament_id]
     @participate = true if @tournament
     @password = params[:player][:password]
-    @player = Player.activate_or_create(params[:player])
     @default_email = Var.default_email
     @countries = Country.all
     @country_id = params[:player][:country_id]
+    @player = Player.activate_or_create(params[:player]) if Rails.env.development? or organizer_signed_in? or admin_signed_in? or verify_recaptcha(:model => Player.new(params[:player]), :timeout => 3)
 
     respond_to do |format|
       if @player.save

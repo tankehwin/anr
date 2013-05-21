@@ -2,8 +2,8 @@ Anr::Application.routes.draw do
   resources :pages, :only => :index
   get 'about_us' => 'pages#about', :as => :about_us
   get 'contact' => 'pages#contact', :as => :contact
-  get 'console' => 'tournaments#index', :as => :console
-  get 'dashboard' => 'organizers#index', :as => :dashboard
+  get 'dashboard' => 'tournaments#index', :as => :dashboard
+  get 'console' => 'organizers#index', :as => :console
   # devise_for :players
   devise_for :organizers, controllers: { registrations: 'organizers/registrations' }
   devise_for :admins, controllers: { registrations: 'admins/registrations' }

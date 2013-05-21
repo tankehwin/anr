@@ -41,20 +41,22 @@
         <div class="control-group">
           <%= f.label :country_id, :class => 'control-label' %>
           <div class="controls">
-            <%= f.collection_select :country_id, @countries, :id, :name, {:selected => @country_id}, {:class => "collection_select"} %>
+            <%= f.collection_select :country_id, @countries, :id, :name, {:selected => @country_id}, {:class => "select"} %>
           </div>
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="span12">
-        <div class="control-group">
-          <div class="controls">
-            <%= recaptcha_tags :noscript => true unless organizer_signed_in? or admin_signed_in? %>
+    <% unless organizer_signed_in? or admin_signed_in? or params[:action] == "edit" or params[:action] == "update" %>
+      <div class="row">
+        <div class="span12">
+          <div class="control-group">
+            <div class="controls">
+              <%= recaptcha_tags :noscript => true %>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    <% end %>
   </fieldset>
 
   <div class="form-actions">
