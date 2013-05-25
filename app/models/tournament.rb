@@ -9,6 +9,8 @@ class Tournament < ActiveRecord::Base
 
   validates :name, :presence => true, :length => { :in => 4..140 }
   validates :organizer_id, :presence => true, :numericality => { :only_integer => true }
+  validates :rating_multiplier, :numericality => { :only_integer => true }, :inclusion => { :in => 1..99, :message => "%{value} is not a valid rating multiplier" }, :allow_nil => true
+  validates :rating_boost, :numericality => { :only_integer => true }, :inclusion => { :in => 1..10, :message => "%{value} is not a valid rating boost" }, :allow_nil => true
 
   after_create :seed_bye
 

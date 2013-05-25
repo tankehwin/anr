@@ -10,6 +10,7 @@ class CreateParticipants < ActiveRecord::Migration
       t.integer :prestige_strength, :null => false, :default => 0
       t.integer :points_strength,   :null => false, :default => 0
       t.integer :matches,           :null => false, :default => 0
+      t.string  :name,              :null => false, :default => ""
       t.float :rating,              :null => false, :default => 1400.0
       t.float :rating_scores,       :null => false, :default => 0.0
       t.float :pmw, :null => false, :default => 0
