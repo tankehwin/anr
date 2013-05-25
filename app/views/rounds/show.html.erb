@@ -41,7 +41,7 @@
   </thead>
   <tbody>
 
-    <% @participants.sort_by(&:place).each do |participant| %>
+    <% @round.tournament.participants.sort_by(&:place).each do |participant| %>
       <% unless participant == @participant_bye %>
         <tr>
           <td><%= participant.place %></td>
@@ -69,7 +69,7 @@
   </thead>
   <tbody>
 
-    <% @schedules.each do |schedule| %>
+    <% @round.schedules.each do |schedule| %>
       <tr>
         <td><%= schedule.table %></td>
         <% schedule.results.each do |result| %>

@@ -52,10 +52,19 @@ class Round < ActiveRecord::Base
 
   def update_table
     self.schedules.each do |schedule|
-      schedule.results.first.opponent.results.first.schedule_id = schedule.results.first.schedule_id
-      schedule.results.first.opponent.results.first.save
-      Round.reset_score_or_bye(schedule.results.first.opponent.results.first)
-      Round.reset_score_or_bye(schedule.results.first)
+      # initialize data (must not use cache)
+      opponent_result = Result.find(schedule.results.first.opponent.results.first.id)
+      schedule_id = Result.find(schedule.results.first.id).schedule_id
+      result = Result.find(schedule.results.last)
+      opponent_schedule_id = Result.find(schedule.results.last.opponent.results.first.id).schedule_id
+      # set first result table
+      opponent_result.schedule_id = schedule_id
+      opponent_result.save
+      Round.reset_score_or_bye(opponent_result)
+      # set last result table
+      result.schedule_id = opponent_schedule_id
+      result.save
+      Round.reset_score_or_bye(result)
     end
     self.ready
     self
@@ -81,17 +90,18 @@ class Round < ActiveRecord::Base
     else
       tournament.started
     end
-    Participant.reset(tournament.id)
+    Participant.reset(tournament)
   end
 
   def self.trigger(round, trigger)
+    participant_bye_id = Participant.bye(round.tournament_id).id
     if trigger == "Start"
       round.in_progress
       "Round has started."
     elsif trigger == "End"
       round.schedules.each do |schedule|
         schedule.results.each do |result|
-          Participant.update_personal_points(result) unless result.participant_id == Participant.bye(round.tournament_id).id
+          Participant.update_personal_points(result) unless result.participant_id == participant_bye_id
         end
       end
       Participant.update_opponent_points(round)
@@ -104,15 +114,16 @@ class Round < ActiveRecord::Base
   end
 
   def self.reset_score_or_bye(result)
+    participant_bye_id = Participant.bye(result.tournament_id).id
     result.prestige = nil
     result.corp_game_points = nil
     result.runner_game_points = nil
     result.rating_score = 0.0
-    if result.participant_id == Participant.bye(result.tournament_id).id
+    if result.participant_id == participant_bye_id
       result.prestige = 0
       result.corp_game_points = 0
       result.runner_game_points = 0
-    elsif result.opponent_id == Participant.bye(result.tournament_id).id
+    elsif result.opponent_id == participant_bye_id
       result.prestige = 6
       result.corp_game_points = 10
       result.runner_game_points = 10

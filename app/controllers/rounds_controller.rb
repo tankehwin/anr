@@ -3,11 +3,9 @@ class RoundsController < ApplicationController
   # GET /rounds/1
   # GET /rounds/1.json
   def show
-    @round = Round.find(params[:id], :include => :tournament)
+    @round = Round.find(params[:id], :include => [:tournament => {:participants => :player}, :schedules => {:results => {:participant => :player}}])
     @tournament = @round.tournament
-    @participants = @tournament.participants.includes(:player).all
     @participant_bye = Participant.bye(@tournament.id)
-    @schedules = @round.schedules.includes(:results => {:participant => :player}).all
 
     respond_to do |format|
       format.html # show.html.erb
@@ -20,18 +18,17 @@ class RoundsController < ApplicationController
   def new
     @tournament = Tournament.find params[:tournament], :include => [:rounds, :participants]
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
-    @rounds = Round.find_all_by_tournament_id @tournament.id
     @round = Round.calculate_round(@tournament)
 
     respond_to do |format|
       format.html { redirect_to @tournament }
-      format.json { render json: @rounds }
+      format.json { render json: @tournament.rounds }
     end
   end
 
   # GET /rounds/1/edit
   def edit
-    @round = Round.find(params[:id], :include => [:tournament, :schedules => {:results => :participant}])
+    @round = Round.find(params[:id], :include => [:tournament => {:participants => :results}, :schedules => {:results => {:participant => :player}}])
     @tournament = @round.tournament
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
     if params[:trigger] == "Manual" or params[:trigger] == "Modify"
@@ -51,7 +48,7 @@ class RoundsController < ApplicationController
   # PUT /rounds/1
   # PUT /rounds/1.json
   def update
-    @round = Round.find(params[:id], :include => [:tournament, :schedules => {:results => [{:participant => :results}, {:opponent => :results}]}])
+    @round = Round.find(params[:id], :include => [:tournament => {:participants => :results}, :schedules => {:results => {:participant => :player}}])
     @tournament = @round.tournament
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
 

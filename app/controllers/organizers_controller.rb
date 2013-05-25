@@ -22,7 +22,7 @@ class OrganizersController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: @organizer }
+      format.json { render json: current_organizer }
     end
   end
 end

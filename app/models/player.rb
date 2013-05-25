@@ -34,19 +34,27 @@ class Player < ActiveRecord::Base
   end
 
   def self.update_points(tournament)
+    participant_bye = Participant.bye(tournament.id)
   	tournament.participants.each do |participant|
-  	  participants = Participant.find(:all, :conditions => ["player_id = ? and active = ?", participant.player_id, true])
-  	  participant.player.prestiges = participants.map(&:prestiges).sum
-  	  participant.player.game_points = participants.map(&:game_points).sum
-  	  participant.player.matches = participants.map(&:matches).sum
-      if participant.obtained_bye
-        participant.player.matches_with_bye = participant.player.matches_with_bye + 1
-        participant.player.bye_prestiges = participant.player.bye_prestiges + participant.bye_prestiges
-        participant.player.bye_game_points = participant.player.bye_game_points + participant.bye_game_points
+      unless participant == participant_bye
+    	  participants = Participant.find(:all, :conditions => ["player_id = ? and active = ?", participant.player_id, true])
+    	  participant.player.prestiges = participants.map(&:prestiges).sum
+    	  participant.player.game_points = participants.map(&:game_points).sum
+    	  participant.player.matches = participants.map(&:matches).sum
+        if participant.obtained_bye
+          participant.player.matches_with_bye = 0
+          participant.player.bye_prestiges = 0
+          participant.player.bye_game_points = 0
+          participants.each do |p|
+            participant.player.matches_with_bye = participant.player.matches_with_bye + 1 if p.obtained_bye == true
+            participant.player.bye_prestiges = participant.player.bye_prestiges + p.bye_prestiges
+            participant.player.bye_game_points = participant.player.bye_game_points + p.bye_game_points
+          end
+        end
+    	  participant.player.tournaments = participants.count
+        participant.player.rating = participant.player.rating + participant.rating_scores
+    	  participant.player.save
       end
-  	  participant.player.tournaments = participants.count
-      participant.player.rating = participant.player.rating + participant.rating_scores
-  	  participant.player.save
     end
   end
 

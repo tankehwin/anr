@@ -17,13 +17,13 @@ class SchedulesController < ApplicationController
   def edit
     @tournament = Tournament.find params[:tournament]
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
-    @schedule = Schedule.find(params[:id], :include => :results)
+    @schedule = Schedule.find(params[:id], :include => {:results => {:participant => :player}})
   end
 
   # PUT /schedules/1
   # PUT /schedules/1.json
   def update
-    @schedule = Schedule.find(params[:id], :include => :results)
+    @schedule = Schedule.find(params[:id], :include => {:results => {:participant => :player}})
     @tournament = @schedule.round.tournament
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
     params_schedule = Schedule.calculate_prestige(params[:schedule], @schedule)

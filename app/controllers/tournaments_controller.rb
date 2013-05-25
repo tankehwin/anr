@@ -17,12 +17,11 @@ class TournamentsController < ApplicationController
   # GET /tournaments/1
   # GET /tournaments/1.json
   def show
-    @tournament = Tournament.find(params[:id])
-    @participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", @tournament.id, Var.bye_id], :include => :player)
+    @tournament = Tournament.find(params[:id], :include => [:rounds => {:schedules => {:results => {:participant => :player}}}, :participants => :player])
+    @participant_bye = Participant.bye(@tournament.id)
     @participant = Participant.new
     @participate = true
     @players = Player.find(:all, :conditions => ["id != ?", Var.bye_id])
-    @rounds = @tournament.rounds.includes(:schedules => {:results => {:participant => :player}}).all
 
     respond_to do |format|
       format.html # show.html.erb

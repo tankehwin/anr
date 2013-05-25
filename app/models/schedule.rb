@@ -27,7 +27,7 @@ class Schedule < ActiveRecord::Base
 
   def self.sort_pair(participants, round)
     if round.number == 1
-      participants.shuffle
+      participants = participants.shuffle
     else
       pair = true
       counter = 0
@@ -167,11 +167,11 @@ class Schedule < ActiveRecord::Base
     participant_bye = Participant.find_by_tournament_id_and_player_id(current_schedule.round.tournament_id, Var.bye_id)
     unless participant_0 == participant_bye or participant_1 == participant_bye
       score = schedule[:results_attributes][:"0"][:prestige]/6.to_f - (1/(1 + 10**((participant_0.rating + participant_0.rating_scores - participant_1.rating - participant_1.rating_scores)/400.0)))
-      schedule[:results_attributes][:"0"][:rating_score] = score / 20.0 * current_schedule.round.tournament.rating_multiplier.to_f * current_schedule.round.tournament.rating_boost.to_f if score < 0
-      schedule[:results_attributes][:"0"][:rating_score] = score * 20.0 * current_schedule.round.tournament.rating_multiplier.to_f * current_schedule.round.tournament.rating_boost.to_f if score > 0
+      schedule[:results_attributes][:"0"][:rating_score] = score / 200.0 * current_schedule.round.tournament.rating_multiplier.to_f * current_schedule.round.tournament.rating_boost.to_f if score < 0
+      schedule[:results_attributes][:"0"][:rating_score] = score * 2.0 * current_schedule.round.tournament.rating_multiplier.to_f * current_schedule.round.tournament.rating_boost.to_f if score > 0
       score = schedule[:results_attributes][:"1"][:prestige]/6.to_f - (1/(1 + 10**((participant_1.rating + participant_1.rating_scores - participant_0.rating - participant_0.rating_scores)/400.0)))
-      schedule[:results_attributes][:"1"][:rating_score] = score / 20.0 * current_schedule.round.tournament.rating_multiplier.to_f * current_schedule.round.tournament.rating_boost.to_f if score < 0
-      schedule[:results_attributes][:"1"][:rating_score] = score * 20.0 * current_schedule.round.tournament.rating_multiplier.to_f * current_schedule.round.tournament.rating_boost.to_f if score > 0
+      schedule[:results_attributes][:"1"][:rating_score] = score / 200.0 * current_schedule.round.tournament.rating_multiplier.to_f * current_schedule.round.tournament.rating_boost.to_f if score < 0
+      schedule[:results_attributes][:"1"][:rating_score] = score * 2.0 * current_schedule.round.tournament.rating_multiplier.to_f * current_schedule.round.tournament.rating_boost.to_f if score > 0
     end
 
     schedule
