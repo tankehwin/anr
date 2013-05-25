@@ -139,6 +139,7 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
     t.integer  "prestige_strength", :default => 0,      :null => false
     t.integer  "points_strength",   :default => 0,      :null => false
     t.integer  "matches",           :default => 0,      :null => false
+    t.string   "name",              :default => "",     :null => false
     t.float    "rating",            :default => 1400.0, :null => false
     t.float    "rating_scores",     :default => 0.0,    :null => false
     t.float    "pmw",               :default => 0.0,    :null => false
