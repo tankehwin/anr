@@ -28,14 +28,14 @@ class RoundsController < ApplicationController
 
   # GET /rounds/1/edit
   def edit
-    @round = Round.find(params[:id], :include => [:tournament => {:participants => :results}, :schedules => {:results => {:participant => :player}}])
+    @round = Round.find(params[:id], :include => [:tournament, :schedules])
     @tournament = @round.tournament
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
     if params[:trigger] == "Manual" or params[:trigger] == "Modify"
       @schedules = Schedule.calculate_schedule(@round, params[:trigger])
       @round = Round.find(params[:id], :include => [:tournament => {:participants => :results}, :schedules => {:results => {:participant => :player}}]) if params[:trigger] == "Manual"
-      @participants = Participant.find(:all, :conditions => ["tournament_id = ?", @tournament.id], :include => :player)
-      @participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", @tournament.id, Var.bye_id], :include => :player) if (@participants.count - 1).even?
+      @participants = Participant.find(:all, :conditions => ["tournament_id = ?", @tournament.id], :include => :player).sort_by(&:name)
+      @participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", @tournament.id, Var.bye_id], :include => :player).sort_by(&:name) if (@participants.count - 1).even?
     else
       notice = Round.trigger(@round, params[:trigger])
       respond_to do |format|
@@ -48,7 +48,7 @@ class RoundsController < ApplicationController
   # PUT /rounds/1
   # PUT /rounds/1.json
   def update
-    @round = Round.find(params[:id], :include => [:tournament => {:participants => :results}, :schedules => {:results => {:participant => :player}}])
+    @round = Round.find(params[:id], :include => [:tournament, :schedules])
     @tournament = @round.tournament
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
 

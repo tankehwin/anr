@@ -60,27 +60,26 @@ class Participant < ActiveRecord::Base
   end
 
   def self.update_opponent_points(round)
-    participant_bye = Participant.bye(round.tournament_id)
-  	round.tournament.participants.each do |participant|
-      unless participant == participant_bye
-        unless participant.opponents.first.results.blank?
-          participant.head_to_head = 0
-          participant.prestige_strength = 0
-          participant.points_strength = 0
-          omw = 0.0
-          ogw = 0.0
-          participant.opponents.first.results.each do |opponents_result|
-            participant.head_to_head = participant.head_to_head + 1 if opponents_result.participant.prestiges == participant.prestiges
-            participant.prestige_strength = participant.prestige_strength + opponents_result.participant.prestiges
-            participant.points_strength = participant.points_strength + opponents_result.participant.game_points
-            omw = omw + opponents_result.participant.pmw
-            opponents_result.participant.pgw = (100.0 / 3.0) if opponents_result.participant.pgw < (100.0 / 3.0)
-            ogw = ogw + opponents_result.participant.pgw
-          end
-      	  participant.omw = omw / participant.opponents.first.results.count.to_f
-          participant.ogw = ogw / participant.opponents.first.results.count.to_f
-          participant.save
+    # initialize data (must not use cache)
+    participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", round.tournament_id, Var.bye_id])
+  	participants.each do |participant|
+      unless participant.opponents.first.results.blank?
+        participant.head_to_head = 0
+        participant.prestige_strength = 0
+        participant.points_strength = 0
+        omw = 0.0
+        ogw = 0.0
+        participant.opponents.first.results.each do |opponents_result|
+          participant.head_to_head = participant.head_to_head + 1 if opponents_result.participant.prestiges == participant.prestiges
+          participant.prestige_strength = participant.prestige_strength + opponents_result.participant.prestiges
+          participant.points_strength = participant.points_strength + opponents_result.participant.game_points
+          omw = omw + opponents_result.participant.pmw
+          opponents_result.participant.pgw = (100.0 / 3.0) if opponents_result.participant.pgw < (100.0 / 3.0)
+          ogw = ogw + opponents_result.participant.pgw
         end
+    	  participant.omw = omw / participant.opponents.first.results.count.to_f
+        participant.ogw = ogw / participant.opponents.first.results.count.to_f
+        participant.save
       end
   	end
   end
@@ -98,7 +97,7 @@ class Participant < ActiveRecord::Base
   end
 
   def self.register_player(player, tournament_id)
-    params_participant = Participant.new(:tournament_id => tournament_id, :player_id => player.id, :rating => player.rating, :place => Participant.find_all_by_tournament_id(tournament_id).count)
+    params_participant = Participant.new(:tournament_id => tournament_id, :player_id => player.id, :rating => player.rating, :name => player.name, :place => Participant.find_all_by_tournament_id(tournament_id).count)
     params_participant.save
   end
 

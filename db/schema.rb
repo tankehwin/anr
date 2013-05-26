@@ -93,8 +93,8 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   add_index "organizer_services", ["uname"], :name => "index_organizer_services_on_uname"
 
   create_table "organizers", :force => true do |t|
-    t.string   "email",                      :default => "",   :null => false
-    t.string   "encrypted_password",         :default => "",   :null => false
+    t.string   "email",                      :default => "",             :null => false
+    t.string   "encrypted_password",         :default => "",             :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -112,14 +112,14 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
     t.datetime "locked_at"
     t.string   "authentication_token"
     t.string   "username"
-    t.string   "name",                       :default => "",   :null => false
-    t.string   "time_zone",                                    :null => false
-    t.integer  "boost_tank_current_amount",  :default => 10,   :null => false
-    t.integer  "boost_tank_full_limit",      :default => 10,   :null => false
-    t.integer  "boost_limit_per_tournament", :default => 2,    :null => false
-    t.boolean  "active",                     :default => true, :null => false
-    t.datetime "created_at",                                   :null => false
-    t.datetime "updated_at",                                   :null => false
+    t.string   "name",                       :default => "",             :null => false
+    t.string   "time_zone",                  :default => "Kuala Lumpur", :null => false
+    t.integer  "boost_tank_current_amount",  :default => 10,             :null => false
+    t.integer  "boost_tank_full_limit",      :default => 10,             :null => false
+    t.integer  "boost_limit_per_tournament", :default => 2,              :null => false
+    t.boolean  "active",                     :default => true,           :null => false
+    t.datetime "created_at",                                             :null => false
+    t.datetime "updated_at",                                             :null => false
   end
 
   add_index "organizers", ["authentication_token"], :name => "index_organizers_on_authentication_token", :unique => true
@@ -278,6 +278,7 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
     t.string   "name",                                                        :null => false
     t.text     "description"
     t.string   "state",             :default => "Tournament is not started.", :null => false
+    t.string   "time_zone",         :default => "Kuala Lumpur",               :null => false
     t.integer  "rating_multiplier", :default => 1,                            :null => false
     t.integer  "rating_boost",      :default => 1,                            :null => false
     t.datetime "start"

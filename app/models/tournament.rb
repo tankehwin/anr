@@ -1,6 +1,6 @@
 class Tournament < ActiveRecord::Base
   attr_accessible :description, :flag, :name, :organizer_id, :rating_multiplier,
-                  :state
+                  :state, :time_zone
 
   belongs_to :organizer
   has_many :participants, :dependent => :destroy
@@ -56,6 +56,13 @@ class Tournament < ActiveRecord::Base
     end
   end
 
+  def update_time_zone
+    unless self.time_zone == self.organizer.time_zone
+      self.time_zone = self.organizer.time_zone
+      self.save
+    end
+  end
+
   private
 
   def self.trigger(tournament, trigger)
@@ -75,6 +82,6 @@ class Tournament < ActiveRecord::Base
   end
 
   def seed_bye
-    Participant.find_or_create_by_tournament_id_and_player_id :tournament_id => self.id, :player_id => Var.bye_id
+    Participant.find_or_create_by_tournament_id_and_player_id :tournament_id => self.id, :player_id => Var.bye_id, :name => "Bye"
   end
 end

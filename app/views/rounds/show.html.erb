@@ -45,7 +45,7 @@
       <% unless participant == @participant_bye %>
         <tr>
           <td><%= participant.place %></td>
-          <td><%= participant.player.name %></td>
+          <td><%= participant.name %></td>
           <td><%= participant.prestiges %></td>
           <td><%= participant.game_points %></td>
           <td><%= participant.head_to_head %></td>
@@ -73,7 +73,7 @@
       <tr>
         <td><%= schedule.table %></td>
         <% schedule.results.each do |result| %>
-          <td><b><%= result.participant.player.name %></b></td>
+          <td><b><%= result.participant.name %></b></td>
         <% end %>
       </tr>
     <% end %>

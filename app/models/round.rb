@@ -59,11 +59,9 @@ class Round < ActiveRecord::Base
       opponent_schedule_id = Result.find(schedule.results.last.opponent.results.first.id).schedule_id
       # set first result table
       opponent_result.schedule_id = schedule_id
-      opponent_result.save
       Round.reset_score_or_bye(opponent_result)
       # set last result table
       result.schedule_id = opponent_schedule_id
-      result.save
       Round.reset_score_or_bye(result)
     end
     self.ready

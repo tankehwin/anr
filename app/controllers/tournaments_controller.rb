@@ -6,7 +6,6 @@ class TournamentsController < ApplicationController
   # GET /tournaments.json
   def index
     @tournaments = Tournament.paginate(:page => params[:page], :per_page => Var.per_page).order('created_at DESC')
-    @tournament = Tournament.new
 
     respond_to do |format|
       format.html # index.html.erb
@@ -61,6 +60,7 @@ class TournamentsController < ApplicationController
 
     respond_to do |format|
       if @tournament.save
+        @tournament.update_time_zone
         format.html { redirect_to @tournament, notice: 'Tournament was successfully created. To continue, add participants for this tournament and then choose the schedule type.' }
         format.json { render json: @tournament, status: :created, location: @tournament }
       else
@@ -78,6 +78,7 @@ class TournamentsController < ApplicationController
 
     respond_to do |format|
       if @tournament.update_attributes(params[:tournament])
+        @tournament.update_time_zone
         format.html { redirect_to @tournament, notice: 'Tournament details was successfully updated.' }
         format.json { head :no_content }
       else

@@ -5,6 +5,7 @@ class CreateTournaments < ActiveRecord::Migration
       t.string    :name,              :null => false
       t.text      :description
       t.string    :state,             :null => false, :default => "Tournament is not started."
+      t.string    :time_zone,         :null => false, :default => "Kuala Lumpur"
       t.integer   :rating_multiplier, :null => false, :default => 1
       t.integer   :rating_boost,      :null => false, :default => 1
       t.datetime  :start
