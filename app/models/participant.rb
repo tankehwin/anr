@@ -62,6 +62,7 @@ class Participant < ActiveRecord::Base
   def self.update_opponent_points(round)
     # initialize data (must not use cache)
     participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", round.tournament_id, Var.bye_id])
+    participant_bye = Participant.bye(round.tournament_id)
   	participants.each do |participant|
       unless participant.opponents.first.results.blank?
         participant.head_to_head = 0
@@ -69,16 +70,26 @@ class Participant < ActiveRecord::Base
         participant.points_strength = 0
         omw = 0.0
         ogw = 0.0
+        fought_bye = false
         participant.opponents.each do |opponent|
-          participant.head_to_head = participant.head_to_head + 1 if opponent.prestiges == participant.prestiges
-          participant.prestige_strength = participant.prestige_strength + opponent.prestiges
-          participant.points_strength = participant.points_strength + opponent.game_points
-          omw = omw + opponent.pmw
-          opponent.pgw = (100.0 / 3.0) if opponent.pgw < (100.0 / 3.0)
-          ogw = ogw + opponent.pgw
+          if opponent == participant_bye
+            fought_bye = true
+          else
+            participant.head_to_head = participant.head_to_head + 1 if opponent.prestiges == participant.prestiges
+            participant.prestige_strength = participant.prestige_strength + opponent.prestiges
+            participant.points_strength = participant.points_strength + opponent.game_points
+            omw = omw + opponent.pmw
+            opponent.pgw = (100.0 / 3.0) if opponent.pgw < (100.0 / 3.0)
+            ogw = ogw + opponent.pgw
+          end
         end
-    	  participant.omw = omw / participant.opponents.count.to_f
-        participant.ogw = ogw / participant.opponents.count.to_f
+        if fought_bye and participant.opponents.count > 1
+          participant.omw = omw / (participant.opponents.count - 1).to_f
+          participant.ogw = ogw / (participant.opponents.count - 1).to_f
+        else
+          participant.omw = omw / participant.opponents.count.to_f
+          participant.ogw = ogw / participant.opponents.count.to_f
+        end
         participant.save
       end
   	end

@@ -50,7 +50,7 @@
           <td><%= participant.game_points %></td>
           <td><%= participant.head_to_head %></td>
           <td><%= participant.prestige_strength %> (<%= participant.points_strength %>)</td>
-          <td><%= (participant.rating + participant.rating_scores).to_i %></td>
+          <td><%= (participant.rating + participant.rating_scores).round %></td>
         </tr>
       <% end %>
     <% end %>

@@ -13,10 +13,10 @@ class CreateParticipants < ActiveRecord::Migration
       t.string  :name,              :null => false, :default => ""
       t.float :rating,              :null => false, :default => 1400.0
       t.float :rating_scores,       :null => false, :default => 0.0
-      t.float :pmw, :null => false, :default => 0
-      t.float :omw, :null => false, :default => 0
-      t.float :pgw, :null => false, :default => 0
-      t.float :ogw, :null => false, :default => 0
+      t.float :pmw, :null => false, :default => 0.0
+      t.float :omw, :null => false, :default => 0.0
+      t.float :pgw, :null => false, :default => 0.0
+      t.float :ogw, :null => false, :default => 0.0
       t.boolean :obtained_bye,      :null => false, :default => false
       t.integer :bye_prestiges
       t.integer :bye_game_points
