@@ -31,12 +31,16 @@ class Tournament < ActiveRecord::Base
     self.save
   end
 
-  def closed?
-    @isClosed ||= (self.state == "Tournament is closed.")? true : false
+  def not_started?
+    @isNotStarted ||= (self.state == "Tournament is not started.")? true : false
   end
 
   def started?
     @isStarted ||= (self.state == "Tournament has started.")? true : false
+  end
+
+  def closed?
+    @isClosed ||= (self.state == "Tournament is closed.")? true : false
   end
 
   def activate_points

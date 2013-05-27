@@ -1,5 +1,5 @@
 <div class="page-header">
-  <h2>Edit <%= resource_name.to_s.humanize %></h2>
+  <h2>Edit Profile</h2>
 </div>
 
 <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put, :class => 'form-horizontal' }) do |f| %>
@@ -18,6 +18,13 @@
         <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
           <span class="help-block"><i>Currently waiting confirmation for: <%= resource.unconfirmed_email %></i></span>
         <% end %>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <%= f.label :name, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.text_field :name, :class => 'text_field' %>
       </div>
     </div>
 
@@ -43,6 +50,13 @@
         <span class="help-block"><i>(we need your current password to confirm your changes)</i></span>
       </div>
     </div>
+
+    <div class="control-group">
+      <%= f.label :time_zone, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.time_zone_select(:time_zone) %>
+      </div>
+    </div>
   </fieldset>
 
   <div class="form-actions">
@@ -51,4 +65,4 @@
   </div>
 <% end %>
 
-<p><%= button_to "Cancel my account", registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete, :class => 'btn btn-danger' %></p>
+<p><%= button_to "Deactivate Account", registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete, :class => 'btn btn-danger' %></p>

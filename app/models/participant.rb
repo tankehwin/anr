@@ -69,16 +69,16 @@ class Participant < ActiveRecord::Base
         participant.points_strength = 0
         omw = 0.0
         ogw = 0.0
-        participant.opponents.first.results.each do |opponents_result|
-          participant.head_to_head = participant.head_to_head + 1 if opponents_result.participant.prestiges == participant.prestiges
-          participant.prestige_strength = participant.prestige_strength + opponents_result.participant.prestiges
-          participant.points_strength = participant.points_strength + opponents_result.participant.game_points
-          omw = omw + opponents_result.participant.pmw
-          opponents_result.participant.pgw = (100.0 / 3.0) if opponents_result.participant.pgw < (100.0 / 3.0)
-          ogw = ogw + opponents_result.participant.pgw
+        participant.opponents.each do |opponent|
+          participant.head_to_head = participant.head_to_head + 1 if opponent.prestiges == participant.prestiges
+          participant.prestige_strength = participant.prestige_strength + opponent.prestiges
+          participant.points_strength = participant.points_strength + opponent.game_points
+          omw = omw + opponent.pmw
+          opponent.pgw = (100.0 / 3.0) if opponent.pgw < (100.0 / 3.0)
+          ogw = ogw + opponent.pgw
         end
-    	  participant.omw = omw / participant.opponents.first.results.count.to_f
-        participant.ogw = ogw / participant.opponents.first.results.count.to_f
+    	  participant.omw = omw / participant.opponents.count.to_f
+        participant.ogw = ogw / participant.opponents.count.to_f
         participant.save
       end
   	end
