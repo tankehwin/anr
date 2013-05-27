@@ -3,6 +3,14 @@ class Var < ActiveRecord::Base
   	1
   end
 
+  def self.rating_win_multiplier
+  	20.0
+  end
+
+  def self.rating_lose_divider
+  	20.0
+  end
+
   def self.per_page
   	100
   end
