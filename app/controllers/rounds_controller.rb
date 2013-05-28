@@ -16,8 +16,9 @@ class RoundsController < ApplicationController
   # GET /rounds/new
   # GET /rounds/new.json
   def new
-    @tournament = Tournament.find params[:tournament], :include => [:rounds, :participants]
+    @tournament = Tournament.find(params[:tournament], :include => [:rounds, :participants, :organizer])
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
+    redirect_to root_url, notice: 'Action Not Authorized' and return unless admin_signed_in? or @tournament.organizer == current_organizer
     @round = Round.calculate_round(@tournament)
 
     respond_to do |format|
@@ -28,9 +29,10 @@ class RoundsController < ApplicationController
 
   # GET /rounds/1/edit
   def edit
-    @round = Round.find(params[:id], :include => [:tournament, :schedules])
+    @round = Round.find(params[:id], :include => [:schedules, :tournament => :organizer])
     @tournament = @round.tournament
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
+    redirect_to root_url, notice: 'Action Not Authorized' and return unless admin_signed_in? or @tournament.organizer == current_organizer
     if params[:trigger] == "Manual" or params[:trigger] == "Modify"
       @schedules = Schedule.calculate_schedule(@round, params[:trigger])
       @round = Round.find(params[:id], :include => [:tournament => {:participants => :results}, :schedules => {:results => {:participant => :player}}]) if params[:trigger] == "Manual"
@@ -48,9 +50,10 @@ class RoundsController < ApplicationController
   # PUT /rounds/1
   # PUT /rounds/1.json
   def update
-    @round = Round.find(params[:id], :include => [:tournament, :schedules])
+    @round = Round.find(params[:id], :include => [:schedules, :tournament => :organizer])
     @tournament = @round.tournament
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
+    redirect_to root_url, notice: 'Action Not Authorized' and return unless admin_signed_in? or @tournament.organizer == current_organizer
 
     respond_to do |format|
       if @round.update_attributes(params[:round])

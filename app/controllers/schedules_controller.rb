@@ -3,8 +3,9 @@ class SchedulesController < ApplicationController
   # GET /schedules/new
   # GET /schedules/new.json
   def new
-    @round = Round.find params[:round], :include => :tournament
+    @round = Round.find(params[:round], :include => {:tournament => :organizer})
     redirect_to @round.tournament, notice: @round.tournament.state and return if @round.tournament.closed?
+    redirect_to root_url, notice: 'Action Not Authorized' and return unless admin_signed_in? or @round.tournament.organizer == current_organizer
     @schedules = Schedule.calculate_schedule(@round, params[:trigger])
 
     respond_to do |format|
@@ -15,17 +16,19 @@ class SchedulesController < ApplicationController
 
   # GET /schedules/1/edit
   def edit
-    @tournament = Tournament.find params[:tournament]
+    @tournament = Tournament.find(params[:tournament], :include => :organizer)
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
+    redirect_to root_url, notice: 'Action Not Authorized' and return unless admin_signed_in? or @tournament.organizer == current_organizer
     @schedule = Schedule.find(params[:id], :include => {:results => {:participant => :player}})
   end
 
   # PUT /schedules/1
   # PUT /schedules/1.json
   def update
-    @schedule = Schedule.find(params[:id], :include => {:results => {:participant => :player}})
+    @schedule = Schedule.find(params[:id], :include => [:results => {:participant => :player}, :round => {:tournament => :organizer}])
     @tournament = @schedule.round.tournament
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
+    redirect_to root_url, notice: 'Action Not Authorized' and return unless admin_signed_in? or @tournament.organizer == current_organizer
     params_schedule = Schedule.calculate_prestige(params[:schedule], @schedule)
 
     respond_to do |format|

@@ -3,8 +3,9 @@ class ParticipantsController < ApplicationController
   # GET /participants/new
   # GET /participants/new.json
   def new
-    @tournament = Tournament.find params[:tournament]
+    @tournament = Tournament.find(params[:tournament], :include => :organizer)
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
+    redirect_to root_url, notice: 'Action Not Authorized' and return unless admin_signed_in? or @tournament.organizer == current_organizer
     @participant = Participant.new
     @participate = true
     @players = Player.find(:all, :conditions => ["id != ?", Var.bye_id])
@@ -18,8 +19,9 @@ class ParticipantsController < ApplicationController
   # POST /participants
   # POST /participants.json
   def create
-    @tournament = Tournament.find params[:participant][:tournament_id]
+    @tournament = Tournament.find(params[:participant][:tournament_id], :include => :organizer)
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
+    redirect_to root_url, notice: 'Action Not Authorized' and return unless admin_signed_in? or @tournament.organizer == current_organizer
     @participate = true
     @participant = Participant.find_by_player_id_or_create(params[:participant])
 
@@ -46,8 +48,9 @@ class ParticipantsController < ApplicationController
   # DELETE /participants/1
   # DELETE /participants/1.json
   def destroy
-    @participant = Participant.find(params[:id], :include => :tournament)
+    @participant = Participant.find(params[:id], :include => {:tournament => :organizer})
     redirect_to @participant.tournament, notice: @participant.tournament.state and return if @participant.tournament.closed?
+    redirect_to root_url, notice: 'Action Not Authorized' and return unless @participant.tournament.organizer == current_organizer
     @participant.destroy
 
     respond_to do |format|

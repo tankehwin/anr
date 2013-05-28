@@ -41,8 +41,9 @@ class TournamentsController < ApplicationController
 
   # GET /tournaments/1/edit
   def edit
-    @tournament = Tournament.find(params[:id], :include => {:participants => :player})
+    @tournament = Tournament.find(params[:id], :include => [:organizer, :participants => :player])
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
+    redirect_to root_url, notice: 'Action Not Authorized' and return unless admin_signed_in? or @tournament.organizer == current_organizer
 
     if params[:trigger] == "Close"
       notice = Tournament.trigger(@tournament, params[:trigger])
@@ -73,8 +74,9 @@ class TournamentsController < ApplicationController
   # PUT /tournaments/1
   # PUT /tournaments/1.json
   def update
-    @tournament = Tournament.find(params[:id])
+    @tournament = Tournament.find(params[:id], :include => :organizer)
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
+    redirect_to root_url, notice: 'Action Not Authorized' and return unless admin_signed_in? or @tournament.organizer == current_organizer
 
     respond_to do |format|
       if @tournament.update_attributes(params[:tournament])
@@ -91,8 +93,9 @@ class TournamentsController < ApplicationController
   # DELETE /tournaments/1
   # DELETE /tournaments/1.json
   def destroy
-    @tournament = Tournament.find(params[:id])
+    @tournament = Tournament.find(params[:id], :include => :organizer)
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
+    redirect_to root_url, notice: 'Action Not Authorized' and return unless admin_signed_in? or @tournament.organizer == current_organizer
     @tournament.active = false
     @tournament.save
 

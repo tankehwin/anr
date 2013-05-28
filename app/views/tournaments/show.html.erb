@@ -38,7 +38,7 @@
     <% end %>
   </div>
   <%= link_to 'Edit Details', '#tournaments_edit_' + @tournament.id.to_s, :class => 'btn open-dialog', :"data-toggle" => 'modal' unless @tournament.closed? %>
-  <%= link_to 'Tournament Has Finish', edit_tournament_path(@tournament, :trigger => "Close"), data: { confirm: 'This action would terminate all unfinished rounds and propagate tournament score table into players score table. Do you want to proceed?' }, :class => 'btn btn-danger' unless @tournament.rounds.empty? or @tournament.closed? or @tournament.participants.count < 3 %>
+  <%= link_to "Close and Submit Score", edit_tournament_path(@tournament, :trigger => "Close"), data: { confirm: 'This action would terminate all unfinished rounds and propagate tournament score table into players score table. Do you want to proceed?' }, :class => 'btn btn-danger' unless @tournament.rounds.empty? or @tournament.closed? or @tournament.participants.count < 3 %>
 </div>
 
 <div id="<%= 'tournaments_edit_' + @tournament.id.to_s %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="<%= 'label_tournaments_edit_' + @tournament.id.to_s %>" aria-hidden="true">
@@ -149,7 +149,7 @@
             <td><%= participant.prestige_strength %> (<%= participant.points_strength %>)</td>
             <td><%= (participant.rating + participant.rating_scores).round %></td>
             <td>
-              <%= link_to 'Remove', participant, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' unless @tournament.closed? or @tournament.started? %>
+              <%= link_to 'Remove', participant, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger', :onclick => "$(body).addClass('loading');" unless @tournament.closed? or @tournament.started? %>
             </td>
           </tr>
         <% end %>
