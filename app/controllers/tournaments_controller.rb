@@ -16,7 +16,7 @@ class TournamentsController < ApplicationController
   # GET /tournaments/1
   # GET /tournaments/1.json
   def show
-    @tournament = Tournament.find(params[:id], :include => [:rounds => {:schedules => {:results => {:participant => :player}}}, :participants => :player])
+    @tournament = Tournament.find(params[:id], :include => [:rounds => {:schedules => {:results => {:participant => :player}}}, :participants => [:player, :country]])
     @participant_bye = Participant.bye(@tournament.id)
     @participant = Participant.new
     @participate = true

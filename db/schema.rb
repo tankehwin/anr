@@ -132,6 +132,7 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   create_table "participants", :force => true do |t|
     t.integer  "tournament_id",                         :null => false
     t.integer  "player_id",                             :null => false
+    t.integer  "country_id",        :default => 122,    :null => false
     t.integer  "place",             :default => 0,      :null => false
     t.integer  "prestiges",         :default => 0,      :null => false
     t.integer  "game_points",       :default => 0,      :null => false

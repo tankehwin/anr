@@ -3,6 +3,7 @@ class Country < ActiveRecord::Base
   attr_accessible :iso, :iso3, :name, :numcode, :printable_name, :as => :seed
 
   has_many :players
+  has_many :participants
   
   def self.malaysia_id
     @malaysia_id ||= find_by_name("Malaysia").id

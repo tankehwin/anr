@@ -19,7 +19,7 @@ class RoundsController < ApplicationController
     @tournament = Tournament.find(params[:tournament], :include => [:rounds, :participants, :organizer])
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
     redirect_to root_url, notice: 'Action Not Authorized' and return unless admin_signed_in? or @tournament.organizer == current_organizer
-    @round = Round.calculate_round(@tournament)
+    @round = Round.calculate_round(@tournament, params[:trigger])
 
     respond_to do |format|
       format.html { redirect_to @tournament }

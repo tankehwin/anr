@@ -1,10 +1,11 @@
 class Participant < ActiveRecord::Base
-  attr_accessible :active, :bye_game_points, :bye_prestiges, :drop,
+  attr_accessible :active, :bye_game_points, :bye_prestiges, :country_id, :drop,
                   :head_to_head, :game_points, :matches, :name, :obtained_bye,
                   :ogw, :omw, :pgw, :pmw, :place, :player_id, :points_strength,
                   :prestiges, :prestige_strength, :rating, :rating_scores,
                   :tournament_id
 
+  belongs_to :country
   belongs_to :player
   belongs_to :tournament
   has_many :results, :dependent => :destroy
@@ -117,17 +118,18 @@ class Participant < ActiveRecord::Base
   def self.find_by_player_id_or_create(params_participant)
     if params_participant[:player_id]
       participant = Participant.find_by_tournament_id_and_player_id(params_participant[:tournament_id], params_participant[:player_id])
-      params_participant = Participant.initialize_name_and_rating(params_participant)
+      params_participant = Participant.initialize_data(params_participant)
     end
     participant = Participant.new(params_participant) unless participant
     participant
   end
 
-  def self.initialize_name_and_rating(participant)
+  def self.initialize_data(participant)
     player = Player.find(participant[:player_id])
     participant[:place] = Participant.find_all_by_tournament_id(participant[:tournament_id]).count
     participant[:rating] = player.rating
     participant[:name] = player.name
+    participant[:country_id] = player.country_id
     participant
   end
 

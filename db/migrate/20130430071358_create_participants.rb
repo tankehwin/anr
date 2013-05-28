@@ -3,6 +3,7 @@ class CreateParticipants < ActiveRecord::Migration
     create_table :participants do |t|
       t.integer :tournament_id,     :null => false
       t.integer :player_id,         :null => false
+      t.integer :country_id,        :null => false, :default => 122
       t.integer :place,             :null => false, :default => 0
       t.integer :prestiges,         :null => false, :default => 0
       t.integer :game_points,       :null => false, :default => 0

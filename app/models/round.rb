@@ -70,18 +70,40 @@ class Round < ActiveRecord::Base
 
   private
 
-  def self.calculate_round(tournament)
+  def self.calculate_round(tournament, trigger)
     tournament.rounds.each do |round|
       round.destroy
     end
-    count = tournament.participants.count - 2
-    round = Math.log2(count).to_i if count > 1
-    round = 0 if count < 2
-    Round.create :tournament_id => tournament.id, :state => "Not Scheduled", :action => "Schedule", :number => 1 unless count < 1
-    number = 2
-    round.times do
-      Round.create :tournament_id => tournament.id, :state => "Not Ready", :action => "Pre-Round", :number => number
-      number = number + 1
+    if trigger == "Without"
+      count = tournament.participants.count - 2
+      round = Math.log2(count).to_i if count > 1
+      round = 0 if count < 2
+      Round.create :tournament_id => tournament.id, :state => "Not Scheduled", :action => "Schedule", :number => 1 unless count < 1
+      number = 2
+      round.times do
+        Round.create :tournament_id => tournament.id, :state => "Not Ready", :action => "Pre-Round", :number => number
+        number = number + 1
+      end
+    elsif trigger == "With4"
+      count = tournament.participants.count - 2
+      round = Math.log2(count).to_i if count > 1
+      round = 0 if count < 2
+      Round.create :tournament_id => tournament.id, :state => "Not Scheduled", :action => "Schedule", :number => 1 unless count < 1
+      number = 2
+      round.times do
+        Round.create :tournament_id => tournament.id, :state => "Not Ready", :action => "Pre-Round", :number => number
+        number = number + 1
+      end
+    elsif trigger == "With8"
+      count = tournament.participants.count - 2
+      round = Math.log2(count).to_i if count > 1
+      round = 0 if count < 2
+      Round.create :tournament_id => tournament.id, :state => "Not Scheduled", :action => "Schedule", :number => 1 unless count < 1
+      number = 2
+      round.times do
+        Round.create :tournament_id => tournament.id, :state => "Not Ready", :action => "Pre-Round", :number => number
+        number = number + 1
+      end
     end
     if count < 1
       tournament.not_started
