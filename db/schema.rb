@@ -147,9 +147,10 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
     t.float    "omw",               :default => 0.0,    :null => false
     t.float    "pgw",               :default => 0.0,    :null => false
     t.float    "ogw",               :default => 0.0,    :null => false
-    t.boolean  "obtained_bye",      :default => false,  :null => false
+    t.string   "status"
     t.integer  "bye_prestiges"
     t.integer  "bye_game_points"
+    t.boolean  "obtained_bye",      :default => false,  :null => false
     t.boolean  "drop",              :default => false,  :null => false
     t.boolean  "active",            :default => false,  :null => false
     t.datetime "created_at",                            :null => false

@@ -3,7 +3,7 @@ class Participant < ActiveRecord::Base
                   :head_to_head, :game_points, :matches, :name, :obtained_bye,
                   :ogw, :omw, :pgw, :pmw, :place, :player_id, :points_strength,
                   :prestiges, :prestige_strength, :rating, :rating_scores,
-                  :tournament_id
+                  :status, :tournament_id
 
   belongs_to :country
   belongs_to :player
