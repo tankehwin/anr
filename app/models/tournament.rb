@@ -1,6 +1,6 @@
 class Tournament < ActiveRecord::Base
   attr_accessible :description, :flag, :name, :organizer_id, :rating_multiplier,
-                  :state, :time_zone
+                  :scheduling_type, :state, :time_zone
 
   belongs_to :organizer
   has_many :participants, :dependent => :destroy
@@ -16,6 +16,7 @@ class Tournament < ActiveRecord::Base
 
   def not_started
     self.state = "Tournament is not started."
+    self.scheduling_type = "Not Scheduled"
     self.save
   end
 
@@ -28,6 +29,36 @@ class Tournament < ActiveRecord::Base
   def closed
     self.end = Time.now
     self.state = "Tournament is closed."
+    self.save
+  end
+
+  def without
+    self.scheduling_type = "Without Playoff"
+    self.save
+  end
+
+  def with4
+    self.scheduling_type = "With Playoff (Top 4)"
+    self.save
+  end
+
+  def with8
+    self.scheduling_type = "With Playoff (Top 8)"
+    self.save
+  end
+
+  def robin
+    self.scheduling_type = "Round Robin"
+    self.save
+  end
+
+  def elimination1
+    self.scheduling_type = "Single Elimination"
+    self.save
+  end
+
+  def elimination2
+    self.scheduling_type = "Double Elimination"
     self.save
   end
 

@@ -78,6 +78,6 @@ class Player < ActiveRecord::Base
   end
 
   def create_participant
-    Participant.create :player_id => self.id, :tournament_id => self.tournament_id, :place => Participant.find_all_by_tournament_id(self.tournament_id).count, :rating => self.rating
+    Participant.create :player_id => self.id, :tournament_id => self.tournament_id, :place => Participant.find_all_by_tournament_id(self.tournament_id).count, :rating => self.rating, :name => self.name, :country_id => self.country_id
   end
 end

@@ -4,6 +4,7 @@ class CreateTournaments < ActiveRecord::Migration
       t.string    :organizer_id,      :null => false
       t.string    :name,              :null => false
       t.text      :description
+      t.string    :scheduling_type,   :null => false, :default => "Not Scheduled"
       t.string    :state,             :null => false, :default => "Tournament is not started."
       t.string    :time_zone,         :null => false, :default => "Kuala Lumpur"
       t.integer   :rating_multiplier, :null => false, :default => 1

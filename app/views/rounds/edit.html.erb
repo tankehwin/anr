@@ -2,6 +2,42 @@
   <h1>Manual Schedule</h1>
 </div>
 
-<%= render 'form' %>
+<%= form_for @round, :html => { :class => 'form-horizontal' } do |f| %>
+  <% if @round.errors.any? %>
+    <div class="alert alert-block alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <h2><%= pluralize(@round.errors.count, "error") %> prohibited this round from being saved:</h2>
+
+      <ul>
+      <% @round.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <fieldset>
+    <%= f.fields_for :schedules do |s| %>
+      <div class="row">
+      <%= s.hidden_field :table, value: s.object.table %>
+        <%= s.fields_for :results do |r| %>
+          <div class="span4">
+            <div class="control-group">
+              <%= r.label :opponent_id, r.object.participant.name + " vs", :class => 'control-label' %>
+              <div class="controls">
+                <%= r.select(:opponent_id, @participants.collect {|p| [p.name, p.id] unless p.id == r.object.participant.id}, {}, {:"data-participant-id" => r.object.participant.id, :style => "select"}) -%>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </fieldset>
+
+  <div class="form-actions">
+    <%= f.submit 'Update', :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>
+    <%= link_to 'Cancel', @tournament, :class => 'btn' %>
+  </div>
+<% end %>
 
 <%= link_to 'Auto Schedule', new_schedule_path(:round => @round.id, :trigger => "Schedule"), :class => 'btn btn-primary' %>

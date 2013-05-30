@@ -2,4 +2,51 @@
   <h1>Update Result</h1>
 </div>
 
-<%= render 'form' %>
+<%= form_for @schedule, :html => { :class => 'form-horizontal' } do |f| %>
+  <% if @schedule.errors.any? %>
+    <div class="alert alert-block alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <h2><%= pluralize(@schedule.errors.count, "error") %> prohibited this schedule from being saved:</h2>
+
+      <ul>
+      <% @schedule.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <fieldset>
+    <% flag = true %>
+    <%= f.fields_for :results do |r| %>
+      <div class="row">
+        <div class="span5">
+          <div class="control-group">
+            <%= r.label :corp_game_points, r.object.participant.name + "'s Match Points as Corporation", :class => 'control-label' if flag %>
+            <%= r.label :runner_game_points, r.object.participant.name + "'s Match Points as Runner", :class => 'control-label' unless flag %>
+            <div class="controls">
+              <%= r.select :corp_game_points, options_for_select([ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ], :selected => "0"), {}, {:class => "select", :multiple => "multiple"} if flag %>
+              <%= r.select :runner_game_points, options_for_select([ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ], :selected => "0"), {}, {:class => "select", :multiple => "multiple"} unless flag %>
+            </div>
+          </div>
+        </div>
+        <div class="span5 offset2">
+          <div class="control-group">
+            <%= r.label :runner_game_points, r.object.participant.name + "'s Match Points as Runner", :class => 'control-label' if flag %>
+            <%= r.label :corp_game_points, r.object.participant.name + "'s Match Points as Corporation", :class => 'control-label' unless flag %>
+            <div class="controls">
+              <%= r.select :runner_game_points, options_for_select([ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ], :selected => "0"), {}, {:class => "select", :multiple => "multiple"} if flag %>
+              <%= r.select :corp_game_points, options_for_select([ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ], :selected => "0"), {}, {:class => "select", :multiple => "multiple"} unless flag %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% flag = false %>
+    <% end %>
+  </fieldset>
+
+  <div class="form-actions">
+    <%= f.submit 'Submit', :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>
+    <%= link_to 'Cancel', @tournament, :class => 'btn' %>
+  </div>
+<% end %>

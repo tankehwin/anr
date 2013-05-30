@@ -3,7 +3,7 @@ class SchedulesController < ApplicationController
   # GET /schedules/new
   # GET /schedules/new.json
   def new
-    @round = Round.find(params[:round], :include => {:tournament => :organizer})
+    @round = Round.find(params[:round], :include => {:tournament => [:organizer, :rounds]})
     redirect_to @round.tournament, notice: @round.tournament.state and return if @round.tournament.closed?
     redirect_to root_url, notice: 'Action Not Authorized' and return unless admin_signed_in? or @round.tournament.organizer == current_organizer
     @schedules = Schedule.calculate_schedule(@round, params[:trigger])

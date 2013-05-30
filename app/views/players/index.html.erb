@@ -16,8 +16,8 @@
     <tr>
       <th>Rank</th>
       <th>Rating</th>
-      <th>Country</th>
       <th>Hacking License</th>
+      <th>Country</th>
       <th>Name</th>
       <th>Prestiges</th>
       <th>Match Points</th>
@@ -31,8 +31,8 @@
       <tr>
         <td><%= @rank_counter = @rank_counter + 1 %></td>
         <td><%= player.rating.round %></td>
-        <td><%= player.country.iso3 %></td>
         <td><%= player.username %></td>
+        <td><%= player.country.iso3 %></td>
         <td><%= player.name %></td>
         <td><%= player.prestiges %></td>
         <td><%= player.game_points %></td>

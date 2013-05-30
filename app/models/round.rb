@@ -1,6 +1,6 @@
 class Round < ActiveRecord::Base
-  attr_accessible :action, :end, :number, :schedules_attributes, :start, :state,
-                  :tournament_id
+  attr_accessible :action, :end, :number, :schedules_attributes, :scheduling_type,
+                  :start, :state, :tournament_id
 
   belongs_to :tournament
   has_many :schedules, :dependent => :destroy
@@ -50,6 +50,18 @@ class Round < ActiveRecord::Base
     @isNotScheduled ||= (self.state == "Not Scheduled")? true : false
   end
 
+  def swiss?
+    @isSwiss ||= (self.scheduling_type == "Swiss")? true : false
+  end
+
+  def round_robin?
+    @isRoundRobin ||= (self.scheduling_type == "Round Robin")? true : false
+  end
+
+  def single_elimination?
+    @isSingleElimination ||= (self.scheduling_type == "Single Elimination")? true : false
+  end
+
   def update_table
     self.schedules.each do |schedule|
       # initialize data (must not use cache)
@@ -74,34 +86,62 @@ class Round < ActiveRecord::Base
     tournament.rounds.each do |round|
       round.destroy
     end
-    if trigger == "Without"
+    if trigger == "Without" or trigger == "Elimination1"
       count = tournament.participants.count - 2
       round = Math.log2(count).to_i if count > 1
       round = 0 if count < 2
-      Round.create :tournament_id => tournament.id, :state => "Not Scheduled", :action => "Schedule", :number => 1 unless count < 1
-      number = 2
+      number = 1
+      if trigger == "Without"
+        scheduling_type = "Swiss"
+        tournament.without
+      elsif trigger == "Elimination1"
+        scheduling_type = "Single Elimination"
+        tournament.elimination1
+      end
+      Round.create :tournament_id => tournament.id, :scheduling_type => scheduling_type, :state => "Not Scheduled", :action => "Schedule", :number => number unless count < 1
+      number = number + 1
       round.times do
-        Round.create :tournament_id => tournament.id, :state => "Not Ready", :action => "Pre-Round", :number => number
+        Round.create :tournament_id => tournament.id, :scheduling_type => scheduling_type, :state => "Not Ready", :action => "Pre-Round", :number => number
         number = number + 1
       end
-    elsif trigger == "With4"
+    elsif trigger == "With4" or trigger == "With8"
       count = tournament.participants.count - 2
       round = Math.log2(count).to_i if count > 1
       round = 0 if count < 2
-      Round.create :tournament_id => tournament.id, :state => "Not Scheduled", :action => "Schedule", :number => 1 unless count < 1
-      number = 2
-      round.times do
-        Round.create :tournament_id => tournament.id, :state => "Not Ready", :action => "Pre-Round", :number => number
+      number = 1
+      if trigger == "With4"
+        participant_limit = 3
+        round_limit = 2
+        tournament.with4
+      elsif trigger == "With8"
+        participant_limit = 7
+        round_limit = 3
+        tournament.with8
+      end
+      if count > participant_limit
+        Round.create :tournament_id => tournament.id, :scheduling_type => "Swiss", :state => "Not Scheduled", :action => "Schedule", :number => number unless count < 1
+        number = number + 1
+        (round - round_limit).times do
+          Round.create :tournament_id => tournament.id, :scheduling_type => "Swiss", :state => "Not Ready", :action => "Pre-Round", :number => number
+          number = number + 1
+        end
+      end
+      if number == 1 and count > 0
+        Round.create :tournament_id => tournament.id, :scheduling_type => "Single Elimination", :state => "Not Scheduled", :action => "Schedule", :number => number
         number = number + 1
       end
-    elsif trigger == "With8"
-      count = tournament.participants.count - 2
-      round = Math.log2(count).to_i if count > 1
-      round = 0 if count < 2
-      Round.create :tournament_id => tournament.id, :state => "Not Scheduled", :action => "Schedule", :number => 1 unless count < 1
-      number = 2
       round.times do
-        Round.create :tournament_id => tournament.id, :state => "Not Ready", :action => "Pre-Round", :number => number
+        Round.create :tournament_id => tournament.id, :scheduling_type => "Single Elimination", :state => "Not Ready", :action => "Pre-Round", :number => number
+        number = number + 1
+      end
+    elsif trigger == "Robin"
+      count = tournament.participants.count - 2
+      number = 1
+      tournament.robin
+      Round.create :tournament_id => tournament.id, :scheduling_type => "Round Robin", :state => "Not Scheduled", :action => "Schedule", :number => number unless count < 1
+      number = number + 1
+      (count - 1).times do
+        Round.create :tournament_id => tournament.id, :scheduling_type => "Round Robin", :state => "Not Ready", :action => "Pre-Round", :number => number
         number = number + 1
       end
     end

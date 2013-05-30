@@ -278,6 +278,7 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
     t.string   "organizer_id",                                                :null => false
     t.string   "name",                                                        :null => false
     t.text     "description"
+    t.string   "scheduling_type",   :default => "Not Scheduled",              :null => false
     t.string   "state",             :default => "Tournament is not started.", :null => false
     t.string   "time_zone",         :default => "Kuala Lumpur",               :null => false
     t.integer  "rating_multiplier", :default => 1,                            :null => false

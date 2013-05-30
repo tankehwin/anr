@@ -14,8 +14,10 @@
   <dd><%= @tournament.rating_multiplier * @tournament.rating_boost %></dd>
   <dt><strong>Status:</strong></dt>
   <dd><%= @tournament.state %></dd>
+  <dt><strong>Scheduling Type:</strong></dt>
+  <dd><%= @tournament.scheduling_type %></dd>
   <dt><strong>Description:</strong></dt>
-  <dd><%= @tournament.description %></dd>
+  <dd><%= simple_format(@tournament.description) %></dd>
 </dl>
 
 <div class="form-actions">
@@ -25,8 +27,11 @@
       <%= link_to "<span class='caret'></span>".html_safe, '#', :"data-toggle" => 'dropdown', :class => 'btn btn-primary' %>
       <ul class="dropdown-menu">
         <li><%= link_to 'Without Playoff', new_round_path(:tournament => @tournament.id, :trigger => "Without"), :onclick => "$(body).addClass('loading');" %></li>
-        <li><%#= link_to 'With Playoff (Top 4)', new_round_path(:tournament => @tournament.id, :trigger => "With4"), :onclick => "$(body).addClass('loading');" %></li>
-        <li><%#= link_to 'With Playoff (Top 8)', new_round_path(:tournament => @tournament.id, :trigger => "With8"), :onclick => "$(body).addClass('loading');" %></li>
+        <li><%= link_to 'With Playoff (Top 4)', new_round_path(:tournament => @tournament.id, :trigger => "With4"), :onclick => "$(body).addClass('loading');" %></li>
+        <li><%= link_to 'With Playoff (Top 8)', new_round_path(:tournament => @tournament.id, :trigger => "With8"), :onclick => "$(body).addClass('loading');" %></li>
+        <li><%#= link_to 'Round Robin', new_round_path(:tournament => @tournament.id, :trigger => "Robin"), :onclick => "$(body).addClass('loading');" %></li>
+        <li><%= link_to 'Single Elimination', new_round_path(:tournament => @tournament.id, :trigger => "Elimination1"), :onclick => "$(body).addClass('loading');" %></li>
+        <li><%#= link_to 'Double Elimination', new_round_path(:tournament => @tournament.id, :trigger => "Elimination2"), :onclick => "$(body).addClass('loading');" %></li>
       </ul>
     <% end %>
     <% unless @tournament.rounds.empty? or @tournament.closed? %>
@@ -34,8 +39,11 @@
       <%= link_to "<span class='caret'></span>".html_safe, '#', :"data-toggle" => 'dropdown', :class => 'btn' %>
       <ul class="dropdown-menu">
         <li><%= link_to 'Without Playoff', new_round_path(:tournament => @tournament.id, :trigger => "Without"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
-        <li><%#= link_to 'With Playoff (Top 4)', new_round_path(:tournament => @tournament.id, :trigger => "With4"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
-        <li><%#= link_to 'With Playoff (Top 8)', new_round_path(:tournament => @tournament.id, :trigger => "With8"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
+        <li><%= link_to 'With Playoff (Top 4)', new_round_path(:tournament => @tournament.id, :trigger => "With4"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
+        <li><%= link_to 'With Playoff (Top 8)', new_round_path(:tournament => @tournament.id, :trigger => "With8"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
+        <li><%#= link_to 'Round Robin', new_round_path(:tournament => @tournament.id, :trigger => "Robin"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
+        <li><%= link_to 'Single Elimination', new_round_path(:tournament => @tournament.id, :trigger => "Elimination1"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
+        <li><%#= link_to 'Double Elimination', new_round_path(:tournament => @tournament.id, :trigger => "Elimination2"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
       </ul>
     <% end %>
   </div>
@@ -95,6 +103,7 @@
     <thead>
       <tr>
         <th>Round</th>
+        <th>Schedule</th>
         <th>Start</th>
         <th>End</th>
         <th>Status</th>
@@ -106,13 +115,14 @@
       <% @tournament.rounds.sort_by(&:number).each do |round| %>
         <tr>
           <td><%= "Round " + round.number.to_s %></td>
+          <td><%= round.scheduling_type %></td>
           <td><%= round.start.in_time_zone(@tournament.time_zone) unless round.start.nil? %></td>
           <td><%= round.end.in_time_zone(@tournament.time_zone) unless round.end.nil? %></td>
           <td><%= round.state %></td>
           <td>
-            <%= link_to round.action, new_schedule_path(:round => round.id, :trigger => round.action), :class => 'btn btn-mini', :onclick => "$(body).addClass('loading');" if round.not_scheduled? and @tournament.participants.count > 2 %>
-            <%= link_to round.action, edit_round_path(round, :trigger => round.action), :class => 'btn btn-mini', :onclick => "$(body).addClass('loading');" if round.ready? or round.in_progress? and @tournament.participants.count > 2 %>
-            <%= link_to 'Launch Timer', round_path(round, :timer => "65m"), :target => '_blank', :class => 'btn btn-mini' if round.in_progress? and @tournament.participants.count > 2 %>
+            <%= link_to round.action, new_schedule_path(:round => round.id, :trigger => round.action), :class => 'btn btn-mini', :onclick => "$(body).addClass('loading');" if not @tournament.closed? and round.not_scheduled? and @tournament.participants.count > 2 %>
+            <%= link_to round.action, edit_round_path(round, :trigger => round.action), :class => 'btn btn-mini', :onclick => "$(body).addClass('loading');" if not @tournament.closed? and round.ready? or round.in_progress? and @tournament.participants.count > 2 %>
+            <%= link_to 'Launch Timer', round_path(round, :timer => "65m"), :target => '_blank', :class => 'btn btn-mini' if not @tournament.closed? and round.in_progress? and @tournament.participants.count > 2 %>
           </td>
         </tr>
       <% end %>
@@ -153,7 +163,8 @@
             <td><%= participant.prestige_strength %> (<%= participant.points_strength %>)</td>
             <td><%= (participant.rating + participant.rating_scores).round %></td>
             <td>
-              <%= link_to 'Remove', participant, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger', :onclick => "$(body).addClass('loading');" unless @tournament.closed? or @tournament.started? %>
+              <%= link_to 'Remove', participant, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' unless @tournament.closed? or @tournament.started? %>
+              <%= link_to 'Drop', participant, method: :delete, :class => 'btn btn-mini btn-danger', :onclick => "$(body).addClass('loading');" if not @tournament.closed? and @tournament.started? %>
             </td>
           </tr>
         <% end %>
@@ -230,7 +241,7 @@
         <tr>
           <td colspan ="10"><%= "Round " + round.number.to_s %></td>
           <td>
-            <%= link_to 'Manual Schedule', edit_round_path(round, :trigger => "Manual"), :class => 'btn btn-mini' if round.not_scheduled? and @tournament.participants.count > 2 %>
+            <%= link_to 'Manual Schedule', edit_round_path(round, :trigger => "Manual"), :class => 'btn btn-mini' if not @tournament.closed? and round.not_scheduled? and @tournament.participants.count > 2 %>
             <%= link_to 'Modify Schedule', edit_round_path(round, :trigger => "Modify"), :class => 'btn btn-mini' if round.ready? or round.in_progress? and @tournament.participants.count > 2 %>
           </td>
         </tr>

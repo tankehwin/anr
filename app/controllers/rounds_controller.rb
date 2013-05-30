@@ -5,6 +5,7 @@ class RoundsController < ApplicationController
   def show
     @round = Round.find(params[:id], :include => [:tournament => {:participants => :player}, :schedules => {:results => {:participant => :player}}])
     @tournament = @round.tournament
+    redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
     @participant_bye = Participant.bye(@tournament.id)
 
     respond_to do |format|

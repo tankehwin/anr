@@ -109,7 +109,7 @@ class Participant < ActiveRecord::Base
   end
 
   def self.register_player(player, tournament_id)
-    params_participant = Participant.new(:tournament_id => tournament_id, :player_id => player.id, :rating => player.rating, :name => player.name, :place => Participant.find_all_by_tournament_id(tournament_id).count)
+    params_participant = Participant.new(:tournament_id => tournament_id, :player_id => player.id, :rating => player.rating, :name => player.name, :country_id => player.country_id, :place => Participant.find_all_by_tournament_id(tournament_id).count)
     params_participant.save
   end
 
