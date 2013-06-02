@@ -27,9 +27,9 @@
       <%= link_to "<span class='caret'></span>".html_safe, '#', :"data-toggle" => 'dropdown', :class => 'btn btn-primary' %>
       <ul class="dropdown-menu">
         <li><%= link_to 'Without Playoff', new_round_path(:tournament => @tournament.id, :trigger => "Without"), :onclick => "$(body).addClass('loading');" %></li>
-        <li><%= link_to 'With Playoff (Top 4)', new_round_path(:tournament => @tournament.id, :trigger => "With4"), :onclick => "$(body).addClass('loading');" %></li>
-        <li><%= link_to 'With Playoff (Top 8)', new_round_path(:tournament => @tournament.id, :trigger => "With8"), :onclick => "$(body).addClass('loading');" %></li>
-        <li><%#= link_to 'Round Robin', new_round_path(:tournament => @tournament.id, :trigger => "Robin"), :onclick => "$(body).addClass('loading');" %></li>
+        <li><%= link_to 'With Playoff (Top 4)', new_round_path(:tournament => @tournament.id, :trigger => "With4"), :onclick => "$(body).addClass('loading');" unless @tournament.participants.count < 18 %></li>
+        <li><%= link_to 'With Playoff (Top 8)', new_round_path(:tournament => @tournament.id, :trigger => "With8"), :onclick => "$(body).addClass('loading');" unless @tournament.participants.count < 34 %></li>
+        <li><%= link_to 'Round Robin', new_round_path(:tournament => @tournament.id, :trigger => "Robin"), :onclick => "$(body).addClass('loading');" %></li>
         <li><%= link_to 'Single Elimination', new_round_path(:tournament => @tournament.id, :trigger => "Elimination1"), :onclick => "$(body).addClass('loading');" %></li>
         <li><%#= link_to 'Double Elimination', new_round_path(:tournament => @tournament.id, :trigger => "Elimination2"), :onclick => "$(body).addClass('loading');" %></li>
       </ul>
@@ -39,9 +39,9 @@
       <%= link_to "<span class='caret'></span>".html_safe, '#', :"data-toggle" => 'dropdown', :class => 'btn' %>
       <ul class="dropdown-menu">
         <li><%= link_to 'Without Playoff', new_round_path(:tournament => @tournament.id, :trigger => "Without"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
-        <li><%= link_to 'With Playoff (Top 4)', new_round_path(:tournament => @tournament.id, :trigger => "With4"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
-        <li><%= link_to 'With Playoff (Top 8)', new_round_path(:tournament => @tournament.id, :trigger => "With8"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
-        <li><%#= link_to 'Round Robin', new_round_path(:tournament => @tournament.id, :trigger => "Robin"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
+        <li><%= link_to 'With Playoff (Top 4)', new_round_path(:tournament => @tournament.id, :trigger => "With4"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } unless @tournament.participants.count < 18 %></li>
+        <li><%= link_to 'With Playoff (Top 8)', new_round_path(:tournament => @tournament.id, :trigger => "With8"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } unless @tournament.participants.count < 34 %></li>
+        <li><%= link_to 'Round Robin', new_round_path(:tournament => @tournament.id, :trigger => "Robin"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
         <li><%= link_to 'Single Elimination', new_round_path(:tournament => @tournament.id, :trigger => "Elimination1"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
         <li><%#= link_to 'Double Elimination', new_round_path(:tournament => @tournament.id, :trigger => "Elimination2"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
       </ul>

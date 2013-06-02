@@ -1,6 +1,6 @@
 class Round < ActiveRecord::Base
-  attr_accessible :action, :end, :number, :schedules_attributes, :scheduling_type,
-                  :start, :state, :tournament_id
+  attr_accessible :action, :end, :finished, :number, :schedules_attributes,
+                  :scheduling_type, :start, :state, :tournament_id
 
   belongs_to :tournament
   has_many :schedules, :dependent => :destroy
@@ -140,6 +140,7 @@ class Round < ActiveRecord::Base
       tournament.robin
       Round.create :tournament_id => tournament.id, :scheduling_type => "Round Robin", :state => "Not Scheduled", :action => "Schedule", :number => number unless count < 1
       number = number + 1
+      count = count + 1 if (tournament.participants.count - 1).odd?
       (count - 1).times do
         Round.create :tournament_id => tournament.id, :scheduling_type => "Round Robin", :state => "Not Ready", :action => "Pre-Round", :number => number
         number = number + 1

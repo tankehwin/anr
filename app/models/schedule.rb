@@ -26,74 +26,74 @@ class Schedule < ActiveRecord::Base
   private
 
   def self.sort_pair(participants, round)
-    if round.number == 1
+    if round.round_robin?
+      participants = participants.sort_by(&:id)
+    elsif round.number == 1
       participants = participants.shuffle
-    else
-      if round.swiss?
+    elsif round.swiss?
+      pair = true
+      counter = 0
+      participants.each do
+        if pair == true
+          pair = false
+          counter = counter + 1
+        elsif pair == false
+          c = counter + 1
+          while participants[counter] and Participant.check_past_encounter(participants[counter - 1], participants[counter]) do
+            p = participants[counter]
+            participants[counter] = participants[c]
+            participants[c] = p
+            c = c + 1
+          end
+          pair = true
+          counter = counter + 1
+        end
+      end
+      if participants.count.even?
         pair = true
-        counter = 0
-        participants.each do
+        counter = -1
+        participants.reverse.each do
           if pair == true
             pair = false
-            counter = counter + 1
+            counter = counter - 1
           elsif pair == false
-            c = counter + 1
-            while participants[counter] and Participant.check_past_encounter(participants[counter - 1], participants[counter]) do
+            c = counter - 1
+            while participants[counter] and Participant.check_past_encounter(participants[counter + 1], participants[counter]) do
               p = participants[counter]
               participants[counter] = participants[c]
               participants[c] = p
-              c = c + 1
+              c = c - 1
             end
             pair = true
-            counter = counter + 1
+            counter = counter - 1
           end
         end
-        if participants.count.even?
-          pair = true
-          counter = -1
-          participants.reverse.each do
-            if pair == true
-              pair = false
-              counter = counter - 1
-            elsif pair == false
-              c = counter - 1
+      elsif participants.count.odd?
+        pair = true
+        counter = 0
+        participants.reverse.each do
+          if pair == true
+            pair = false
+            counter = counter - 1
+          elsif pair == false
+            c = counter - 1
+            if counter == -1
+              while participants[counter] and Participant.check_past_encounter(Participant.find_by_tournament_id_and_player_id(participants[counter].tournament_id, Var.bye_id), participants[counter]) do
+                p = participants[counter]
+                participants[counter] = participants[c]
+                participants[c] = p
+                c = c - 1
+              end
+            else
               while participants[counter] and Participant.check_past_encounter(participants[counter + 1], participants[counter]) do
                 p = participants[counter]
                 participants[counter] = participants[c]
                 participants[c] = p
                 c = c - 1
               end
-              pair = true
-              counter = counter - 1
             end
-          end
-        elsif participants.count.odd?
-          pair = true
-          counter = 0
-          participants.reverse.each do
-            if pair == true
-              pair = false
-              counter = counter - 1
-            elsif pair == false
-              c = counter - 1
-              if counter == -1
-                while participants[counter] and Participant.check_past_encounter(Participant.find_by_tournament_id_and_player_id(participants[counter].tournament_id, Var.bye_id), participants[counter]) do
-                  p = participants[counter]
-                  participants[counter] = participants[c]
-                  participants[c] = p
-                  c = c - 1
-                end
-              else
-                while participants[counter] and Participant.check_past_encounter(participants[counter + 1], participants[counter]) do
-                  p = participants[counter]
-                  participants[counter] = participants[c]
-                  participants[c] = p
-                  c = c - 1
-                end
-              end
-              pair = true
-              counter = counter - 1
-            end
+            pair = true
+            counter = counter - 1
           end
         end
       end
@@ -106,9 +106,8 @@ class Schedule < ActiveRecord::Base
     bye = Participant.bye(round.tournament_id)
     if round.swiss?
       pair = true
-      opponent_id = 0
+      participant_id = 0
       schedule = Schedule.new
-      result = Result.new
       player_with_bye = participants.last
       participants.each do |participant|
         if participant == player_with_bye and participants.count.odd?
@@ -117,20 +116,40 @@ class Schedule < ActiveRecord::Base
           Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => bye.id, :opponent_id => participant.id, :corp_game_points => 0, :runner_game_points => 0, :prestige => 0
         else
           if pair == true
-            schedule = Schedule.create :round_id => round.id, :table => table
-            result = Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => 0
-            opponent_id = participant.id
+            participant_id = participant.id
             pair = false
           elsif pair == false
-            result.opponent_id = participant.id
-            result.save
-            Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => opponent_id
+            schedule = Schedule.create :round_id => round.id, :table => table
+            Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant_id, :opponent_id => participant.id
+            Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => participant_id
             pair = true
             table = table + 1
           end
         end
       end
     elsif round.round_robin?
+      counter = 0
+      pair = true
+      participants.each do |participant|
+        if pair == true
+          opponent_loc = counter + round.number
+          opponent_loc = opponent_loc - participants.count + 1 if opponent_loc > participants.count and participants.count.odd?
+          opponent_loc = opponent_loc - participants.count + 2 if opponent_loc > participants.count - 1 and participants.count.even?
+          opponent = participants[opponent_loc]
+          schedule = Schedule.create :round_id => round.id, :table => table
+          if opponent
+            Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => opponent.id
+            Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => opponent.id, :opponent_id => participant.id
+          else
+            Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => bye.id, :corp_game_points => 10, :runner_game_points => 10, :prestige => 6
+            Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => bye.id, :opponent_id => participant.id, :corp_game_points => 0, :runner_game_points => 0, :prestige => 0
+          end
+          table = table + 1
+        end
+        counter = counter + 1
+        pair = (not pair) if counter % round.number == 0
+        pair = false if round.number < counter + 2 and ((participants.count.odd? and round.number == participants.count) or (participants.count.even? and round.number == participants.count - 1))
+      end
     elsif round.single_elimination?
       counter = 0
       participant_limit = 2**(round.tournament.rounds.sort_by(&:number).last.number - round.number + 1)
