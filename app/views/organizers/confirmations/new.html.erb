@@ -1,12 +1,28 @@
-<h2>Resend confirmation instructions</h2>
+<div class="page-header">
+  <h2>Resend confirmation instructions</h2>
+</div>
 
-<%= form_for(resource, :as => resource_name, :url => confirmation_path(resource_name), :html => { :method => :post }) do |f| %>
-  <%= devise_error_messages! %>
+<%= form_for(resource, :as => resource_name, :url => confirmation_path(resource_name), :html => { :method => :post, :class => 'form-horizontal' }) do |f| %>
+  <% if resource.errors.any? %>
+    <div class="alert alert-block alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <%= devise_error_messages! %>
+    </div>
+  <% end %>
 
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email, :autofocus => true %></div>
+  <fieldset>
+  	<div class="control-group">
+  	  <%= f.label :email %>
+  	  <div class="controls">
+        <%= f.email_field :email, :autofocus => true, :class => 'email_field' %>
+      </div>
+    </div>
+  </fieldset>
 
-  <div><%= f.submit "Resend confirmation instructions" %></div>
+  <div class="form-actions">
+  	<%= f.submit "Resend confirmation instructions", :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>
+  	<%= link_to 'Cancel', :back, :class => 'btn' %>
+  </div>
 <% end %>
 
 <%= render "organizers/shared/links" %>

@@ -3,6 +3,7 @@
 <head>
   <title>Android:Netrunner Scheduler</title>
   <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= stylesheet_link_tag    "print", :media => "print" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,6 +46,6 @@
 <div class="container">
   <%= yield %>
 </div>
-<div id="modal">&nbsp;</div>
+<div id="modal" class="no-print">&nbsp;</div>
 </body>
 </html>

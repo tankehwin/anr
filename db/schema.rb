@@ -258,6 +258,7 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
     t.string   "scheduling_type", :default => "Swiss",     :null => false
     t.string   "state",           :default => "Not Ready", :null => false
     t.string   "action",          :default => "Pre-Round", :null => false
+    t.boolean  "finished",        :default => false,       :null => false
     t.datetime "created_at",                               :null => false
     t.datetime "updated_at",                               :null => false
   end

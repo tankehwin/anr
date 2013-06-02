@@ -3,7 +3,7 @@
 </div>
 
 <% if notice %>
-  <div class="alert alert-success">
+  <div class="alert alert-success no-print">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
     <%= notice %>
   </div>
@@ -20,7 +20,7 @@
   <dd><%= simple_format(@tournament.description) %></dd>
 </dl>
 
-<div class="form-actions">
+<div class="form-actions no-print">
   <div class="btn-group">
     <% if @tournament.rounds.empty? and not @tournament.closed? and @tournament.participants.count > 2 %>
       <%= link_to 'Schedule', '#', :"data-toggle" => 'dropdown', :class => 'btn btn-primary' %>
@@ -29,7 +29,7 @@
         <li><%= link_to 'Without Playoff', new_round_path(:tournament => @tournament.id, :trigger => "Without"), :onclick => "$(body).addClass('loading');" %></li>
         <li><%= link_to 'With Playoff (Top 4)', new_round_path(:tournament => @tournament.id, :trigger => "With4"), :onclick => "$(body).addClass('loading');" unless @tournament.participants.count < 18 %></li>
         <li><%= link_to 'With Playoff (Top 8)', new_round_path(:tournament => @tournament.id, :trigger => "With8"), :onclick => "$(body).addClass('loading');" unless @tournament.participants.count < 34 %></li>
-        <li><%= link_to 'Round Robin', new_round_path(:tournament => @tournament.id, :trigger => "Robin"), :onclick => "$(body).addClass('loading');" %></li>
+        <li><%= link_to 'Round Robin', new_round_path(:tournament => @tournament.id, :trigger => "Robin"), :onclick => "$(body).addClass('loading');" unless @tournament.participants.count > 5 %></li>
         <li><%= link_to 'Single Elimination', new_round_path(:tournament => @tournament.id, :trigger => "Elimination1"), :onclick => "$(body).addClass('loading');" %></li>
         <li><%#= link_to 'Double Elimination', new_round_path(:tournament => @tournament.id, :trigger => "Elimination2"), :onclick => "$(body).addClass('loading');" %></li>
       </ul>
@@ -41,13 +41,14 @@
         <li><%= link_to 'Without Playoff', new_round_path(:tournament => @tournament.id, :trigger => "Without"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
         <li><%= link_to 'With Playoff (Top 4)', new_round_path(:tournament => @tournament.id, :trigger => "With4"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } unless @tournament.participants.count < 18 %></li>
         <li><%= link_to 'With Playoff (Top 8)', new_round_path(:tournament => @tournament.id, :trigger => "With8"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } unless @tournament.participants.count < 34 %></li>
-        <li><%= link_to 'Round Robin', new_round_path(:tournament => @tournament.id, :trigger => "Robin"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
+        <li><%= link_to 'Round Robin', new_round_path(:tournament => @tournament.id, :trigger => "Robin"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } unless @tournament.participants.count > 5 %></li>
         <li><%= link_to 'Single Elimination', new_round_path(:tournament => @tournament.id, :trigger => "Elimination1"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
         <li><%#= link_to 'Double Elimination', new_round_path(:tournament => @tournament.id, :trigger => "Elimination2"), data: { confirm: 'This action would erase all rounds and players standings in the tournament. Do you want to proceed?' } %></li>
       </ul>
     <% end %>
   </div>
-  <%= link_to 'Edit Details', '#tournaments_edit_' + @tournament.id.to_s, :class => 'btn open-dialog', :"data-toggle" => 'modal' unless @tournament.closed? %>
+  <%= link_to 'Edit Tournament Details', '#tournaments_edit_' + @tournament.id.to_s, :class => 'btn open-dialog', :"data-toggle" => 'modal' unless @tournament.closed? %>
+  <%= link_to 'Print Schedule', "javascript:window.print()", :class => 'btn' %>
   <%= link_to "Close and Submit Score", edit_tournament_path(@tournament, :trigger => "Close"), data: { confirm: 'This action would terminate all unfinished rounds and propagate tournament score table into players score table. Do you want to proceed?' }, :class => 'btn btn-danger' unless @tournament.rounds.empty? or @tournament.closed? or @tournament.participants.count < 3 %>
 </div>
 
@@ -97,9 +98,9 @@
 
 <% unless @tournament.rounds.empty? %>
 
-  <h2>Rounds</h2>
+  <h2 class="no-print">Rounds</h2>
 
-  <table class="table table-striped table-bordered">
+  <table class="table table-striped table-bordered no-print">
     <thead>
       <tr>
         <th>Round</th>
@@ -163,8 +164,8 @@
             <td><%= participant.prestige_strength %> (<%= participant.points_strength %>)</td>
             <td><%= (participant.rating + participant.rating_scores).round %></td>
             <td>
-              <%= link_to 'Remove', participant, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' unless @tournament.closed? or @tournament.started? %>
-              <%= link_to 'Drop', participant, method: :delete, :class => 'btn btn-mini btn-danger', :onclick => "$(body).addClass('loading');" if not @tournament.closed? and @tournament.started? %>
+              <%= link_to 'Remove', participant, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger no-print' unless @tournament.closed? or @tournament.started? %>
+              <%= link_to 'Drop', participant, method: :delete, :class => 'btn btn-mini btn-danger no-print', :onclick => "$(body).addClass('loading');" if not @tournament.closed? and @tournament.started? %>
             </td>
           </tr>
         <% end %>
@@ -174,8 +175,8 @@
 
 <% end %>
 
-<%= link_to 'Add a New Participant', '#participants_new', :class => 'btn btn-primary', :"data-toggle" => 'modal' unless @tournament.closed? %>
-<%= link_to 'Register New Player', new_player_path(:tournament => @tournament, :participant => @participate), :class => 'btn' unless @tournament.closed? or not @tournament.not_started? %>
+<%= link_to 'Add a New Participant', '#participants_new', :class => 'btn btn-primary no-print', :"data-toggle" => 'modal' unless @tournament.closed? %>
+<%= link_to 'Register New Player', new_player_path(:tournament => @tournament, :participant => @participate), :class => 'btn no-print' unless @tournament.closed? or not @tournament.not_started? %>
 
 <div id="participants_new" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="label_participants_new" aria-hidden="true">
   <div class="modal-header">
@@ -238,16 +239,16 @@
     <tbody>
 
       <% @tournament.rounds.sort_by(&:number).each do |round| %>
-        <tr>
+        <tr class="<%= 'no-print' unless round.ready? or round.in_progress? %>">
           <td colspan ="10"><%= "Round " + round.number.to_s %></td>
           <td>
-            <%= link_to 'Manual Schedule', edit_round_path(round, :trigger => "Manual"), :class => 'btn btn-mini' if not @tournament.closed? and round.not_scheduled? and @tournament.participants.count > 2 %>
-            <%= link_to 'Modify Schedule', edit_round_path(round, :trigger => "Modify"), :class => 'btn btn-mini' if round.ready? or round.in_progress? and @tournament.participants.count > 2 %>
+            <%= link_to 'Manual Schedule', edit_round_path(round, :trigger => "Manual"), :class => 'btn btn-mini no-print' if not @tournament.closed? and round.not_scheduled? and @tournament.participants.count > 2 %>
+            <%= link_to 'Modify Schedule', edit_round_path(round, :trigger => "Modify"), :class => 'btn btn-mini no-print' if round.ready? or round.in_progress? and @tournament.participants.count > 2 %>
           </td>
         </tr>
         <% round.schedules.each do |schedule| %>
           <% r = schedule.results.first %>
-          <tr>
+          <tr class="<%= 'no-print' unless round.ready? or round.in_progress? %>">
             <td><%= round.number %></td>
             <td><%= schedule.table %></td>
             <% schedule.results.each do |result| %>
@@ -258,7 +259,7 @@
               <td><%= result.runner_game_points %></td>
             <% end %>
             <td>
-              <%= link_to 'Update Result', '#schedules_edit_' + schedule.id.to_s, :class => 'btn btn-mini', :"data-toggle" => 'modal' if round.in_progress? and @tournament.participants.count > 2 %>
+              <%= link_to 'Update Result', '#schedules_edit_' + schedule.id.to_s, :class => 'btn btn-mini no-print', :"data-toggle" => 'modal' if round.in_progress? and @tournament.participants.count > 2 %>
             </td>
           </tr>
           <div id="<%= 'schedules_edit_' + schedule.id.to_s %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="<%= 'label_schedules_edit_' + schedule.id.to_s %>" aria-hidden="true">
