@@ -140,7 +140,6 @@
     <thead>
       <tr>
         <th>Place</th>
-        <th>Country</th>
         <th>Player</th>
         <th>Prestiges</th>
         <th>Match points</th>
@@ -156,8 +155,7 @@
         <% unless participant == @participant_bye %>
           <tr>
             <td><%= participant.place %></td>
-            <td><%= participant.country.iso3 %></td>
-            <td><%= participant.name %></td>
+            <td><%= image_tag "countries/" + participant.country.iso3 + ".gif", :title => participant.country.name %> <%= participant.name %></td>
             <td><%= participant.prestiges %></td>
             <td><%= participant.game_points %></td>
             <td><%= participant.head_to_head %></td>
