@@ -1,45 +1,68 @@
-<div class="container round">
-
-<h2>Edit <%= resource_name.to_s.humanize %> Account</h2>
-
-<% flash.each do |name, msg| %>
-  <% if msg.class == Array %>
-    <% msg.each do |message| %>
-      <%= content_tag :p, message, :id => "notice" %>
-    <% end %>
-  <% else %>
-    <%= content_tag :p, msg, :id => "notice" %>
-  <% end %>
-<% end %>
-
-<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f| %>
-  <%= devise_error_messages! %>
-
-  <div><%= f.label :name %><br />
-  <%= f.text_field :name, :class => "round quarter3rd", :onfocus => 'this.style.color="#666"' %></div>
-
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email, :class => "round quarter3rd", :onfocus => 'this.style.color="#666"' %></div>
-
-  <div><%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
-  <%= f.password_field :password, :autocomplete => "off", :class => "round quarter3rd", :onfocus => 'this.style.color="#666"' %></div>
-
-  <div><%= f.label :password_confirmation %><br />
-  <%= f.password_field :password_confirmation, :class => "round quarter3rd", :onfocus => 'this.style.color="#666"' %></div>
-
-  <div><%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
-  <%= f.password_field :current_password, :class => "round quarter3rd", :onfocus => 'this.style.color="#666"' %></div>
-
-  <div><%= f.submit "Update", :class => "round devise" %></div>
-<% end %>
-
-<h3>Cancel my account</h3>
-
-<p>Unhappy? <%= link_to "Cancel my account", registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete %>.</p>
-
+<div class="page-header">
+  <h2>Edit <%= resource_name.to_s.humanize %> Account</h2>
 </div>
 
-<p>
-<%= link_to 'Course List', courses_path %><br />
-<%= link_to 'Dashboard', dashboard_url %> &raquo; <%= link_to "iPay88 Log", ipay88_responses_url %> &raquo; Edit <%= resource_name.to_s.humanize %> Account
-</p>
+<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put, :class => 'form-horizontal' }) do |f| %>
+  <% if resource.errors.any? %>
+    <div class="alert alert-block alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <%= devise_error_messages! %>
+    </div>
+  <% end %>
+
+  <fieldset>
+    <div class="control-group">
+      <%= f.label :email, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.email_field :email, :autofocus => true, :class => 'email_field', :placeholder => "neo@thematrix.com" %>
+        <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+          <span class="help-block"><i>Currently waiting confirmation for: <%= resource.unconfirmed_email %></i></span>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <%= f.label :name, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.text_field :name, :class => 'text_field' %>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <%= f.label :password, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.password_field :password, :autocomplete => "off", :class => 'password_field' %>
+        <span class="help-block"><i>(leave blank if you don't want to change it)</i></span>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <%= f.label :password_confirmation, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.password_field :password_confirmation, :class => 'password_field' %>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <%= f.label :current_password, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.password_field :current_password, :class => 'password_field' %>
+        <span class="help-block"><i>(we need your current password to confirm your changes)</i></span>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <%= f.label :country_id, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.collection_select :country_id, Country.all, :id, :name, {}, {:class => "select"} %>
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="form-actions">
+    <%= f.submit "Update", :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>
+    <%= link_to 'Cancel', :back, :class => 'btn' %>
+  </div>
+<% end %>
+
+<p><%= button_to "Deactivate Account", registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete, :class => 'btn btn-danger' %></p>

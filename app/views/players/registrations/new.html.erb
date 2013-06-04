@@ -1,38 +1,62 @@
-<div class="container round">
-
-<h2>Sign up</h2>
-
-<% flash.each do |name, msg| %>
-  <% if msg.class == Array %>
-    <% msg.each do |message| %>
-      <%= content_tag :p, message, :id => "notice" %>
-    <% end %>
-  <% else %>
-    <%= content_tag :p, msg, :id => "notice" %>
-  <% end %>
-<% end %>
-
-<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
-  <%= devise_error_messages! %>
-
-  <div><%= f.label :name %><br />
-  <%= f.text_field :name, :class => "round quarter3rd", :onfocus => 'this.style.color="#666"' %></div>
-
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email, :class => "round quarter3rd", :onfocus => 'this.style.color="#666"' %></div>
-
-  <div><%= f.label :password %><br />
-  <%= f.password_field :password, :class => "round quarter3rd", :onfocus => 'this.style.color="#666"' %></div>
-
-  <div><%= f.label :password_confirmation %><br />
-  <%= f.password_field :password_confirmation, :class => "round quarter3rd", :onfocus => 'this.style.color="#666"' %></div>
-
-  <div><%= f.label :authorization_code %><br />
-  <%= f.password_field :authorization_code, :class => "round quarter3rd", :onfocus => 'this.style.color="#666"' %></div>
-
-  <div><%= f.submit "Sign up", :class => "round devise" %></div>
-<% end %>
-
+<div class="page-header">
+  <h2>Sign up</h2>
 </div>
+
+<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :class => 'form-horizontal' }) do |f| %>
+  <% if resource.errors.any? %>
+    <div class="alert alert-block alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <%= devise_error_messages! %>
+    </div>
+  <% end %>
+
+  <fieldset>
+    <div class="control-group">
+      <%= f.label :email, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.email_field :email, :autofocus => true, :class => 'email_field', :placeholder => "neo@thematrix.com" %>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <%= f.label :name, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.text_field :name, :class => 'text_field' %>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <%= f.label :password, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.password_field :password, :class => 'password_field' %>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <%= f.label :password_confirmation, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.password_field :password_confirmation, :class => 'password_field' %>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <%= f.label :country_id, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.collection_select :country_id, Country.all, :id, :name, {:selected => Country.malaysia_id}, {:class => "select"} %>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div class="controls">
+        <%= recaptcha_tags :noscript => true %>
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="form-actions">
+    <%= f.submit "Sign up", :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>
+    <%= link_to 'Cancel', :back, :class => 'btn' %>
+  </div>
+<% end %>
 
 <%= render "devise/shared/links" %>

@@ -40,15 +40,9 @@
     </div>
 
     <div class="control-group">
-      <%= f.label :time_zone, :class => 'control-label' %>
+      <%= f.label :authorization_code, :class => 'control-label' %>
       <div class="controls">
-        <%= f.time_zone_select(:time_zone, nil, :default => "Kuala Lumpur") %>
-      </div>
-    </div>
-
-    <div class="control-group">
-      <div class="controls">
-        <%= recaptcha_tags :noscript => true %>
+        <%= f.text_field :authorization_code, :class => 'text_field' %>
       </div>
     </div>
   </fieldset>
@@ -59,4 +53,4 @@
   </div>
 <% end %>
 
-<%= render "organizers/shared/links" %>
+<%= render "devise/shared/links" %>

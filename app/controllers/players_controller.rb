@@ -35,7 +35,6 @@ class PlayersController < ApplicationController
     @player = Player.new
     @password = (10000000000000 + rand(89999999999999)).to_s(36)
     @default_email = Var.default_email
-    @countries = Country.all
     @country_id = Country.malaysia_id
 
     respond_to do |format|
@@ -48,7 +47,6 @@ class PlayersController < ApplicationController
   def edit
     @player = Player.find(params[:id])
     @default_email = Var.default_email
-    @countries = Country.all
     @country_id = @player.country_id
   end
 
@@ -59,7 +57,6 @@ class PlayersController < ApplicationController
     @participate = true if @tournament
     @password = params[:player][:password]
     @default_email = Var.default_email
-    @countries = Country.all
     @country_id = params[:player][:country_id]
     @player = Player.activate_or_create(params[:player]) if Rails.env.development? or organizer_signed_in? or admin_signed_in? or verify_recaptcha(:model => Player.new(params[:player]), :timeout => 3)
 
@@ -80,7 +77,6 @@ class PlayersController < ApplicationController
   def update
     @player = Player.find(params[:id])
     @default_email = Var.default_email
-    @countries = Country.all
     @country_id = params[:player][:country_id]
 
     respond_to do |format|
