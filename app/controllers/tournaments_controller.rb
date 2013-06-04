@@ -20,7 +20,7 @@ class TournamentsController < ApplicationController
     @participant_bye = Participant.bye(@tournament.id)
     @participant = Participant.new
     @participate = true
-    @players = Player.find(:all, :conditions => ["id != ?", Var.bye_id])
+    @players = Player.find(:all, :conditions => ["id != ?", Var.bye_id], :select => 'id, name')
 
     respond_to do |format|
       format.html # show.html.erb

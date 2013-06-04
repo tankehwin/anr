@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Android:Netrunner Scheduler</title>
+  <title>Android:Netrunner Tournament Console</title>
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= stylesheet_link_tag    "print", :media => "print" %>
   <%= javascript_include_tag "application" %>
@@ -10,7 +10,7 @@
   <%= yield(:head) %>
 </head>
 <body>
-<%= nav_bar :inverse => true, :fixed => :top, :brand => image_tag("logo.png", :title => "Android:Netrunner Scheduler"), :responsive => true do %>
+<%= nav_bar :inverse => true, :fixed => :top, :brand => image_tag("logo.png", :title => "Android:Netrunner Tournament Console"), :responsive => true do %>
   <%= menu_group do %>
     <%= menu_divider %>
     <%= menu_item "Home", root_path %>

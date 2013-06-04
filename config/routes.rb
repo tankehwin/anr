@@ -9,6 +9,9 @@ Anr::Application.routes.draw do
   devise_for :admins, controllers: { registrations: 'admins/registrations' }
 
 
+  resources :competitors
+
+
   resources :schedules, :only => [:new, :edit, :update]
 
 

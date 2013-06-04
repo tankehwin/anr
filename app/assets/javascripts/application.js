@@ -12,5 +12,10 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require select2
 //= require twitter/bootstrap
 //= require_tree .
+
+$(document).ready(function() { $(".select2").select2({
+  minimumInputLength: 1
+}); });

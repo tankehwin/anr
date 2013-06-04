@@ -8,7 +8,7 @@ class ParticipantsController < ApplicationController
     redirect_to root_url, notice: 'Action Not Authorized' and return unless admin_signed_in? or @tournament.organizer == current_organizer
     @participant = Participant.new
     @participate = true
-    @players = Player.find(:all, :conditions => ["id != ?", Var.bye_id])
+    @players = Player.find(:all, :conditions => ["id != ?", Var.bye_id], :select => 'id, name')
 
     respond_to do |format|
       format.html # new.html.erb

@@ -20,7 +20,7 @@
     <div class="control-group">
       <%= f.label :player_id, :class => 'control-label' %>
       <div class="controls">
-        <%= f.collection_select :player_id, @players, :id, :name, {}, {:class => "select"} %>
+        <%= f.collection_select :player_id, @players, :id, :name, {:prompt => "Search by Name"}, {:class => "select2"} %>
         <%= f.hidden_field :tournament_id, value: params[:tournament] %>
       </div>
     </div>

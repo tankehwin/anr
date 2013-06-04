@@ -10,6 +10,7 @@ gem 'devise'
 gem 'delayed_job_active_record'
 gem 'recaptcha', :require => 'recaptcha/rails'
 gem 'will_paginate'
+gem 'select2-rails'
 gem 'bootstrap-will_paginate'
 gem 'rails_bootstrap_navbar', :git => 'git://github.com/julescopeland/Rails-Bootstrap-Navbar.git'
 

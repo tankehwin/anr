@@ -8,8 +8,8 @@ class Notifier < ActionMailer::Base
   #
   def congratulate user
     @user = user
-    mail(:to => @user.email, :subject => "[A:NR Scheduler] Congratulations!") do |format|
-      format.text { render :text => "We would like to congratulate you on your achievement to to obtain first place in Sparta Tournament.\r\nWe hope to see more of your superb performance in the future tournament.\r\n\r\nLove,\r\Thomas A. Anderson,\r\nA:NR Scheduler Team\r\n\r\n--------------------------------------------------------------\r\n\r\nThis message was intended for " + @user.email + "\r\nIf you are not the above recipient, kindly ignore this email and please accept our apologies." }
+    mail(:to => @user.email, :subject => "[A:NR Tournament Console] Congratulations!") do |format|
+      format.text { render :text => "We would like to congratulate you on your achievement to to obtain first place in Sparta Tournament.\r\nWe hope to see more of your superb performance in the future tournament.\r\n\r\nLove,\r\Thomas A. Anderson,\r\nA:NR Tournament Console Team\r\n\r\n--------------------------------------------------------------\r\n\r\nThis message was intended for " + @user.email + "\r\nIf you are not the above recipient, kindly ignore this email and please accept our apologies." }
       format.html { render :text => "<style>a:link,a:visited{color:#931100;text-decoration:none;}a:hover,a:active{color:#931100;text-decoration:underline;}</style>
         <div style='text-align:center;background-color:#333;margin:0px;padding:10px;width:100%;'>
         
@@ -26,7 +26,7 @@ class Notifier < ActionMailer::Base
         <p style='text-align:left;font-size:12pt;color:#505050'>Love,</p>
         
         <p style='text-align:left;font-size:12pt;color:#505050'>Thomas A. Anderson,<br />
-        A:NR Scheduler Team</p>
+        A:NR Tournament Console Team</p>
 
         <p><br /><br /></p>
 

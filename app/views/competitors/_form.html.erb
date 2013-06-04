@@ -1,0 +1,41 @@
+<%= form_for(@competitor) do |f| %>
+  <% if @competitor.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@competitor.errors.count, "error") %> prohibited this competitor from being saved:</h2>
+
+      <ul>
+      <% @competitor.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :player_id %><br />
+    <%= f.number_field :player_id %>
+  </div>
+  <div class="field">
+    <%= f.label :competitor_id %><br />
+    <%= f.number_field :competitor_id %>
+  </div>
+  <div class="field">
+    <%= f.label :matches %><br />
+    <%= f.number_field :matches %>
+  </div>
+  <div class="field">
+    <%= f.label :prestiges %><br />
+    <%= f.number_field :prestiges %>
+  </div>
+  <div class="field">
+    <%= f.label :game_points %><br />
+    <%= f.number_field :game_points %>
+  </div>
+  <div class="field">
+    <%= f.label :net_rating %><br />
+    <%= f.text_field :net_rating %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
