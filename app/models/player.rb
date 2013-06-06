@@ -20,6 +20,8 @@ class Player < ActiveRecord::Base
                   :prestiges, :rating, :tournaments, :username, :as => :seed
 
   belongs_to :country
+  has_many :competitor_relations
+  has_many :competitors, through: :competitor_relations, source: :competitor
   has_many :participants
   has_many :player_services
 
@@ -54,6 +56,14 @@ class Player < ActiveRecord::Base
     	  participant.player.tournaments = participants.count
         participant.player.rating = participant.player.rating + participant.rating_scores
     	  participant.player.save
+        participant.results.each do |result|
+          competitor_relation = CompetitorRelation.find_or_create_by_player_id_and_competitor_id(result.participant.player_id, result.opponent.player_id)
+          competitor_relation.matches = competitor_relation.matches + 1
+          competitor_relation.prestiges = competitor_relation.prestiges + result.prestige
+          competitor_relation.game_points = competitor_relation.game_points + result.corp_game_points + result.runner_game_points
+          competitor_relation.net_rating = competitor_relation.net_rating + result.rating_score
+          competitor_relation.save
+        end
       end
     end
   end
@@ -78,6 +88,6 @@ class Player < ActiveRecord::Base
   end
 
   def create_participant
-    Participant.create :player_id => self.id, :tournament_id => self.tournament_id, :place => Participant.find_all_by_tournament_id(self.tournament_id).count, :rating => self.rating, :name => self.name, :country_id => self.country_id
+    Participant.create :player_id => self.id, :tournament_id => self.tournament_id, :rating => self.rating, :name => self.name, :country_id => self.country_id, :place => Participant.find_all_by_tournament_id(self.tournament_id).count
   end
 end

@@ -6,6 +6,8 @@ class Tournament < ActiveRecord::Base
   has_many :participants, :dependent => :destroy
   has_many :results
   has_many :rounds, :dependent => :destroy
+  has_many :schedules, through: :rounds
+  has_many :players, through: :participants
 
   validates :name, :presence => true, :length => { :in => 4..140 }
   validates :organizer_id, :presence => true, :numericality => { :only_integer => true }
@@ -100,7 +102,7 @@ class Tournament < ActiveRecord::Base
 
   private
 
-  def self.trigger(tournament, trigger)
+  def self.trigger(tournament)
     tournament.closed
     tournament.rounds.each do |round|
       round.closed

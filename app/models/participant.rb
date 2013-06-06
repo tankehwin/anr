@@ -10,6 +10,7 @@ class Participant < ActiveRecord::Base
   belongs_to :tournament
   has_many :results, :dependent => :destroy
   has_many :opponents, through: :results, source: :opponent
+  has_many :participants, through: :tournament
 
   validates :tournament_id, :presence => true, :numericality => { :only_integer => true }
   validates :player_id, :presence => true, :uniqueness => { :scope => :tournament_id, :message => "Player was already added." }, :numericality => { :only_integer => true }
@@ -99,7 +100,7 @@ class Participant < ActiveRecord::Base
   def self.update_standings(round)
     participant_bye = Participant.bye(round.tournament_id)
     place = 1
-    round.tournament.participants.sort_by{|p| [p.prestiges, p.game_points, p.head_to_head, p.prestige_strength, p.points_strength, p.omw, p.pgw, p.ogw]}.reverse.each do |participant|
+    round.participants.sort_by{|p| [p.prestiges, p.game_points, p.head_to_head, p.prestige_strength, p.points_strength, p.omw, p.pgw, p.ogw]}.reverse.each do |participant|
       unless participant == participant_bye
         participant.place = place
         participant.save
@@ -109,8 +110,7 @@ class Participant < ActiveRecord::Base
   end
 
   def self.register_player(player, tournament_id)
-    params_participant = Participant.new(:tournament_id => tournament_id, :player_id => player.id, :rating => player.rating, :name => player.name, :country_id => player.country_id, :place => Participant.find_all_by_tournament_id(tournament_id).count)
-    params_participant.save
+    params_participant = Participant.create :tournament_id => tournament_id, :player_id => player.id, :rating => player.rating, :name => player.name, :country_id => player.country_id, :place => Participant.find_all_by_tournament_id(tournament_id).count
   end
 
   private
@@ -134,7 +134,7 @@ class Participant < ActiveRecord::Base
   end
 
   def update_rating_multiplier
-    self.tournament.rating_multiplier = Math.sqrt(self.tournament.participants.count).round
+    self.tournament.rating_multiplier = Math.sqrt(self.participants.count).round
     self.tournament.save
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130430073622) do
+ActiveRecord::Schema.define(:version => 20130604030819) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                  :default => "",   :null => false
@@ -43,6 +43,20 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   add_index "admins", ["email"], :name => "index_admins_on_email", :unique => true
   add_index "admins", ["reset_password_token"], :name => "index_admins_on_reset_password_token", :unique => true
   add_index "admins", ["unlock_token"], :name => "index_admins_on_unlock_token", :unique => true
+
+  create_table "competitor_relations", :force => true do |t|
+    t.integer  "player_id",                      :null => false
+    t.integer  "competitor_id",                  :null => false
+    t.integer  "matches",       :default => 0,   :null => false
+    t.integer  "prestiges",     :default => 0,   :null => false
+    t.integer  "game_points",   :default => 0,   :null => false
+    t.float    "net_rating",    :default => 0.0, :null => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+  end
+
+  add_index "competitor_relations", ["player_id", "competitor_id"], :name => "index_competitor_relations_on_competitor_relation_attributes", :unique => true
+  add_index "competitor_relations", ["player_id"], :name => "index_competitor_relations_on_player_id"
 
   create_table "countries", :force => true do |t|
     t.string   "iso",            :limit => 2,  :null => false
@@ -93,12 +107,12 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
   add_index "organizer_services", ["uname"], :name => "index_organizer_services_on_uname"
 
   create_table "organizers", :force => true do |t|
-    t.string   "email",                      :default => "",             :null => false
-    t.string   "encrypted_password",         :default => "",             :null => false
+    t.string   "email",                  :default => "",             :null => false
+    t.string   "encrypted_password",     :default => "",             :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",              :default => 0
+    t.integer  "sign_in_count",          :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
@@ -107,19 +121,16 @@ ActiveRecord::Schema.define(:version => 20130430073622) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string   "unconfirmed_email"
-    t.integer  "failed_attempts",            :default => 0
+    t.integer  "failed_attempts",        :default => 0
     t.string   "unlock_token"
     t.datetime "locked_at"
     t.string   "authentication_token"
     t.string   "username"
-    t.string   "name",                       :default => "",             :null => false
-    t.string   "time_zone",                  :default => "Kuala Lumpur", :null => false
-    t.integer  "boost_tank_current_amount",  :default => 10,             :null => false
-    t.integer  "boost_tank_full_limit",      :default => 10,             :null => false
-    t.integer  "boost_limit_per_tournament", :default => 2,              :null => false
-    t.boolean  "active",                     :default => true,           :null => false
-    t.datetime "created_at",                                             :null => false
-    t.datetime "updated_at",                                             :null => false
+    t.string   "name",                   :default => "",             :null => false
+    t.string   "time_zone",              :default => "Kuala Lumpur", :null => false
+    t.boolean  "active",                 :default => true,           :null => false
+    t.datetime "created_at",                                         :null => false
+    t.datetime "updated_at",                                         :null => false
   end
 
   add_index "organizers", ["authentication_token"], :name => "index_organizers_on_authentication_token", :unique => true

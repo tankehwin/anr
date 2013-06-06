@@ -4,6 +4,7 @@ class Round < ActiveRecord::Base
 
   belongs_to :tournament
   has_many :schedules, :dependent => :destroy
+  has_many :participants, through: :tournament
 
   accepts_nested_attributes_for :schedules
   validates :tournament_id, :presence => true, :numericality => { :only_integer => true }

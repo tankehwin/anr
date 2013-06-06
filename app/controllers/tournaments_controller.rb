@@ -41,12 +41,12 @@ class TournamentsController < ApplicationController
 
   # GET /tournaments/1/edit
   def edit
-    @tournament = Tournament.find(params[:id], :include => [:organizer, :participants => :player])
+    @tournament = Tournament.find(params[:id], :include => [:organizer, :participants => [:player, :results => [:participant => :player, :opponent => :player]]])
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
     redirect_to root_url, notice: 'Action Not Authorized' and return unless admin_signed_in? or @tournament.organizer == current_organizer
 
     if params[:trigger] == "Close"
-      notice = Tournament.trigger(@tournament, params[:trigger])
+      notice = Tournament.trigger(@tournament)
       respond_to do |format|
         format.html { redirect_to @tournament, notice: notice }
         format.json { render json: @tournament }

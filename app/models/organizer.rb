@@ -16,6 +16,8 @@ class Organizer < ActiveRecord::Base
 
   has_many :organizer_services
   has_many :tournaments
+  has_many :participants, through: :tournaments
+  has_many :rounds, through: :tournaments
 
   private
 
