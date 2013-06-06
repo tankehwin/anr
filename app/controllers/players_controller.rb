@@ -6,9 +6,13 @@ class PlayersController < ApplicationController
     @players = Player.paginate(:conditions => ["id != ? and active != ?", Var.bye_id, false], :page => params[:page], :per_page => Var.per_page, :include => :country).order('rating DESC')
     @players_json = Player.paginate(:conditions => ["id != ? and active != ?", Var.bye_id, false], :select => 'username, name, prestiges, game_points, matches, tournaments, rating', :page => params[:page], :per_page => 100, :include => :country).order('rating DESC')
     @tournament = Tournament.find params[:tournament] if params[:tournament]
-    @participate = true if params[:participant]
     @rank_counter = (params[:page].to_i - 1) * Var.per_page if params[:page]
     @rank_counter = 0 unless params[:page]
+    @participate = true if params[:participant]
+    @player = Player.new
+    @password = (10000000000000 + rand(89999999999999)).to_s(36)
+    @default_email = Var.default_email
+    @country_id = Country.malaysia_id
 
     respond_to do |format|
       format.html # index.html.erb

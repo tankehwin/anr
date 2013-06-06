@@ -155,7 +155,7 @@
         <% unless participant == @participant_bye %>
           <tr>
             <td><%= participant.place %></td>
-            <td><%= image_tag "countries/" + participant.country.iso3 + ".gif", :title => participant.country.name %> <%= participant.name %></td>
+            <td><%= image_tag "countries/" + participant.country.iso3 + ".gif", :title => participant.country.name, :class => "has-border" %> <%= participant.name %></td>
             <td><%= participant.prestiges %></td>
             <td><%= participant.game_points %></td>
             <td><%= participant.head_to_head %></td>

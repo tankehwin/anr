@@ -31,7 +31,7 @@
         <td><%= @rank_counter = @rank_counter + 1 %></td>
         <td><%= player.rating.round %></td>
         <td><%= player.username %></td>
-        <td><%= image_tag "countries/" + player.country.iso3 + ".gif", :title => player.country.name %> <%= player.name %></td>
+        <td><%= image_tag "countries/" + player.country.iso3 + ".gif", :title => player.country.name, :class => "has-border" %> <%= player.name %></td>
         <td><%= player.prestiges %></td>
         <td><%= player.game_points %></td>
         <td><%= player.matches %></td>
@@ -43,7 +43,81 @@
 
 <%= will_paginate @players %>
 
-<%= link_to 'Add a New Player', new_player_path(:tournament => @tournament, :participant => @participate), :class => 'btn btn-primary' %>
+<%= link_to 'Add a New Player', '#players_new', :class => 'btn btn-primary', :"data-toggle" => 'modal' %>
 <%= link_to 'Back to Tournament Page', @tournament, :class => 'btn' if @tournament %>
+
+<div id="players_new" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="label_players_new" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3 id="label_players_new">Sign up Player</h3>
+  </div>
+  <div class="modal-body">
+    <%= form_for @player, :html => { :class => 'form-horizontal' } do |f| %>
+      <% if @player.errors.any? %>
+        <div class="alert alert-block alert-error">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <h2><%= pluralize(@player.errors.count, "error") %> prohibited this player from being saved:</h2>
+
+          <ul>
+          <% @player.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <fieldset>
+        <div class="row">
+          <div class="span12">
+            <div class="control-group">
+              <%= f.label :email, :class => 'control-label' %>
+              <div class="controls">
+                <%= f.email_field :email, :autofocus => true, :class => 'email_field', :placeholder => @default_email %>
+                <%= f.hidden_field :tournament_id, value: @tournament.id if @participate %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="span12">
+            <div class="control-group">
+              <%= f.label :name, :class => 'control-label' %>
+              <div class="controls">
+                <%= f.text_field :name, :class => 'text_field' %>
+                <%= f.hidden_field :password, value: @password %>
+                <%= f.hidden_field :password_confirmation, value: @password %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="span12">
+            <div class="control-group">
+              <%= f.label :country_id, :class => 'control-label' %>
+              <div class="controls">
+                <%= f.collection_select :country_id, Country.all, :id, :name, {:selected => @country_id}, {:class => "select"} %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% unless organizer_signed_in? or admin_signed_in? or params[:action] == "edit" or params[:action] == "update" %>
+          <div class="row">
+            <div class="span12">
+              <div class="control-group">
+                <div class="controls">
+                  <%= recaptcha_tags :noscript => true %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </fieldset>
+  </div>
+  <div class="modal-footer">
+      <%= link_to 'Close', '#', :class => 'btn', :"data-dismiss" => 'modal', :"aria-hidden" => true %>
+      <%= f.submit nil, :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>
+    <% end %>
+  </div>
+</div>
 
 <br /><br />
