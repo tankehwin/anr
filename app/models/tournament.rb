@@ -76,6 +76,10 @@ class Tournament < ActiveRecord::Base
     @isClosed ||= (self.state == "Tournament is closed.")? true : false
   end
 
+  def single_elimination?
+    @isSingleElimination ||= (self.scheduling_type == "Single Elimination")? true : false
+  end
+
   def activate_points
     participant_bye = Participant.bye(self.id)
     self.participants.each do |participant|

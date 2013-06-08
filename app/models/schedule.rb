@@ -112,7 +112,7 @@ class Schedule < ActiveRecord::Base
       participants.each do |participant|
         if participant == player_with_bye and participants.count.odd?
           schedule = Schedule.create :round_id => round.id, :table => table
-          Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => bye.id, :corp_game_points => 10, :runner_game_points => 10, :prestige => 6
+          Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => bye.id, :corp_game_points => 0, :runner_game_points => 0, :prestige => 6
           Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => bye.id, :opponent_id => participant.id, :corp_game_points => 0, :runner_game_points => 0, :prestige => 0
         else
           if pair == true
@@ -141,7 +141,7 @@ class Schedule < ActiveRecord::Base
             Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => opponent.id
             Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => opponent.id, :opponent_id => participant.id
           else
-            Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => bye.id, :corp_game_points => 10, :runner_game_points => 10, :prestige => 6
+            Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => bye.id, :corp_game_points => 0, :runner_game_points => 0, :prestige => 6
             Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => bye.id, :opponent_id => participant.id, :corp_game_points => 0, :runner_game_points => 0, :prestige => 0
           end
           table = table + 1
@@ -162,7 +162,7 @@ class Schedule < ActiveRecord::Base
             Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => opponent.id
             Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => opponent.id, :opponent_id => participant.id
           else
-            Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => bye.id, :corp_game_points => 10, :runner_game_points => 10, :prestige => 6
+            Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => bye.id, :corp_game_points => 0, :runner_game_points => 0, :prestige => 6
             Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => bye.id, :opponent_id => participant.id, :corp_game_points => 0, :runner_game_points => 0, :prestige => 0
           end
           table = table + 1
@@ -217,6 +217,8 @@ class Schedule < ActiveRecord::Base
       schedule[:results_attributes][:"1"][:rating_score] = score / Var.rating_lose_divider * current_schedule.round.tournament.rating_multiplier.to_f * current_schedule.round.tournament.rating_boost.to_f if score < 0.0
       schedule[:results_attributes][:"1"][:rating_score] = score * Var.rating_win_multiplier * current_schedule.round.tournament.rating_multiplier.to_f * current_schedule.round.tournament.rating_boost.to_f if score > 0.0
     end
+    schedule[:results_attributes][:"0"][:corp_game_points] = schedule[:results_attributes][:"0"][:runner_game_points] = "0" if participant_1 == participant_bye
+    schedule[:results_attributes][:"1"][:corp_game_points] = schedule[:results_attributes][:"1"][:runner_game_points] = "0" if participant_0 == participant_bye
 
     schedule
   end

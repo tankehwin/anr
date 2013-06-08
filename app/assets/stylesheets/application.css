@@ -50,12 +50,8 @@ img.has-border {
 }
 
 @media print {
-  .no-print {
-    display:none;
-  }
-
-  .navbar, #modal {
-    display:none;
+  #modal, .navbar, .no-print {
+    display: none;
   }
 
   img {
