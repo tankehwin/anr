@@ -115,7 +115,7 @@
   </div>
   <div class="modal-footer">
       <%= link_to 'Close', '#', :class => 'btn', :"data-dismiss" => 'modal', :"aria-hidden" => true %>
-      <%= f.submit nil, :class => 'btn btn-primary', :onclick => "$(body).addClass('loading');" %>
+      <%= f.submit nil, :class => 'btn btn-primary', :"data-loading-text" => "Adding Player...", :onclick => "$(this).button('loading').addClass('disabled');" %>
     <% end %>
   </div>
 </div>

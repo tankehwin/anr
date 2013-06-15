@@ -35,7 +35,8 @@ class RoundsController < ApplicationController
     redirect_to @tournament, notice: @tournament.state and return if @tournament.closed?
     redirect_to root_url, notice: 'Action Not Authorized' and return unless admin_signed_in? or @tournament.organizer == current_organizer
     if params[:trigger] == "Manual" or params[:trigger] == "Modify"
-      @schedules = Schedule.calculate_schedule(@round, params[:trigger])
+      @schedules = Schedule.calculate_schedule(@round, params[:trigger], "Random") if params[:trigger] == "Manual"
+      @schedules = Schedule.find_all_by_round_id(@round.id, :include => :results) if params[:trigger] == "Modify"
       @round = Round.find(params[:id], :include => [:tournament => {:participants => :results}, :schedules => {:results => {:participant => :player}}]) if params[:trigger] == "Manual"
       @participants = Participant.find(:all, :conditions => ["tournament_id = ?", @tournament.id], :include => :player).sort_by(&:name)
       @participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", @tournament.id, Var.bye_id], :include => :player).sort_by(&:name) if (@participants.count - 1).even?

@@ -10,7 +10,8 @@ class PlayersController < ApplicationController
     @rank_counter = 0 unless params[:page]
     @participate = true if params[:participant]
     @player = Player.new
-    @password = (10000000000000 + rand(89999999999999)).to_s(36)
+    @password = "anr12345"
+    # @password = (10000000000000 + rand(89999999999999)).to_s(36)
     @default_email = Var.default_email
     @country_id = Country.malaysia_id
 
@@ -37,7 +38,8 @@ class PlayersController < ApplicationController
     @tournament = Tournament.find params[:tournament] if params[:tournament]
     @participate = true if params[:participant]
     @player = Player.new
-    @password = (10000000000000 + rand(89999999999999)).to_s(36)
+    @password = "anr12345"
+    # @password = (10000000000000 + rand(89999999999999)).to_s(36)
     @default_email = Var.default_email
     @country_id = Country.malaysia_id
 

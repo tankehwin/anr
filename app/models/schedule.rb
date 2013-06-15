@@ -10,13 +10,13 @@ class Schedule < ActiveRecord::Base
   validates :table, :presence => true, :numericality => { :only_integer => true }
   validates :round_id, :presence => true, :numericality => { :only_integer => true }
 
-  def self.calculate_schedule(round, params_trigger)
+  def self.calculate_schedule(round, params_trigger, params_seed)
     if params_trigger == "Schedule" or params_trigger == "Manual"
       round.schedules.each do |schedule|
         schedule.destroy
       end
     	participants = Participant.find(:all, :conditions => ["tournament_id = ? and player_id != ?", round.tournament_id, Var.bye_id], :include => :results).sort_by(&:place)
-    	participants = Schedule.sort_pair(participants, round)
+    	participants = Schedule.sort_pair(participants, round, params_seed)
       Schedule.create_schedule(round, participants)
       round.ready
     end
@@ -25,11 +25,26 @@ class Schedule < ActiveRecord::Base
 
   private
 
-  def self.sort_pair(participants, round)
+  def self.sort_pair(participants, round, params_seed)
     if round.round_robin?
       participants = participants.sort_by(&:id)
-    elsif round.number == 1
+    elsif round.number == 1 and params_seed == "Random"
       participants = participants.shuffle
+    elsif round.number == 1 and params_seed == "Seeded"
+      half = (participants.count / 2) - 1
+      last = participants.count - 1
+      counter = 0
+      pair = false
+      participants = participants.sort_by(&:rating).reverse
+      participants.each do
+        if participants[half + counter] and pair == true and not participants[half + counter] == participants[last]
+          p = participants[counter]
+          participants[counter] = participants[half + counter]
+          participants[half + counter] = p
+        end
+        counter = counter + 1
+        pair = (not pair)
+      end
     elsif round.swiss?
       pair = true
       counter = 0

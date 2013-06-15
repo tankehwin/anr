@@ -121,7 +121,9 @@
           <td><%= round.end.in_time_zone(@tournament.time_zone) unless round.end.nil? %></td>
           <td><%= round.state %></td>
           <td>
-            <%= link_to round.action, new_schedule_path(:round => round.id, :trigger => round.action), :class => 'btn btn-mini', :onclick => "$(body).addClass('loading');" if not @tournament.closed? and round.not_scheduled? and @tournament.participants.count > 2 %>
+            <%= link_to 'Random Schedule', new_schedule_path(:round => round.id, :trigger => round.action, :seed => 'Random'), :class => 'btn btn-mini', :onclick => "$(body).addClass('loading');" if not @tournament.closed? and round.not_scheduled? and @tournament.participants.count > 2 and round.number == 1 %>
+            <%= link_to 'Seeded Schedule', new_schedule_path(:round => round.id, :trigger => round.action, :seed => 'Seeded'), :class => 'btn btn-mini', :onclick => "$(body).addClass('loading');" if not @tournament.closed? and round.not_scheduled? and @tournament.participants.count > 2 and round.number == 1 %>
+            <%= link_to round.action, new_schedule_path(:round => round.id, :trigger => round.action), :class => 'btn btn-mini', :onclick => "$(body).addClass('loading');" if not @tournament.closed? and round.not_scheduled? and @tournament.participants.count > 2 and not round.number == 1 %>
             <%= link_to round.action, edit_round_path(round, :trigger => round.action), :class => 'btn btn-mini', :onclick => "$(body).addClass('loading');" if not @tournament.closed? and round.ready? or round.in_progress? and @tournament.participants.count > 2 %>
             <%= link_to 'Launch Timer', round_path(round, :timer => "65m"), :target => '_blank', :class => 'btn btn-mini' if not @tournament.closed? and round.in_progress? and @tournament.participants.count > 2 %>
           </td>
