@@ -16,6 +16,5 @@ class CreateResults < ActiveRecord::Migration
     add_index :results, :schedule_id
     add_index :results, :participant_id
     add_index :results, :opponent_id
-    add_index :results, [:schedule_id, :participant_id], :name => "index_results_on_result_attributes", :unique => true
   end
 end
