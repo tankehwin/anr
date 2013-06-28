@@ -77,6 +77,22 @@ class Round < ActiveRecord::Base
       result.schedule_id = opponent_schedule_id
       Round.reset_score_or_bye(result)
     end
+    round = Round.find(self.id, :include => :schedules)
+    round.schedules.each do |schedule|
+      if schedule.results.count > 2
+        result1 = schedule.results.first
+        result2 = Result.find_by_schedule_id_and_participant_id(schedule.results.first.schedule_id, schedule.results.first.opponent_id)
+        schedules = Schedule.find_all_by_round_id(round.id)
+        schedules.each do |s|
+          if s.results.count < 2
+            result1.schedule_id = s.id
+            Round.reset_score_or_bye(result1)
+            result2.schedule_id = s.id
+            Round.reset_score_or_bye(result2)
+          end
+        end
+      end
+    end
     self.ready
     self
   end

@@ -257,7 +257,6 @@ ActiveRecord::Schema.define(:version => 20130604030819) do
 
   add_index "results", ["opponent_id"], :name => "index_results_on_opponent_id"
   add_index "results", ["participant_id"], :name => "index_results_on_participant_id"
-  add_index "results", ["schedule_id", "participant_id"], :name => "index_results_on_result_attributes", :unique => true
   add_index "results", ["schedule_id"], :name => "index_results_on_schedule_id"
   add_index "results", ["tournament_id"], :name => "index_results_on_tournament_id"
 
