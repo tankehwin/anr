@@ -159,8 +159,8 @@ ActiveRecord::Schema.define(:version => 20130604030819) do
     t.float    "pgw",               :default => 0.0,    :null => false
     t.float    "ogw",               :default => 0.0,    :null => false
     t.string   "status"
-    t.integer  "bye_prestiges"
-    t.integer  "bye_game_points"
+    t.integer  "bye_prestiges",     :default => 0,      :null => false
+    t.integer  "bye_game_points",   :default => 0,      :null => false
     t.boolean  "obtained_bye",      :default => false,  :null => false
     t.boolean  "drop",              :default => false,  :null => false
     t.boolean  "active",            :default => false,  :null => false

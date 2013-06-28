@@ -50,6 +50,8 @@ group :development do
   # To use debugger
   gem 'debugger'
 
+  gem 'rake', '10.1.0'
   gem 'foreman'
   gem 'rails-erd'
+  gem 'taps'
 end
