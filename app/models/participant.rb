@@ -51,13 +51,14 @@ class Participant < ActiveRecord::Base
   end
 
   def self.update_personal_points(result)
-  	result.participant.prestiges = result.participant.results.map(&:prestige).sum
-  	result.participant.game_points = result.participant.results.map(&:corp_game_points).sum + result.participant.results.map(&:runner_game_points).sum
-  	result.participant.matches = result.participant.results.count
+    results = result.participant.results.reject{|r| r.prestige == nil}
+  	result.participant.prestiges = results.map(&:prestige).sum
+  	result.participant.game_points = results.map(&:corp_game_points).sum + results.map(&:runner_game_points).sum
+  	result.participant.matches = results.count
   	result.participant.pmw = result.participant.prestiges.to_f / result.participant.matches.to_f / 6.0 * 100.0
   	result.participant.pmw = (100.0 / 3.0) if result.participant.pmw < (100.0 / 3.0)
   	result.participant.pgw = result.participant.game_points.to_f / result.participant.matches.to_f / 20.0 * 100.0
-    result.participant.rating_scores = result.participant.results.map(&:rating_score).sum
+    result.participant.rating_scores = results.map(&:rating_score).sum
   	result.participant.save
   end
 

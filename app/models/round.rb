@@ -66,10 +66,10 @@ class Round < ActiveRecord::Base
   def update_table
     self.schedules.each do |schedule|
       # initialize data (must not use cache)
-      opponent_result = Result.find(schedule.results.first.opponent.results.first.id)
+      opponent_result = Result.find(schedule.results.first.opponent.results.last.id)
       schedule_id = Result.find(schedule.results.first.id).schedule_id
       result = Result.find(schedule.results.last)
-      opponent_schedule_id = Result.find(schedule.results.last.opponent.results.first.id).schedule_id
+      opponent_schedule_id = Result.find(schedule.results.last.opponent.results.last.id).schedule_id
       # set first result table
       opponent_result.schedule_id = schedule_id
       Round.reset_score_or_bye(opponent_result)
@@ -187,8 +187,8 @@ class Round < ActiveRecord::Base
       result.runner_game_points = 0
     elsif result.opponent_id == participant_bye_id
       result.prestige = 6
-      result.corp_game_points = 10
-      result.runner_game_points = 10
+      result.corp_game_points = 0
+      result.runner_game_points = 0
     end
     result.save
   end

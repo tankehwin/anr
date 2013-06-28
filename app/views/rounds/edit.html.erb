@@ -25,7 +25,7 @@
             <div class="control-group">
               <%= r.label :opponent_id, r.object.participant.name + " vs", :class => 'control-label' %>
               <div class="controls">
-                <%= r.select(:opponent_id, @participants.collect {|p| [p.name, p.id] unless p.id == r.object.participant.id}, {}, {:"data-participant-id" => r.object.participant.id, :style => "select"}) -%>
+                <%= r.select(:opponent_id, @participants.reject{|p| p.id == r.object.participant.id}.collect {|p| [p.name, p.id]}, {}, {:"data-participant-id" => r.object.participant.id, :style => "select"}) -%>
               </div>
             </div>
           </div>

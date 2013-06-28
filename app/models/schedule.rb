@@ -54,7 +54,7 @@ class Schedule < ActiveRecord::Base
           counter = counter + 1
         elsif pair == false
           c = counter + 1
-          while participants[counter] and Participant.check_past_encounter(participants[counter - 1], participants[counter]) do
+          while participants[counter] and participants[counter - 1] and Participant.check_past_encounter(participants[counter], participants[counter - 1]) do
             p = participants[counter]
             participants[counter] = participants[c]
             participants[c] = p
@@ -73,7 +73,7 @@ class Schedule < ActiveRecord::Base
             counter = counter - 1
           elsif pair == false
             c = counter - 1
-            while participants[counter] and Participant.check_past_encounter(participants[counter + 1], participants[counter]) do
+            while participants[counter] and participants[counter + 1] and Participant.check_past_encounter(participants[counter], participants[counter + 1]) do
               p = participants[counter]
               participants[counter] = participants[c]
               participants[c] = p
@@ -93,14 +93,14 @@ class Schedule < ActiveRecord::Base
           elsif pair == false
             c = counter - 1
             if counter == -1
-              while participants[counter] and Participant.check_past_encounter(Participant.find_by_tournament_id_and_player_id(participants[counter].tournament_id, Var.bye_id), participants[counter]) do
+              while participants[counter] and Participant.check_past_encounter(participants[counter], Participant.find_by_tournament_id_and_player_id(participants[counter].tournament_id, Var.bye_id)) do
                 p = participants[counter]
                 participants[counter] = participants[c]
                 participants[c] = p
                 c = c - 1
               end
             else
-              while participants[counter] and Participant.check_past_encounter(participants[counter + 1], participants[counter]) do
+              while participants[counter] and participants[counter + 1] and Participant.check_past_encounter(participants[counter], participants[counter + 1]) do
                 p = participants[counter]
                 participants[counter] = participants[c]
                 participants[c] = p
@@ -130,6 +130,7 @@ class Schedule < ActiveRecord::Base
           Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => participant.id, :opponent_id => bye.id, :corp_game_points => 0, :runner_game_points => 0, :prestige => 6
           Result.create :tournament_id => participant.tournament_id, :schedule_id => schedule.id, :participant_id => bye.id, :opponent_id => participant.id, :corp_game_points => 0, :runner_game_points => 0, :prestige => 0
         else
+          participant = bye unless participant
           if pair == true
             participant_id = participant.id
             pair = false
